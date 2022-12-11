@@ -1,0 +1,9 @@
+# .env files
+*.env
+
+# Igonore role files as they are based on local files
+roles.json
+roles_test.json
+
+# ignore python cache
+cogs/__pycache__
