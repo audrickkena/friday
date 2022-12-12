@@ -27,7 +27,7 @@ class Admin(commands.Cog):
             await interaction.response.send_message(f'{module} reloaded unsuccessfully. Please check server for more info', ephemeral=True)
 
     async def on_command_error(interaction: discord.Interaction, error):
-        if(isinstance(error, app_commands.CheckFailure)):
+        if(isinstance(error, app_commands.errors.CheckFailure)):
             await interaction.response.send_message(f'You do not have the necessary permissions to access {interaction.command}. If this is not the intended effect, please contact the server admin.')
         
 
