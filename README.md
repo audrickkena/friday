@@ -6,7 +6,7 @@ a means of practice in python and developing bots.
 ## Implemented Features
 * Role assignment
 * Voice activity announcement (when user joins or leaves a voice channel, a tts message is sent to a specified text channel)
-* !roll command for rolling dices (usage: `!roll {number of dice} {number of sides of each dice})
+* !roll command for rolling dices (usage: `!roll {number of dice} {number of sides of each dice}`)
 
 ## Planned Features
 * Implementation of slash commands (high priority)
