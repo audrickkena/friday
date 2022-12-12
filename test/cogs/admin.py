@@ -12,6 +12,7 @@ class Admin(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="reload")
+    @commands.has_permissions(administrator=True)
     async def reload(self, interaction: discord.Interaction, module: str):
         try:
             await self.bot.reload_extension(module)
