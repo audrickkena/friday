@@ -12,14 +12,14 @@ class Admin(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="reload")
-    @commands.has_permissions(administrator=True)
+    @commands.is_owner()
     async def reload(self, interaction: discord.Interaction, module: str):
         try:
             await self.bot.reload_extension(module)
-            await interaction.response.send_message(f'{module} reloaded successfully')
+            await interaction.response.send_message(f'{module} reloaded successfully', ephemeral=True)
         except commands.ExtensionError as e:
             print(e)
-            await interaction.response.send_message(f'{module} reloaded unsuccessfully. Please check server for more info')
+            await interaction.response.send_message(f'{module} reloaded unsuccessfully. Please check server for more info', ephemeral=True)
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Admin(bot))
