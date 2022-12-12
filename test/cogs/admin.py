@@ -14,7 +14,7 @@ class Admin(commands.Cog):
     def is_guild_owner():
         def predicate(interaction: discord.Interaction):
             return interaction.guild is not None and interaction.guild.owner_id == interaction.user.id
-        return commands.check(predicate)
+        return app_commands.check(predicate)
 
     @app_commands.command(name="reload")
     @is_guild_owner()
