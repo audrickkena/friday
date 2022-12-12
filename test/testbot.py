@@ -158,6 +158,8 @@ class Friday(commands.Bot):
 
     
     async def on_voice_state_update(self, member, before, after):
+        if(member.guild != self.currGuild):
+            return
         if(member == self.user):
             return
         if(before.channel == None):
@@ -175,7 +177,10 @@ class Friday(commands.Bot):
             channel = get(self.currGuild.channels, name='voiceless-spam', type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
 
-    
+    @commands.command(name="reload")
+    async def reload(self, ctx, extension):
+        bot.reload_extension(extension)
+
     async def on_command_error(self, ctx, error):
         if(isinstance(error, commands.BadArgument)):
             if(ctx.command.name == 'roll'):
