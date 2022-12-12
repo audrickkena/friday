@@ -5,6 +5,7 @@ import json
 import os
 from discord.ext import commands
 from discord.ext import tasks
+from discord import app_commands
 
 # class Utility(commands.Cog, name="Utility"):
 #     def __init__(self, bot):
