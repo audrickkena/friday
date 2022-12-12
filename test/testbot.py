@@ -178,7 +178,7 @@ class Friday(commands.Bot):
             await channel.send(content=msg, tts=True, delete_after=10)
 
     @commands.command(name="reload")
-    async def reload(self, ctx, extension):
+    async def reload(ctx, extension):
         try:
             bot.reload_extension(extension)
         except Exception as e:
