@@ -70,11 +70,10 @@ class Utility(commands.Cog):
             msgTotal = 'Total roll value: ' + str(functools.reduce(lambda a, b: int(a) + int(b), result))
             await interaction.response.send_message(msgDices+"\n\n"+msgTotal)
 
-    @app_commands.command(name="close")
-    @app_commands.default_permissions(administrator=True)
-    async def close(self):
-        await self.bot.close()
-
+    # @app_commands.command(name="close")
+    # @app_commands.default_permissions(administrator=True)
+    # async def close(self):
+    #     await self.bot.close(self)
 
     @tasks.loop(hours=24.0)
     async def trogOTD(self):
