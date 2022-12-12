@@ -22,12 +22,12 @@ class Admin(commands.Cog):
         try:
             await self.bot.reload_extension(module)
             await interaction.response.send_message(f'{module} reloaded successfully', ephemeral=True)
-        except app_commands.ExtensionError as e:
+        except commands.ExtensionError as e:
             print(e)
             await interaction.response.send_message(f'{module} reloaded unsuccessfully. Please check server for more info', ephemeral=True)
 
     async def on_command_error(interaction: discord.Interaction, error):
-        if(isinstance(error, app_commands.errors.CheckFailure)):
+        if(isinstance(error, commands.CheckFailure)):
             await interaction.response.send_message(f'You do not have the necessary permissions to access {interaction.command}. If this is not the intended effect, please contact the server admin.')
         
 
