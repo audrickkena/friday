@@ -49,12 +49,12 @@ from discord import app_commands
 class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.prevTrog = None
-        self.path = os.path.dirname(__file__) + '/../roles_test.json'
-        self.roleFile = open(self.path, 'r')
-        self.roleDict  = json.loads(self.roleFile.read())
-        self.roleFile.close()
-        self.trogOTD.start()
+        # self.prevTrog = None
+        # self.path = os.path.dirname(__file__) + '/../roles_test.json'
+        # self.roleFile = open(self.path, 'r')
+        # self.roleDict  = json.loads(self.roleFile.read())
+        # self.roleFile.close()
+        # self.trogOTD.start()
 
     @app_commands.command(name="roll")
     async def rollDice(self, interaction: discord.Interaction, diceNum : int, sidesNum : int):
@@ -75,20 +75,20 @@ class Utility(commands.Cog):
     # async def close(self):
     #     await self.bot.close(self)
 
-    @tasks.loop(hours=24.0)
-    async def trogOTD(self):
-        await self.bot.wait_until_ready()
-        guild = discord.utils.get(self.bot.guilds, name='Dankinton')
-        member = random.choice(guild.members)
-        while(discord.utils.get(member.roles, id=self.roleDict['Lvl 10 Boss']) == None and discord.utils.get(member.roles, id=self.roleDict['Lvl 100 Mafia Warlord']) == None):
-            member = random.choice(guild.members)
-        print(f'{member.name} has been chosen to be today\'s trog!')
-        await member.add_roles(guild.get_role(self.roleDict['Trog']))
-        ctx = discord.utils.get(guild.channels, name='command-spam')
-        await ctx.send(content=f'{member.name}({member.mention}) is today\'s trog!')
-        if(self.prevTrog != None):
-            await self.prevTrog.remove_roles(guild.get_role(self.roleDict['Trog']))
-        self.prevTrog = member
+    # @tasks.loop(hours=24.0)
+    # async def trogOTD(self):
+    #     await self.bot.wait_until_ready()
+    #     guild = discord.utils.get(self.bot.guilds, name='Dankinton')
+    #     member = random.choice(guild.members)
+    #     while(discord.utils.get(member.roles, id=self.roleDict['Lvl 10 Boss']) == None and discord.utils.get(member.roles, id=self.roleDict['Lvl 100 Mafia Warlord']) == None):
+    #         member = random.choice(guild.members)
+    #     print(f'{member.name} has been chosen to be today\'s trog!')
+    #     await member.add_roles(guild.get_role(self.roleDict['Trog']))
+    #     ctx = discord.utils.get(guild.channels, name='command-spam')
+    #     await ctx.send(content=f'{member.name}({member.mention}) is today\'s trog!')
+    #     if(self.prevTrog != None):
+    #         await self.prevTrog.remove_roles(guild.get_role(self.roleDict['Trog']))
+    #     self.prevTrog = member
     
 async def setup(bot: commands.Bot):
     await bot.add_cog(Utility(bot))
