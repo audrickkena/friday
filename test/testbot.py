@@ -116,15 +116,15 @@ class Friday(commands.Bot):
         await bot.tree.sync(guild = self.currGuild)
     
     async def on_ready(self):
+        for guild in self.guilds:
+            if guild.name == GUILD: 
+                self.currGuild = guild
+                break
         print(discord.__version__)
         print(
             f'{self.user} has connected to Discord!\n'
             f'{self.user} is connected to {self.currGuild.name}(id: {self.currGuild.id})\n\n'
         )
-        for guild in self.guilds:
-            if guild.name == GUILD: 
-                self.currGuild = guild
-                break
         updateRoles(self.currGuild.roles)
 
     async def on_guild_role_create(self, role):
