@@ -181,6 +181,7 @@ class Friday(commands.Bot):
     async def reload(ctx, extension):
         try:
             bot.reload_extension(extension)
+            print("Reload complete!")
         except Exception as e:
             print(e)
 
