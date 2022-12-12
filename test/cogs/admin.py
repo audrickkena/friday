@@ -12,7 +12,7 @@ class Admin(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="reload")
-    async def reload(self, ctx, module):
+    async def reload(self, ctx, module: str):
         try:
             await self.bot.reload_extension(module)
         except commands.ExtensionError as e:
