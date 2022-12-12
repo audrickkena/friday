@@ -27,7 +27,7 @@ class Admin(commands.Cog):
             await interaction.response.send_message(f'{module} reloaded unsuccessfully. Please check server for more info', ephemeral=True)
     @reload.error
     async def reload_error(self, interaction: discord.Interaction, error):
-        await interaction.response.send_message(f'You do not have the necessary permissions to access {interaction.command.name}. If this is not the intended effect, please contact the server admin.', ephemeral=True)
+        await interaction.response.send_message(f'You do not have the necessary permissions to access /{interaction.command.name}. If this is not the intended effect, please contact the server admin.', ephemeral=True)
         
 
 async def setup(bot: commands.Bot):
