@@ -12,9 +12,10 @@ class Admin(commands.Cog):
         self.bot = bot
 
     def is_guild_owner():
-        def predicate(ctx):
-            return ctx.guild is not None and ctx.guild.owner_id == ctx.author.id
+        def predicate(interaction: discord.Interaction):
+            return interaction.guild is not None and interaction.guild.owner_id == interaction.user.id
         return commands.check(predicate)
+
     @app_commands.command(name="reload")
     @is_guild_owner()
     async def reload(self, interaction: discord.Interaction, module: str):
