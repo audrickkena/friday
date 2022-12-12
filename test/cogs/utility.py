@@ -57,15 +57,15 @@ class Utility(commands.Cog):
         # self.trogOTD.start()
 
     @app_commands.command(name="roll")
-    async def rollDice(self, interaction: discord.Interaction, diceNum : int, sidesNum : int):
-        if(diceNum > 30):
+    async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
+        if(dice_num > 30):
             await interaction.response.send_message('Sorry, max value for the number of dice is 30!')
             return
-        if(sidesNum > 30):
+        if(sides_num > 30):
             await interaction.response.send_message('Sorry max value for the number of dice is 30!')
             return
         if(interaction.channel.name=="command-spam"):
-            result = [str(random.choice(range(1, sidesNum + 1))) for _ in range(diceNum)]
+            result = [str(random.choice(range(1, sides_num + 1))) for _ in range(dice_num)]
             msgDices = 'Individual dices: ' + ', '.join(result)
             msgTotal = 'Total roll value: ' + str(functools.reduce(lambda a, b: int(a) + int(b), result))
             await interaction.response.send_message(msgDices+"\n\n"+msgTotal)
