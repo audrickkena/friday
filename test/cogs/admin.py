@@ -22,10 +22,10 @@ class Admin(commands.Cog):
         try:
             await self.bot.reload_extension(module)
             await interaction.response.send_message(f'{module} reloaded successfully', ephemeral=True)
-        except commands.ExtensionError as e:
+        except app_commands.ExtensionError as e:
             print(e)
             await interaction.response.send_message(f'{module} reloaded unsuccessfully. Please check server for more info', ephemeral=True)
-        except commands.CheckFailure as e:
+        except app_commands.CheckFailure as e:
             print(e)
             await interaction.response.send_message(f'You do not have permission to use this command! Contact the admin if this is not the intended effect')
         
