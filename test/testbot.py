@@ -107,11 +107,6 @@ class Friday(commands.Bot):
             application_id = APPID
         )
         self.currGuild = None
-        for guild in self.guilds:
-            if guild.name == GUILD: 
-                self.currGuild = guild
-                break
-        updateRoles(self.currGuild.roles)
         self.initial_extensions = [
             "cogs.utility"
         ]
@@ -126,6 +121,11 @@ class Friday(commands.Bot):
             f'{self.user} has connected to Discord!\n'
             f'{self.user} is connected to {self.currGuild.name}(id: {self.currGuild.id})\n\n'
         )
+        for guild in self.guilds:
+            if guild.name == GUILD: 
+                self.currGuild = guild
+                break
+        updateRoles(self.currGuild.roles)
 
     async def on_guild_role_create(self, role):
         if(role.guild == self.currGuild):
