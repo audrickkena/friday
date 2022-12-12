@@ -68,7 +68,8 @@ class Utility(commands.Cog):
             result = [str(random.choice(range(1, sides_num + 1))) for _ in range(dice_num)]
             msgDices = 'Individual dices: ' + ', '.join(result)
             msgTotal = 'Total roll value: ' + str(functools.reduce(lambda a, b: int(a) + int(b), result))
-            await interaction.response.send_message(msgDices+"\n\n"+msgTotal)
+            msgMax = str(dice_num * sides_num)
+            await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}/{msgMax}')
 
     # @app_commands.command(name="close")
     # @app_commands.default_permissions(administrator=True)
