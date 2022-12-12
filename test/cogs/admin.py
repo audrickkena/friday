@@ -11,7 +11,7 @@ class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @app_commands.command(name="reload", hidden=True)
+    @app_commands.command(name="reload")
     @commands.is_owner()
     async def reload(self, interaction: discord.Interaction, module: str):
         try:
