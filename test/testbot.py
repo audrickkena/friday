@@ -179,7 +179,10 @@ class Friday(commands.Bot):
 
     @commands.command(name="reload")
     async def reload(self, ctx, extension):
-        bot.reload_extension(extension)
+        try:
+            bot.reload_extension(extension)
+        except Exception as e:
+            print(e)
 
     async def on_command_error(self, ctx, error):
         if(isinstance(error, commands.BadArgument)):
