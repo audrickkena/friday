@@ -25,7 +25,7 @@ class SelectUsers(UserSelect):
         self.numUsers = len(self.users)
         await interaction.response.send_message(f'{self.numUsers} is the number of members you have selected')
         for i in range(2, self.numUsers):
-            if((self.numUsers) // i > 1):
+            if((self.numUsers) / i > 1):
                 temp = discord.SelectOption(
                     label=f'{i} teams',
                     value=f'{i}'
