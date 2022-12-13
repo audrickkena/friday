@@ -90,17 +90,22 @@ class Utility(commands.Cog):
 
     @commands.command(name="maketeams")
     async def makeTeams(self, ctx):
-        select = UserSelect(
-            placeholder="Select members:",
-            min_values=1,
-            max_values=ctx.guild.max_members)
+        select = Select(options=[
+            discord.SelectOption(label="test1", description="1"),
+            discord.SelectOption(label="test2", description="2"),
+            discord.SelectOption(label="test3", description="3")
+        ])
+        # select = UserSelect(
+        #     placeholder="Select members:",
+        #     min_values=1,
+        #     max_values=ctx.guild.max_members)
         # async def selCallback(interaction: discord.Interaction):
         #     numOfSelected = len(select.values)
         #     await interaction.response.send_message(f'{numOfSelected} is the number of members you have selected')
         # select.callback = selCallback
         view = View()
         view.add_item(select)
-        await ctx.send(f'Choose members for making teams:', view=view)
+        await ctx.send('Make Teams:', view=view)
 
     # @app_commands.command(name="close")
     # @app_commands.default_permissions(administrator=True)
