@@ -21,7 +21,6 @@ class Admin(commands.Cog):
     async def reload(self, interaction: discord.Interaction, module: str):
         try:
             await self.bot.reload_extension(module)
-            await self.bot.tree.sync(guild = interaction.guild)
             await interaction.response.send_message(f'{module} reloaded successfully', ephemeral=True)
         except commands.ExtensionError as e:
             print(e)
