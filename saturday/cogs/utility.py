@@ -58,9 +58,11 @@ class UsersIntoTeams(Select):
         print(f'numusers\n{self.numUsers}\n\n')
         for i in range(self.numUsers):
             teams[i % int(self.values[0])].append(self.users[i].display_name)
-        print(f'after\n\n{teams}')
+            print(f'loop {i}:\n{teams}\n\n')
+        print(f'after\n{teams}')
+        teamString = ''
         for i in range(len(teams)):
-            teamString = f'Team {i+1}: {", ".join(teams[i])}\n'
+            teamString += f'Team {i+1}: {", ".join(teams[i])}\n'
         await interaction.response.send_message(content=teamString)
         
     
