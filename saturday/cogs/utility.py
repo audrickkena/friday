@@ -94,6 +94,7 @@ class Utility(commands.Cog):
             placeholder="Select members:",
             min_values=2,
             max_values=ctx.guild.max_members)
+        print('here')
         # async def selCallback(interaction: discord.Interaction):
         #     numOfSelected = len(select.values)
         #     await interaction.response.send_message(f'{numOfSelected} is the number of members you have selected')
