@@ -34,7 +34,7 @@ class SelectUsers(UserSelect):
         select = UsersIntoTeams(self.users, self.numUsers, self.options)
         view = View()
         view.add_item(select)
-        await self.ctx.send('Select Teams:', view=view)
+        await self.ctx.send(view=view)
     
     def getUsers(self):
         return self.users
@@ -51,12 +51,13 @@ class UsersIntoTeams(Select):
         )
         self.users = users
         self.numUsers = numUsers
-        print(f'users: {options}')
 
     async def teamCallback(self, interaction: discord.Interaction):
         teams = [[]] * int(self.values[0])
+        print(f'before\n\n{teams}')
         for i in range(self.numUsers):
             teams[i % self.values[0]] = self.users[i].display_name
+        print(f'after\n\n{teams}')
         for i in range(len(teams)):
             teamString = f'Team {i+1}: {", ".join(teams[i])}\n'
         await interaction.response.send_message(content=teamString)
