@@ -103,4 +103,4 @@ class Utility(commands.Cog):
 
 
 async def setup(bot: commands.Bot):
-    await bot.add_cog(Utility(bot), guild=[discord.Object(id=1051422874143035412)])
+    await bot.add_cog(Utility(bot), guilds=[discord.Object(id=1051422874143035412)])
