@@ -16,8 +16,26 @@ class UtilityView(discord.ui.View):
     @discord.ui.select(cls=UserSelect, placeholder="Select users:", min_values=1, max_values=25)
     async def makeTeamsCallback(self, interaction: discord.Interaction, select: UserSelect):
         # return await interaction.response.send_message(f'You selected {select.values[0]}')
-        numUsers = len(select.values)
+        users = select.values
+        numUsers = len(users)
         await interaction.response.send_message(f'{numUsers} is the number of members you have selected')
+        teamSelect = Select(placeholder="Number of teams", min_values=1, max_values=numUsers)
+        for i in range(2, numUsers):
+            if(numUsers // i > 1):
+                teamSelect.add_option(
+                    label=f'{i} teams',
+                    value=f'{i}'
+                )
+        async def teamCallback(interaction: discord.Interaction):
+            teams = [[]] * int(teamSelect.values[0])
+            for i in range(numUsers):
+                teams[i % teamSelect.values[0]] = users[i].display_name
+            for i in range(len(teams)):
+                teamString = f'Team {i+1}: {", ".join(teams[i])}'
+        teamSelect.callback = teamCallback
+        view = View()
+        view.add_item(teamSelect)
+        await interaction.response.send_message('Choose number of teams', view=view)
     
     def getValues(self):
         return self.values
@@ -115,25 +133,6 @@ class Utility(commands.Cog):
         # select.callback = selCallback
         view = UtilityView()
         await ctx.send('Make Teams:', view=view)
-        users = view.getValues()
-        numUsers = len(users)
-        select = Select(placeholder="Number of teams", min_values=1, max_values=numUsers)
-        for i in range(2, numUsers):
-            if(numUsers // i > 1):
-                select.add_option(
-                    label=f'{i} teams',
-                    value=f'{i}'
-                )
-        async def teamCallback(interaction: discord.Interaction):
-            teams = [[]] * int(select.values[0])
-            for i in range(numUsers):
-                teams[i % select.values[0]] = users[i].display_name
-            for i in range(len(teams)):
-                teamString = f'Team {i+1}: {", ".join(teams[i])}'
-        select.callback = teamCallback
-        view = View()
-        view.add_item(select)
-        await ctx.send('Choose number of teams')
 
     # @app_commands.command(name="close")
     # @app_commands.default_permissions(administrator=True)
