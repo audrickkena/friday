@@ -34,7 +34,7 @@ class SelectUsers(UserSelect):
         select = UsersIntoTeams(self.users, self.numUsers, self.options)
         view = View()
         view.add_item(select)
-        await self.ctx.send(content='Select Teams:', view=view)
+        await self.ctx.send('Select Teams:', view=view)
     
     def getUsers(self):
         return self.users
