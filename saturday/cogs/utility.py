@@ -148,11 +148,11 @@ class Utility(commands.Cog):
         #     numOfSelected = len(select.values)
         #     await interaction.response.send_message(f'{numOfSelected} is the number of members you have selected')
         # select.callback = selCallback
-        selectUsers = await SelectUsers()
+        selectUsers = SelectUsers()
         view = View()
         view.add_item(selectUsers)
         await ctx.send("Choose users:", view=view)
-        teams = await UsersIntoTeams()
+        teams = UsersIntoTeams()
         view.add_item(teams)
         await ctx.send("Teams:", view=view)
 
