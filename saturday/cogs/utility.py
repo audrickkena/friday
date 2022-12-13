@@ -113,8 +113,12 @@ class Utility(commands.Cog):
             msgMax = str(dice_num * sides_num)
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
-    # @app_commands.command(name="maketeams")
-    # async def makeTeams(self, interaction: discord.Interaction):
+    @app_commands.command(name="maketeams")
+    async def makeTeams(self, interaction: discord.Interaction):
+        selectUsers = SelectUsers(interaction.channel)
+        view = View()
+        view.add_item(selectUsers)
+        await interaction.channel.send("Choose users:", view=view)
 
     @commands.command(name="maketeams")
     async def makeTeams(self, ctx):
