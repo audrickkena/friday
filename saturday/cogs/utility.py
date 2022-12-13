@@ -39,7 +39,7 @@ class Utility(commands.Cog):
         select = UserSelect(
             placeholder="Select members:",
             min_values=2,
-            max_values=interaction.guild.max_members)
+            max_values=ctx.guild.max_members)
         async def selCallback(interaction: discord.Interaction):
             numOfSelected = len(select.values)
             teamSelect = Select(
