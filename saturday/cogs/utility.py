@@ -40,6 +40,11 @@ class Utility(commands.Cog):
         print('here')
         await ctx.send('hello')
 
+    @commands.command()
+    async def sync(self, ctx):
+        fmt = await ctx.bot.tree.sync(guild=ctx.guild)
+        await ctx.send(f'Synced {len(fmt)} commands.')
+
     # @commands.hybrid_command(name="maketeams")
     # async def makeTeams(self, ctx):
     #     select = UserSelect(
