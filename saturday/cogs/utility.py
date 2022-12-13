@@ -28,10 +28,10 @@ class Utility(commands.Cog):
         print('Pong')
         await ctx.send('Pong')
 
-    @commands.command(name='hi')
-    async def hi(self, ctx):
+    @app_commands.command(name='hi')
+    async def hi(self, interaction: discord.Interaction):
         print('here')
-        await ctx.send('hello')
+        await interaction.response.send_message('hello')
 
     @commands.command()
     async def sync(self, ctx):
