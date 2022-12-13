@@ -85,7 +85,7 @@ class Utility(commands.Cog):
         select.callback = selCallback
         view = View()
         view.add_item(select)
-        await interaction.response.send_message(f'Choose members for making teams:' view=view)
+        await interaction.response.send_message(f'Choose members for making teams:', view=view)
 
     # @app_commands.command(name="close")
     # @app_commands.default_permissions(administrator=True)
