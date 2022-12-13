@@ -37,6 +37,7 @@ class Utility(commands.Cog):
     @commands.hybrid_command(name='hi', with_app_command = True)
     @app_commands.guilds(discord.Object(id = 1051422874143035412))
     async def hi(self, ctx):
+        print('here')
         await ctx.send('hello')
 
     # @commands.hybrid_command(name="maketeams")
