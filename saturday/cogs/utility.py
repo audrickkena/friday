@@ -8,6 +8,13 @@ from discord.ext import tasks
 from discord import app_commands
 from discord.ui import Select, UserSelect, View
 
+class UtilityView(discord.ui.View):
+    def __init__(self, timeout=30):
+        super().__init__(timeout=timeout)
+    
+    @discord.ui.select(cls=UserSelect, placeholder="Make teams", min_values=1, max_values=25)
+    async def makeTeamsCallback(self, interaction: discord.Interaction, select: UserSelect):
+        return await interaction.response.send_message(f'You selected {select.values[0]}')
 
 class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -90,7 +97,6 @@ class Utility(commands.Cog):
 
     @commands.command(name="maketeams")
     async def makeTeams(self, ctx):
-        select = UserSelect(min_values=1, max_values=ctx.guild.max_members)
         # select = UserSelect(
         #     placeholder="Select members:",
         #     min_values=1,
@@ -99,8 +105,7 @@ class Utility(commands.Cog):
         #     numOfSelected = len(select.values)
         #     await interaction.response.send_message(f'{numOfSelected} is the number of members you have selected')
         # select.callback = selCallback
-        view = View()
-        view.add_item(select)
+        view = UtilityView()
         await ctx.send('Make Teams:', view=view)
 
     # @app_commands.command(name="close")
