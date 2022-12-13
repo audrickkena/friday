@@ -57,7 +57,9 @@ class UsersIntoTeams(Select):
         print(f'before\n{teams}\n\n')
         print(f'numusers\n{self.numUsers}\n\n')
         for i in range(self.numUsers):
-            teams[i % int(self.values[0])].append(self.users[i].display_name)
+            tempInt = random.randint(0, len(self.users) - 1)
+            teams[i % int(self.values[0])].append(self.users[tempInt].display_name)
+            self.users.pop(tempInt)
             print(f'loop {i}:\n{teams}\n\n')
         print(f'after\n{teams}')
         teamString = ''
