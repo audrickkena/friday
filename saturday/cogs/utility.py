@@ -97,6 +97,7 @@ class Utility(commands.Cog):
     async def sync(self, ctx):
         fmt = await ctx.bot.tree.sync(guild=ctx.guild)
         await ctx.send(f'Synced {len(fmt)} commands.')
+        return
 
     @app_commands.command(name="roll")
     async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
