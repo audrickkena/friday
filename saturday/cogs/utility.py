@@ -34,6 +34,10 @@ class Utility(commands.Cog):
             msgMax = str(dice_num * sides_num)
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print('Utility cog loaded.')
+
     @commands.command(name='hi')
     # @app_commands.guilds(discord.Object(id = 1051422874143035412))
     async def hi(self, ctx):
