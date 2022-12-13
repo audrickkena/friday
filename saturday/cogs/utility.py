@@ -19,6 +19,7 @@ class UtilityView(discord.ui.View):
         users = select.values
         numUsers = len(users)
         await interaction.response.send_message(f'{numUsers} is the number of members you have selected')
+        
         teamSelect = Select(placeholder="Number of teams", min_values=1, max_values=numUsers)
         for i in range(2, numUsers):
             if(numUsers // i > 1):
@@ -39,6 +40,58 @@ class UtilityView(discord.ui.View):
     
     def getValues(self):
         return self.values
+
+class SelectUsers(UserSelect):
+    def __init__(self):
+        super().__init__(
+            placeholder='Select users:',
+            min_values=1,
+            max_values=25
+        )
+        self.users = []
+        self.numUsers = 0
+        self.options = []
+    
+    async def callback(self, interaction: discord.Interaction):
+        self.users = self.values
+        self.numUsers = len(self.users)
+        await interaction.response.send_message(f'{self.numUsers} is the number of members you have selected')
+        for i in range(2, self.numUsers):
+            if((self.numUsers) // i > 1):
+                temp = discord.SelectOption(
+                    label=f'{i} teams',
+                    value=f'{i}'
+                )
+                self.options.append(temp)
+        
+    async def makeTeams(self, ctx, users: list, numUsers: int, options: list):
+        teams = UsersIntoTeams(users, numUsers, options)
+        view = View()
+        view.add_item(teams)
+        await ctx.send("Number of teams:", view=view)
+    def getUsers(self):
+        return self.users
+    def getNumUsers(self):
+        return self.numUsers
+    def getOptions(self):
+        return self.options
+
+class UsersIntoTeams(Select):
+    def __init__(self, users: list, numUsers: int, options: list):
+        super().__init__(
+            placeholder='Number of teams:',
+            options=options
+        )
+        self.users = users
+        self.numUsers = numUsers
+
+    async def teamCallback(self, interaction: discord.Interaction):
+        teams = [[]] * int(self.values[0])
+        for i in range(self.numUsers):
+            teams[i % self.values[0]] = self.users[i].display_name
+        for i in range(len(teams)):
+            teamString = f'Team {i+1}: {", ".join(teams[i])}\n'
+        await interaction.response.send_message(content=teamString)
         
     
 
@@ -131,8 +184,10 @@ class Utility(commands.Cog):
         #     numOfSelected = len(select.values)
         #     await interaction.response.send_message(f'{numOfSelected} is the number of members you have selected')
         # select.callback = selCallback
-        view = UtilityView()
-        await ctx.send('Make Teams:', view=view)
+        selectUsers = SelectUsers()
+        view = View()
+        view.add_item(selectUsers)
+        await ctx.send("Choose users:", view=view)
 
     # @app_commands.command(name="close")
     # @app_commands.default_permissions(administrator=True)
