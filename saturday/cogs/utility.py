@@ -30,6 +30,10 @@ class SelectUsers(UserSelect):
                     value=f'{i}'
                 )
                 self.options.append(temp)
+        select = UsersIntoTeams(self.users, self.numUsers, self.options)
+        view = View()
+        view.add_item(select)
+        await interaction.channel.send(content='Select Teams:', view=view)
     
     def getUsers(self):
         return self.users
@@ -111,9 +115,6 @@ class Utility(commands.Cog):
         view = View()
         view.add_item(selectUsers)
         await ctx.send("Choose users:", view=view)
-        teams = UsersIntoTeams(selectUsers.getUsers(), selectUsers.getNumUsers(), selectUsers.getOptions())
-        view.add_item(teams)
-        await ctx.send("Teams:", view=view)
 
 
     # @app_commands.command(name="close")
