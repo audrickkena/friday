@@ -35,7 +35,7 @@ class Utility(commands.Cog):
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
     @app_commands.command(name="maketeams")
-    async def makeTeams(self, interaction: discord.Interaction):
+    async def makeTeams(self, ctx):
         select = UserSelect(
             placeholder="Select members:",
             min_values=2,
@@ -66,6 +66,7 @@ class Utility(commands.Cog):
         select.callback = selCallback
         view = View()
         view.add_item(select)
+        await ctx.send("Make teams!", view=view)
 
     # @app_commands.command(name="close")
     # @app_commands.default_permissions(administrator=True)
