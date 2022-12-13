@@ -19,6 +19,25 @@ class Utility(commands.Cog):
         # self.roleFile.close()
         # self.trogOTD.start()
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print('Utility cog loaded.')
+
+    @commands.command()
+    async def ping(self, ctx):
+        print('Pong')
+        await ctx.send('Pong')
+
+    @commands.command(name='hi')
+    async def hi(self, ctx):
+        print('here')
+        await ctx.send('hello')
+
+    @commands.command()
+    async def sync(self, ctx):
+        fmt = await ctx.bot.tree.sync(guild=ctx.guild)
+        await ctx.send(f'Synced {len(fmt)} commands.')
+
     @app_commands.command(name="roll")
     async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
         if(dice_num > 30):
@@ -33,24 +52,6 @@ class Utility(commands.Cog):
             msgTotal = 'Total roll value: ' + str(functools.reduce(lambda a, b: int(a) + int(b), result))
             msgMax = str(dice_num * sides_num)
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print('Utility cog loaded.')
-
-    @commands.command()
-    async def ping(self, ctx):
-        await ctx.send('Pong')
-
-    @commands.command(name='hi')
-    async def hi(self, ctx):
-        print('here')
-        await ctx.send('hello')
-
-    @commands.command()
-    async def sync(self, ctx):
-        fmt = await ctx.bot.tree.sync(guild=ctx.guild)
-        await ctx.send(f'Synced {len(fmt)} commands.')
 
     # @commands.hybrid_command(name="maketeams")
     # async def makeTeams(self, ctx):
