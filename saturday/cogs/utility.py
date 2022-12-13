@@ -90,11 +90,7 @@ class Utility(commands.Cog):
 
     @commands.command(name="maketeams")
     async def makeTeams(self, ctx):
-        select = Select(options=[
-            discord.SelectOption(label="test1", description="1"),
-            discord.SelectOption(label="test2", description="2"),
-            discord.SelectOption(label="test3", description="3")
-        ])
+        select = UserSelect(min_values=1, max_values=ctx.guild.max_members)
         # select = UserSelect(
         #     placeholder="Select members:",
         #     min_values=1,
