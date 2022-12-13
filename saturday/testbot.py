@@ -10,6 +10,7 @@ from discord import app_commands
 ## INITIALISING INTENTS
 intents = discord.Intents.default()
 intents.messages = True
+intents.message_content = True
 intents.members = True
 intents.voice_states = True
 
