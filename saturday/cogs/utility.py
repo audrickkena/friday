@@ -9,12 +9,13 @@ from discord import app_commands
 from discord.ui import Select, UserSelect, View
 
 class SelectUsers(UserSelect):
-    def __init__(self):
+    def __init__(self, ctx):
         super().__init__(
             placeholder='Select users:',
             min_values=1,
             max_values=25
         )
+        self.ctx = ctx
         self.users = []
         self.numUsers = 0
         self.options = []
@@ -33,7 +34,7 @@ class SelectUsers(UserSelect):
         select = UsersIntoTeams(self.users, self.numUsers, self.options)
         view = View()
         view.add_item(select)
-        await interaction.channel.send(content='Select Teams:', view=view)
+        await self.ctx.send(content='Select Teams:', view=view)
     
     def getUsers(self):
         return self.users
@@ -111,7 +112,7 @@ class Utility(commands.Cog):
 
     @commands.command(name="maketeams")
     async def makeTeams(self, ctx):
-        selectUsers = SelectUsers()
+        selectUsers = SelectUsers(ctx)
         view = View()
         view.add_item(selectUsers)
         await ctx.send("Choose users:", view=view)
