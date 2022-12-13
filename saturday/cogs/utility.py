@@ -94,10 +94,10 @@ class Utility(commands.Cog):
             placeholder="Select members:",
             min_values=2,
             max_values=ctx.guild.max_members)
-        async def selCallback(interaction: discord.Interaction):
-            numOfSelected = len(select.values)
-            await interaction.response.send_message(f'{numOfSelected} is the number of members you have selected')
-        select.callback = selCallback
+        # async def selCallback(interaction: discord.Interaction):
+        #     numOfSelected = len(select.values)
+        #     await interaction.response.send_message(f'{numOfSelected} is the number of members you have selected')
+        # select.callback = selCallback
         view = View()
         view.add_item(select)
         await ctx.send(f'Choose members for making teams:', view=view)
