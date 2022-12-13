@@ -43,7 +43,6 @@ class Saturday(commands.Bot):
             if guild.name == GUILD: 
                 self.currGuild = guild
                 break
-        await bot.tree.sync(guild = self.currGuild)
         print(discord.__version__)
         print(
             f'{self.user} has connected to Discord!\n'
