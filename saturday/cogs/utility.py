@@ -53,7 +53,7 @@ class UsersIntoTeams(Select):
         self.numUsers = numUsers
 
     async def callback(self, interaction: discord.Interaction):
-        teams = [[]] * int(self.values[0])
+        teams = [[] for i in range(int(self.values[0]))]
         print(f'before\n{teams}\n\n')
         print(f'numusers\n{self.numUsers}\n\n')
         for i in range(self.numUsers):
