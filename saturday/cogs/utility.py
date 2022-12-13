@@ -34,8 +34,8 @@ class Utility(commands.Cog):
             msgMax = str(dice_num * sides_num)
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
-    @commands.hybrid_command(name='hi', with_app_command = True)
-    @app_commands.guilds(discord.Object(id = 1051422874143035412))
+    @commands.command(name='hi')
+    # @app_commands.guilds(discord.Object(id = 1051422874143035412))
     async def hi(self, ctx):
         print('here')
         await ctx.send('hello')
