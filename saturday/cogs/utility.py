@@ -35,7 +35,7 @@ class Utility(commands.Cog):
 
     @commands.command()
     async def sync(self, ctx):
-        fmt = await ctx.bot.tree.sync(guild=ctx.guild)
+        fmt = await self.bot.tree.sync(guild=ctx.guild)
         await ctx.send(f'Synced {len(fmt)} commands.')
 
     @app_commands.command(name="roll")
@@ -61,31 +61,32 @@ class Utility(commands.Cog):
             max_values=interaction.guild.max_members)
         async def selCallback(interaction: discord.Interaction):
             numOfSelected = len(select.values)
-            teamSelect = Select(
-                placeholder="Select number of teams:",
-                max_values=1
-            )
-            for i in range(2, numOfSelected):
-                if(numOfSelected // i > 0):
-                    teamSelect.add_option(
-                        label=f'{i} teams', 
-                        value=f'{i}'
-                    )
-            async def teamCallback(interaction: discord.Interaction):
-                teamsList = [[]] * teamSelect.values[0]
-                for i in range(numOfSelected):
-                    teamsList[i % teamSelect.values[0]].append(select[i])
-                for i in range(teamsList):
-                    members = ', '.join(teamsList[i])
-                    await interaction.response.send_message(f'Team {i}: {members}')
+            await interaction.response.send_message(f'{numOfSelected} is the number of members you have selected')
+        #     teamSelect = Select(
+        #         placeholder="Select number of teams:",
+        #         max_values=1
+        #     )
+        #     for i in range(2, numOfSelected):
+        #         if(numOfSelected // i > 0):
+        #             teamSelect.add_option(
+        #                 label=f'{i} teams', 
+        #                 value=f'{i}'
+        #             )
+        #     async def teamCallback(interaction: discord.Interaction):
+        #         teamsList = [[]] * teamSelect.values[0]
+        #         for i in range(numOfSelected):
+        #             teamsList[i % teamSelect.values[0]].append(select[i])
+        #         for i in range(teamsList):
+        #             members = ', '.join(teamsList[i])
+        #             await interaction.response.send_message(f'Team {i}: {members}')
                 
-            teamSelect.callback = teamCallback
-            view.add_item(teamSelect)
+        #     teamSelect.callback = teamCallback
+        #     view.add_item(teamSelect)
 
-        select.callback = selCallback
-        view = View()
-        view.add_item(select)
-        await interaction.response.send_message(f'Choose members for making teams:', view=view)
+        # select.callback = selCallback
+        # view = View()
+        # view.add_item(select)
+        # await interaction.response.send_message(f'Choose members for making teams:', view=view)
 
     # @app_commands.command(name="close")
     # @app_commands.default_permissions(administrator=True)
