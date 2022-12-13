@@ -34,7 +34,7 @@ class Utility(commands.Cog):
             msgMax = str(dice_num * sides_num)
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
-    @app_commands.command(name="maketeams")
+    @commands.hybrid_command(name="maketeams")
     async def makeTeams(self, ctx):
         select = UserSelect(
             placeholder="Select members:",
