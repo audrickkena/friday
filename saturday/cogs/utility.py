@@ -6,7 +6,7 @@ import os
 from discord.ext import commands
 from discord.ext import tasks
 from discord import app_commands
-# from discord.ui import Select, UserSelect, View
+from discord.ui import Select, UserSelect, View
 
 
 class Utility(commands.Cog):
@@ -53,39 +53,39 @@ class Utility(commands.Cog):
             msgMax = str(dice_num * sides_num)
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
-    # @commands.hybrid_command(name="maketeams")
-    # async def makeTeams(self, ctx):
-    #     select = UserSelect(
-    #         placeholder="Select members:",
-    #         min_values=2,
-    #         max_values=ctx.guild.max_members)
-    #     async def selCallback(interaction: discord.Interaction):
-    #         numOfSelected = len(select.values)
-    #         teamSelect = Select(
-    #             placeholder="Select number of teams:",
-    #             max_values=1
-    #         )
-    #         for i in range(2, numOfSelected):
-    #             if(numOfSelected // i > 0):
-    #                 teamSelect.add_option(
-    #                     label=f'{i} teams', 
-    #                     value=f'{i}'
-    #                 )
-    #         async def teamCallback(interaction: discord.Interaction):
-    #             teamsList = [[]] * teamSelect.values[0]
-    #             for i in range(numOfSelected):
-    #                 teamsList[i % teamSelect.values[0]].append(select[i])
-    #             for i in range(teamsList):
-    #                 members = ', '.join(teamsList[i])
-    #                 await interaction.response.send_message(f'Team {i}: {members}')
+    @app_commands.command(name="maketeams")
+    async def makeTeams(self, interaction: discord.Interaction):
+        select = UserSelect(
+            placeholder="Select members:",
+            min_values=2,
+            max_values=interaction.guild.max_members)
+        async def selCallback(interaction: discord.Interaction):
+            numOfSelected = len(select.values)
+            teamSelect = Select(
+                placeholder="Select number of teams:",
+                max_values=1
+            )
+            for i in range(2, numOfSelected):
+                if(numOfSelected // i > 0):
+                    teamSelect.add_option(
+                        label=f'{i} teams', 
+                        value=f'{i}'
+                    )
+            async def teamCallback(interaction: discord.Interaction):
+                teamsList = [[]] * teamSelect.values[0]
+                for i in range(numOfSelected):
+                    teamsList[i % teamSelect.values[0]].append(select[i])
+                for i in range(teamsList):
+                    members = ', '.join(teamsList[i])
+                    await interaction.response.send_message(f'Team {i}: {members}')
                 
-    #         teamSelect.callback = teamCallback
-    #         view.add_item(teamSelect)
+            teamSelect.callback = teamCallback
+            view.add_item(teamSelect)
 
-    #     select.callback = selCallback
-    #     view = View()
-    #     view.add_item(select)
-    #     await ctx.send("Make teams!", view=view)
+        select.callback = selCallback
+        view = View()
+        view.add_item(select)
+        await interaction.response.send_message(f'Choose members for making teams:' view=view)
 
     # @app_commands.command(name="close")
     # @app_commands.default_permissions(administrator=True)
