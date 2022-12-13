@@ -23,7 +23,7 @@ class Utility(commands.Cog):
     async def on_ready(self):
         print('Utility cog loaded.')
 
-    @commands.HybridCommand(name='ping', with_app_command=True)
+    @commands.hybrid_command(name='ping', with_app_command=True)
     async def ping(self, ctx):
         print('Pong')
         await ctx.send('Pong')
