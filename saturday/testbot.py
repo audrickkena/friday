@@ -36,13 +36,13 @@ class Saturday(commands.Bot):
     async def setup_hook(self):
         for ext in self.initial_extensions:
             await self.load_extension(ext)
-        await bot.tree.sync(guild = self.currGuild)
-    
-    async def on_ready(self):
         for guild in self.guilds:
             if guild.name == GUILD: 
                 self.currGuild = guild
                 break
+        await bot.tree.sync(guild = self.currGuild)
+    
+    async def on_ready(self):
         print(discord.__version__)
         print(
             f'{self.user} has connected to Discord!\n'
