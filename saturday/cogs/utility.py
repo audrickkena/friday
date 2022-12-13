@@ -39,7 +39,6 @@ class Utility(commands.Cog):
         print('Utility cog loaded.')
 
     @commands.command(name='hi')
-    # @app_commands.guilds(discord.Object(id = 1051422874143035412))
     async def hi(self, ctx):
         print('here')
         await ctx.send('hello')
@@ -83,10 +82,10 @@ class Utility(commands.Cog):
     #     view.add_item(select)
     #     await ctx.send("Make teams!", view=view)
 
-    # @app_commands.command(name="close")
-    # @app_commands.default_permissions(administrator=True)
-    # async def close(self):
-    #     await self.bot.close(self)
+    @app_commands.command(name="close")
+    @app_commands.default_permissions(administrator=True)
+    async def close(self):
+        await self.bot.close(self)
 
     # @tasks.loop(hours=24.0)
     # async def trogOTD(self):
