@@ -56,7 +56,7 @@ class UsersIntoTeams(Select):
         teams = [[]] * int(self.values[0])
         print(f'before\n\n{teams}')
         for i in range(self.numUsers):
-            teams[i % int(self.values[0])] = self.users[i].display_name
+            teams[i % int(self.values[0])].append(self.users[i].display_name)
         print(f'after\n\n{teams}')
         for i in range(len(teams)):
             teamString = f'Team {i+1}: {", ".join(teams[i])}\n'
