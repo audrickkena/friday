@@ -30,8 +30,6 @@ class SelectUsers(UserSelect):
                     value=f'{i}'
                 )
                 self.options.append(temp)
-        
-
     
     def getUsers(self):
         return self.users
@@ -48,6 +46,7 @@ class UsersIntoTeams(Select):
         )
         self.users = users
         self.numUsers = numUsers
+        print(f'users: {self.users}')
 
     async def teamCallback(self, interaction: discord.Interaction):
         teams = [[]] * int(self.values[0])
@@ -105,49 +104,9 @@ class Utility(commands.Cog):
 
     # @app_commands.command(name="maketeams")
     # async def makeTeams(self, interaction: discord.Interaction):
-        # select = UserSelect(
-        #     placeholder="Select members:",
-        #     min_values=2,
-        #     max_values=interaction.guild.max_members)
-        # async def selCallback(interaction: discord.Interaction):
-        #     numOfSelected = len(select.values)
-        #     await interaction.response.send_message(f'{numOfSelected} is the number of members you have selected')
-            # teamSelect = Select(
-            #     placeholder="Select number of teams:",
-            #     max_values=1
-            # )
-            # for i in range(2, numOfSelected):
-            #     if(numOfSelected // i > 0):
-            #         teamSelect.add_option(
-            #             label=f'{i} teams', 
-            #             value=f'{i}'
-            #         )
-            # async def teamCallback(interaction: discord.Interaction):
-            #     teamsList = [[]] * teamSelect.values[0]
-            #     for i in range(numOfSelected):
-            #         teamsList[i % teamSelect.values[0]].append(select[i])
-            #     for i in range(teamsList):
-            #         members = ', '.join(teamsList[i])
-            #         await interaction.response.send_message(f'Team {i}: {members}')
-                
-            # teamSelect.callback = teamCallback
-            # view.add_item(teamSelect)
-
-        # select.callback = selCallback
-        # view = View()
-        # view.add_item(select)
-        # await interaction.response.send_message(f'Choose members for making teams:', view=view)
 
     @commands.command(name="maketeams")
     async def makeTeams(self, ctx):
-        # select = UserSelect(
-        #     placeholder="Select members:",
-        #     min_values=1,
-        #     max_values=ctx.guild.max_members)
-        # async def selCallback(interaction: discord.Interaction):
-        #     numOfSelected = len(select.values)
-        #     await interaction.response.send_message(f'{numOfSelected} is the number of members you have selected')
-        # select.callback = selCallback
         selectUsers = SelectUsers()
         view = View()
         view.add_item(selectUsers)
