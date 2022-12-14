@@ -41,7 +41,7 @@ class Admin(commands.Cog):
             )
             message.add_field(name='------', value='-----')
             message.add_field(name='Slash commands', value='-----')
-            # self.getAppCommands(cog, message)
+            self.getAppCommands(cog, message)
             # message.add_field(name=' ', value='-----')
             # message.add_field(name='Prefix commands', value='------')
             # self.getCommands(cog, message)
