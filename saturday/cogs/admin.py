@@ -46,6 +46,7 @@ class Admin(commands.Cog):
         print("Commands cleared.")
     @clear.error
     async def clear_error(self, ctx, error):
+        print(error)
         print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
 
     @commands.command(name="sync", description="For syncing app commands", usage="!sync")

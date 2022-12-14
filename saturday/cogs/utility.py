@@ -24,6 +24,7 @@ class SelectUsers(UserSelect):
         self.options = []
     
     async def callback(self, interaction: discord.Interaction):
+        self.disabled = True
         self.users = self.values
         self.numUsers = len(self.users)
         await interaction.response.send_message(f'{self.numUsers} is the number of members you have selected')
@@ -56,6 +57,7 @@ class UsersIntoTeams(Select):
         self.numUsers = numUsers
 
     async def callback(self, interaction: discord.Interaction):
+        self.disabled = True
         teams = [[] for i in range(int(self.values[0]))]
         for i in range(self.numUsers):
             tempInt = random.randint(0, len(self.users) - 1)
@@ -84,7 +86,7 @@ class Utility(commands.Cog):
 
     @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
-        await interaction.response.send_message('hello')
+        await interaction.response.send_message('hello', ephemeral=True)
 
     @app_commands.command(name="roll", description="For rolling a number of dices with a number of sides")
     async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
@@ -120,16 +122,18 @@ class Utility(commands.Cog):
                 description=f'{cogName} cog commands:\n',
                 color=discord.Colour.blue()
             )
-            message.add_field(name='\n\u200b', value='**Slash commands**', inline=False)
-            self.getAppCommands(cog, message)
-            message.add_field(name='\n\u200b', value='**Prefix commands**', inline=False)
-            self.getCommands(cog, message)
+            if(len(cog.get_app_commands()) > 0):
+                message.add_field(name='\n\u200b', value='**Slash commands**', inline=False)
+                self.getAppCommands(cog, message)
+            if(len(cog.get_commands()) > 0):
+                message.add_field(name='\n\u200b', value='**Prefix commands**', inline=False)
+                self.getCommands(cog, message)
             embedList.append(message)
         await interaction.response.send_message(embeds=embedList, ephemeral=True)
 
-    @commands.hybrid_command(name='ping', with_app_command=True, description="For really bored people", usage="!ping")
-    async def ping(self, ctx):
-        await ctx.send('Pong')
+    @app_commands.command(name='ping', description="For really bored people")
+    async def ping(self, interaction: discord.Interaction):
+        await interaction.response.send_message('Pong', ephemeral=True)
 
     # @commands.command(name="maketeams", description="For making teams", usage="!maketeams")
     # async def makeTeams(self, ctx):
