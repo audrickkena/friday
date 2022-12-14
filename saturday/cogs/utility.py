@@ -98,6 +98,7 @@ class Utility(commands.Cog):
         result = 'Currently synced app commands:\n'
         for command in commands:
             result += f'{command.name}: {command.description}\n'
+        await ctx.send(result)
 
     @app_commands.command(name="roll")
     async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
