@@ -31,6 +31,7 @@ class Admin(commands.Cog):
 
     @commands.command(name="sync", description="For syncing app commands", usage="!sync")
     async def sync(self, ctx):
+        ctx.bot.tree.clear_commands(guild=ctx.guild)
         fmt = await self.bot.tree.sync(guild=ctx.guild)
         await ctx.send(f'Synced {len(fmt)} commands.')
     
