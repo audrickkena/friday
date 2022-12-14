@@ -39,8 +39,8 @@ class Admin(commands.Cog):
                 description=f'{cogName} cog commands:\n',
                 color=discord.Colour.blue()
             )
-            message.add_field(name=' ', value=' ', inline=False)
-            message.add_field(name='Slash commands', value=' ', inline=False)
+            message.add_field(name=' ', value=' ')
+            message.add_field(name='Slash commands', value=' ')
             # self.getAppCommands(cog, message)
             # message.add_field(name=' ', value='-----')
             # message.add_field(name='Prefix commands', value='------')
