@@ -38,14 +38,13 @@ class Admin(commands.Cog):
                 description=f'{cogName} cog commands:\n',
                 colour=discord.Colour.blue()
             )
-            print("here")
             message.add_field(name='', value='')
             message.add_field(name='Slash commands', value='')
-            print(message.fields)
             self.getAppCommands(cog, message)
             message.add_field(name='', value='')
             message.add_field(name='Prefix commands', value='')
             self.getCommands(cog, message)
+            print(message.fields)
             await ctx.send(embed=message)
         
     def getAppCommands(self, cog, embed):
