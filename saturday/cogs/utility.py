@@ -116,10 +116,11 @@ class Utility(commands.Cog):
         view.add_item(selectUsers)
         await ctx.send("Choose users:", view=view)
 
-    @commands.command(name='help', description='For getting information on usable commands', usage='!help')
+    @commands.hybrid_command(name='help', description='For getting information on usable commands', usage='!help')
     async def help(self, ctx):
         cogs = self.bot.cogs
         embedList = []
+        await ctx.defer(ephemeral = True)
         for cogName, cog in cogs.items():
             if(cogName == 'Admin' and ctx.guild.owner_id != ctx.author.id):
                 continue
