@@ -5,7 +5,7 @@ import os
 from discord.ext import commands
 from discord.ext import tasks
 from discord import app_commands
-from discord.ui import BaseSelect, Select, UserSelect, View
+from discord.ui import Select, UserSelect, View
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.split(os.path.realpath(__file__))[0], '..', '.env'))
