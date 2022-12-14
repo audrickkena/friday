@@ -34,9 +34,9 @@ class Admin(commands.Cog):
         cogs = self.bot.cogs
         message = ''
         for cogName, cog in cogs.items():
-            message += f'{cogName} cog slash-commands:(starts with \"/\")\n'
+            message += f'{cogName} cog slash-commands:\n'
             message += self.getAppCommands(cog)
-            message += f'{cogName} cog prefix-commands:(starts with \"!\")\n'
+            message += f'{cogName} cog prefix-commands:\n'
             message += self.getCommands(cog)
             message += '\n'
         await ctx.send(content=message)
