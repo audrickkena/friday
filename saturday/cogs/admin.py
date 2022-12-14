@@ -1,13 +1,12 @@
 import discord
-import random
-import functools
-import json
 import os
 from discord.ext import commands
 from discord.ext import tasks
 from discord import app_commands
+from dotenv import load_dotenv
 
-guild = None
+load_dotenv(os.path.join(os.path.split(os.path.realpath(__file__))[0], '..', '.env'))
+GUILD = os.getenv('DISCORD_GUILD')
 class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -15,8 +14,6 @@ class Admin(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('Admin cog loaded.')
-        global guild
-        guild = self.bot.getGuild()
 
     def is_guild_owner_intr():
         def predicate(interaction: discord.Interaction):
@@ -53,4 +50,4 @@ class Admin(commands.Cog):
         await ctx.send(f'Synced {len(fmt)} commands.')
     
 async def setup(bot: commands.Bot):
-    await bot.add_cog(Admin(bot), guilds=[guild])
+    await bot.add_cog(Admin(bot), guilds=[GUILD])

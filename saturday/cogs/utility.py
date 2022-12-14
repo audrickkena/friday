@@ -1,14 +1,16 @@
 import discord
 import random
 import functools
-import json
 import os
 from discord.ext import commands
 from discord.ext import tasks
 from discord import app_commands
 from discord.ui import Select, UserSelect, View
+from dotenv import load_dotenv
 
-guild = None
+load_dotenv(os.path.join(os.path.split(os.path.realpath(__file__))[0], '..', '.env'))
+GUILD = os.getenv('DISCORD_GUILD')
+
 class SelectUsers(UserSelect):
     def __init__(self, ctx):
         super().__init__(
@@ -79,8 +81,6 @@ class Utility(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('Utility cog loaded.')
-        global guild
-        guild = self.bot.getGuild()
 
     @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
@@ -196,4 +196,4 @@ class Utility(commands.Cog):
 
 
 async def setup(bot: commands.Bot):
-    await bot.add_cog(Utility(bot), guilds=[guild])
+    await bot.add_cog(Utility(bot), guilds=[GUILD])
