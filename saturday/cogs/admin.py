@@ -32,6 +32,7 @@ class Admin(commands.Cog):
     @commands.command(name='help')
     async def help(self, ctx):
         cogs = self.bot.cogs
+        print('here')
         for cogName, cog in cogs.items():
             message = discord.Embed(
                 title=cogName,
