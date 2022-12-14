@@ -48,7 +48,7 @@ class Admin(commands.Cog):
             message += f'  - /{command.name}: {command.description}\n'
             message += f'    - usage: /{command.name}'
             for parameter in command.parameters:
-                message += f' {{{parameter}}}'
+                message += f' {{{parameter.name}}}'
             message += '\n'
         return message
 
