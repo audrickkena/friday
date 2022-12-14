@@ -35,11 +35,12 @@ class Admin(commands.Cog):
         print(cogs)
         message = ''
         for cogName, cog in cogs.items():
-            message += f'{cogName} commands:\n'
+            message += f'{cogName} cog commands:\n'
             print(message)
             commands = cog.get_app_commands()
             for command in commands:
-                message += f'  - {command.name}: {command.description}'
+                message += f'  - {command.name}: {command.description}\n'
+            message += '\n'
         await ctx.send(content=message)
         
 
