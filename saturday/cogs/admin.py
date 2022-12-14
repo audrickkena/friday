@@ -36,6 +36,7 @@ class Admin(commands.Cog):
             message = discord.Embed(
                 title=cogName,
                 description=f'{cogName} cog commands:\n',
+                colour=discord.Colour.blue
             )
             message.add_field(name='', value='')
             message.add_field(name='Slash commands', value='')
