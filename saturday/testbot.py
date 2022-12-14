@@ -33,10 +33,16 @@ class Saturday(commands.Bot):
             "cogs.admin"
         ]
     async def setup_hook(self):
-        for ext in self.initial_extensions:
-            await self.load_extension(ext)
+        """!
+        A coroutine to be called to setup the bot, by default this is blank.
+        This performs an asynchronous setup after the bot is logged in,
+        but before it has connected to the Websocket (quoted from d.py docs)
+        """
     
     async def on_ready(self):
+        self.remove_command('help')
+        for ext in self.initial_extensions:
+            await self.load_extension(ext)
         for guild in self.guilds:
             if guild.name == GUILD: 
                 self.currGuild = guild
@@ -113,5 +119,4 @@ def updateRoles(self, guildRoles):
     roleFile.close()
 
 bot = Saturday()
-bot.remove_command('help')
 bot.run(TOKEN)
