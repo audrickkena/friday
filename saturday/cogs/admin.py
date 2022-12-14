@@ -32,13 +32,13 @@ class Admin(commands.Cog):
     @commands.command(name='help')
     async def help(self, ctx):
         cogs = self.bot.cogs
-        print('here')
         for cogName, cog in cogs.items():
             message = discord.Embed(
                 title=cogName,
                 description=f'{cogName} cog commands:\n',
                 colour=discord.Colour.blue
             )
+            print("here")
             message.add_field(name='', value='')
             message.add_field(name='Slash commands', value='')
             print(message.fields)
