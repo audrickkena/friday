@@ -78,6 +78,7 @@ class Utility(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('Utility cog loaded.')
+        print(f'App Commands in utility: {self.get_app_commands()}')
 
     @commands.hybrid_command(name='ping', with_app_command=True)
     async def ping(self, ctx):
