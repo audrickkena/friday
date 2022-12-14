@@ -60,7 +60,7 @@ class Admin(commands.Cog):
         commands = cog.get_commands()
         for command in commands:
             message = f'- description: {command.description}\n- usage: {command.usage}'
-        embed.add_field(name=command.name, value=message)
+        embed.add_field(name=command.name, value=message, inline=False)
     
 async def setup(bot: commands.Bot):
     await bot.add_cog(Admin(bot))
