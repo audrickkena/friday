@@ -105,6 +105,11 @@ class Saturday(commands.Bot):
             if(ctx.command.name == 'roll'):
                 await ctx.send('Roll was given unsuitable arguments! Please retry with valid integer inputs.')
 
+    @commands.command()
+    async def sync(self, ctx):
+        fmt = await ctx.bot.tree.sync(guild=ctx.guild)
+        await ctx.send(f'Synced {len(fmt)} commands.')
+
 ## HELPER FUNCTIONS
 def updateRoles(self, guildRoles):
     roleDict = {}
