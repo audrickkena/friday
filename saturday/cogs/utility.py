@@ -24,7 +24,6 @@ class SelectUsers(UserSelect):
         self.options = []
     
     async def callback(self, interaction: discord.Interaction):
-        UserSelect.self.disabled = True
         self.users = self.values
         self.numUsers = len(self.users)
         await interaction.response.send_message(f'{self.numUsers} is the number of members you have selected')
@@ -57,7 +56,6 @@ class UsersIntoTeams(Select):
         self.numUsers = numUsers
 
     async def callback(self, interaction: discord.Interaction):
-        UserSelect.self.disabled = True
         teams = [[] for i in range(int(self.values[0]))]
         for i in range(self.numUsers):
             tempInt = random.randint(0, len(self.users) - 1)
