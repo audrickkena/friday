@@ -34,11 +34,11 @@ class Admin(commands.Cog):
         cogs = self.bot.cogs
         message = ''
         for cogName, cog in cogs.items():
-            message += f'{cogName} cog slash-commands:\n'
+            message += f'{cogName} cog slash-commands:(starts with \"/\")\n'
             print(message)
             message += self.getAppCommands(cog)
             print(message)
-            message += f'{cogName} cog prefix-commands:\n'
+            message += f'{cogName} cog prefix-commands:(starts with \"!\")\n'
             print(message)
             message += self.getCommands(cog)
             print(message)
@@ -49,14 +49,16 @@ class Admin(commands.Cog):
         message = ''
         commands = cog.get_app_commands()
         for command in commands:
-            message += f'  - {command.name}: {command.description}\n'
+            message += f'  - /{command.name}: {command.description}\n'
+            
         return message
 
     def getCommands(self, cog):
         message = ''
         commands = cog.get_commands()
         for command in commands:
-            message += f'  - {command.name}: {command.description}\n'
+            message += f'  - !{command.name}: {command.description}\n'
+            message += f'    - usage: {command.usage}'
         return message
     
 async def setup(bot: commands.Bot):
