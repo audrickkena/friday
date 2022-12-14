@@ -27,7 +27,7 @@ class Admin(commands.Cog):
     def is_guild_owner_ctx():
         def predicate(ctx):
             return ctx.guild is not None and ctx.guild.owner_id == ctx.author.id
-        return app_commands.check(predicate)
+        return commands.check(predicate)
 
     @commands.command(name="reloadAll", description="For reloading all cogs")
     @is_guild_owner_ctx()
