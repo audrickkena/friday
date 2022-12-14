@@ -70,7 +70,7 @@ class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         global guild
-        guild = self.bot.getGuild()
+        guild = bot.getGuild()
         # self.prevTrog = None
         # self.path = os.path.dirname(__file__) + '/../roles_test.json'
         # self.roleFile = open(self.path, 'r')

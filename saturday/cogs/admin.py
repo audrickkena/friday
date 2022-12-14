@@ -12,7 +12,7 @@ class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         global guild
-        guild = self.bot.getGuild()
+        guild = bot.getGuild()
 
     def is_guild_owner_intr():
         def predicate(interaction: discord.Interaction):

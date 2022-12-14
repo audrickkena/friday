@@ -115,7 +115,7 @@ class Saturday(commands.Bot):
     def getCogs(self):
         return self.initial_extensions
 ## HELPER FUNCTIONS
-def updateRoles(self, guildRoles):
+def updateRoles(guildRoles):
     roleDict = {}
     roleFile = open('roles_test.json', 'w')
     for i in range(len(guildRoles)):
