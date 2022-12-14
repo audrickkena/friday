@@ -44,7 +44,7 @@ class Admin(commands.Cog):
             message.add_field(name=' ', value='-----')
             message.add_field(name='Prefix commands', value='------')
             self.getCommands(cog, message)
-            await ctx.send(embed=message)
+            await ctx.channel.send(embed=message)
         
     def getAppCommands(self, cog, embed):
         commands = cog.get_app_commands()
@@ -52,7 +52,6 @@ class Admin(commands.Cog):
             message = f'{command.description}\n    - usage: /{command.name}'
             for parameter in command.parameters:
                 message += f' {{{parameter.name}}}'
-            print(message)
             embed.add_field(name=command.name, value=message)
 
     def getCommands(self, cog, embed):
