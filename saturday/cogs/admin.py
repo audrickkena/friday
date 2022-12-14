@@ -42,16 +42,16 @@ class Admin(commands.Cog):
             message.add_field(name='*', value='*', inline=True)
             message.add_field(name='Slash commands', value='*', inline=True)
             self.getAppCommands(cog, message)
-            # message.add_field(name=' ', value='-----')
-            # message.add_field(name='Prefix commands', value='------')
-            # self.getCommands(cog, message)
+            message.add_field(name='*', value='*')
+            message.add_field(name='Prefix commands', value='*')
+            self.getCommands(cog, message)
             embedList.append(message)
         await ctx.send(embeds=embedList)
         
     def getAppCommands(self, cog, embed):
         commands = cog.get_app_commands()
         for command in commands:
-            message = f'{command.description}\n    - usage: /{command.name}'
+            message = f'- description: {command.description}\n- usage: /{command.name}'
             for parameter in command.parameters:
                 message += f' {{{parameter.name}}}'
             embed.add_field(name=command.name, value=message, inline=False)
@@ -59,7 +59,7 @@ class Admin(commands.Cog):
     def getCommands(self, cog, embed):
         commands = cog.get_commands()
         for command in commands:
-            message = f'{command.description}    - usage: {command.usage}'
+            message = f'- description: {command.description}\n- usage: {command.usage}'
         embed.add_field(name=command.name, value=message)
     
 async def setup(bot: commands.Bot):
