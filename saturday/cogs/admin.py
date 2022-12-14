@@ -31,30 +31,27 @@ class Admin(commands.Cog):
     
     @commands.command(name='help')
     async def help(self, ctx):
-        # cogs = self.bot.cogs
-        # embedList = []
-        # for cogName, cog in cogs.items():
-        #     message = discord.Embed(
-        #         title=cogName,
-        #         description=f'{cogName} cog commands:\n',
-        #         colour=discord.Colour.blue()
-        #     )
-        #     message.add_field(name='------', value='-----')
-        #     message.add_field(name='Slash commands', value='-----')
-        #     self.getAppCommands(cog, message)
-        #     message.add_field(name=' ', value='-----')
-        #     message.add_field(name='Prefix commands', value='------')
-        #     self.getCommands(cog, message)
-        #     embedList.append(message)
-        # print(embedList)
-        # await ctx.send(embeds=embedList)
-        embed=discord.Embed(title="Sample Embed", url="https://realdrewdata.medium.com/", description="This is an embed that will show how to build an embed and the different components", color=0xFF5733)
-        await ctx.send(embed=embed)
+        cogs = self.bot.cogs
+        embedList = []
+        for cogName, cog in cogs.items():
+            message = discord.Embed(
+                title=cogName,
+                description=f'{cogName} cog commands:\n',
+                color=discord.Colour.blue()
+            )
+            message.add_field(name='------', value='-----')
+            message.add_field(name='Slash commands', value='-----')
+            self.getAppCommands(cog, message)
+            message.add_field(name=' ', value='-----')
+            message.add_field(name='Prefix commands', value='------')
+            self.getCommands(cog, message)
+            embedList.append(message)
+        await ctx.send(embeds=embedList)
         
     def getAppCommands(self, cog, embed):
         commands = cog.get_app_commands()
         for command in commands:
-            message = f'{command.description}\n    - usage: /{command.name}'
+            message = f'{command.description}    - usage: /{command.name}'
             for parameter in command.parameters:
                 message += f' {{{parameter.name}}}'
             embed.add_field(name=command.name, value=message)
@@ -62,7 +59,7 @@ class Admin(commands.Cog):
     def getCommands(self, cog, embed):
         commands = cog.get_commands()
         for command in commands:
-            message = f'{command.description}\n    - usage: {command.usage}'
+            message = f'{command.description}    - usage: {command.usage}'
         embed.add_field(name=command.name, value=message)
     
 async def setup(bot: commands.Bot):
