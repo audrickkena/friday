@@ -44,7 +44,7 @@ class Saturday(commands.Bot):
     
     async def on_ready(self):
         for guild in self.guilds:
-            if guild.name == GUILD: 
+            if guild.id == int(GUILD): 
                 self.currGuild = guild
                 break
         print(discord.__version__)
