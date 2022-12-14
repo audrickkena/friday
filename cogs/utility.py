@@ -124,6 +124,7 @@ class Utility(commands.Cog):
             message.add_field(name='\n\u200b', value='**Prefix commands**', inline=False)
             self.getCommands(cog, message)
             embedList.append(message)
+        await interaction.response.send_message(embeds=embedList, ephemeral=True)
 
     @commands.hybrid_command(name='ping', with_app_command=True, description="For really bored people", usage="!ping")
     async def ping(self, ctx):
