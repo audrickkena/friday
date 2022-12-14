@@ -25,19 +25,6 @@ class Admin(commands.Cog):
             return ctx.guild is not None and ctx.guild.owner_id == ctx.author.id
         return app_commands.check(predicate)
 
-    @app_commands.command(name="reload", description="For reloading cogs")
-    @is_guild_owner_intr()
-    async def reload(self, interaction: discord.Interaction, module: str):
-        try:
-            await self.bot.reload_extension(module)
-            await interaction.response.send_message(f'{module} reloaded successfully', ephemeral=True)
-        except commands.ExtensionError as e:
-            print(e)
-            await interaction.response.send_message(f'{module} reloaded unsuccessfully. Please check server for more info', ephemeral=True)
-    @reload.error
-    async def reload_error(self, interaction: discord.Interaction, error):
-        await interaction.response.send_message(f'You do not have the necessary permissions to access /{interaction.command.name}. If this is not the intended effect, please contact the server admin.', ephemeral=True)
-
     @commands.command(name="reloadAll", description="For reloading all cogs")
     @is_guild_owner_ctx()
     async def reloadAll(self, ctx):
