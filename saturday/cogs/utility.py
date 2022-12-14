@@ -105,12 +105,12 @@ class Utility(commands.Cog):
         view.add_item(selectUsers)
         await interaction.response.send_message("Choose users:", view=view)
     
-    @app_commands.command(name='h', description='For getting information on usable commands')
-    async def h(self, interaction: discord.Interaction):
+    @app_commands.command(name='help', description='For getting information on usable commands')
+    async def help(self, interaction: discord.Interaction):
         cogs = self.bot.cogs
         embedList = []
         for cogName, cog in cogs.items():
-            if(cogName == 'Admin' and interaction.guild.owner_id != interaction.author.id):
+            if(cogName == 'Admin' and interaction.guild.owner_id != interaction.user.id):
                 continue
             message = discord.Embed(
                 title=cogName,
@@ -132,31 +132,31 @@ class Utility(commands.Cog):
     async def ping(self, ctx):
         await ctx.send('Pong')
 
-    @commands.command(name="maketeams", description="For making teams", usage="!maketeams")
-    async def makeTeams(self, ctx):
-        selectUsers = SelectUsers(ctx)
-        view = View()
-        view.add_item(selectUsers)
-        await ctx.send("Choose users:", view=view)
+    # @commands.command(name="maketeams", description="For making teams", usage="!maketeams")
+    # async def makeTeams(self, ctx):
+    #     selectUsers = SelectUsers(ctx)
+    #     view = View()
+    #     view.add_item(selectUsers)
+    #     await ctx.send("Choose users:", view=view)
 
-    @commands.command(name='help', description='For getting information on usable commands', usage='!help')
-    async def help(self, ctx):
-        cogs = self.bot.cogs
-        embedList = []
-        for cogName, cog in cogs.items():
-            if(cogName == 'Admin' and ctx.guild.owner_id != ctx.author.id):
-                continue
-            message = discord.Embed(
-                title=cogName,
-                description=f'{cogName} cog commands:\n',
-                color=discord.Colour.blue()
-            )
-            message.add_field(name='\n\u200b', value='**Slash commands**', inline=False)
-            self.getAppCommands(cog, message)
-            message.add_field(name='\n\u200b', value='**Prefix commands**', inline=False)
-            self.getCommands(cog, message)
-            embedList.append(message)
-        await ctx.send(embeds=embedList)
+    # @commands.command(name='help', description='For getting information on usable commands', usage='!help')
+    # async def help(self, ctx):
+    #     cogs = self.bot.cogs
+    #     embedList = []
+    #     for cogName, cog in cogs.items():
+    #         if(cogName == 'Admin' and ctx.guild.owner_id != ctx.author.id):
+    #             continue
+    #         message = discord.Embed(
+    #             title=cogName,
+    #             description=f'{cogName} cog commands:\n',
+    #             color=discord.Colour.blue()
+    #         )
+    #         message.add_field(name='\n\u200b', value='**Slash commands**', inline=False)
+    #         self.getAppCommands(cog, message)
+    #         message.add_field(name='\n\u200b', value='**Prefix commands**', inline=False)
+    #         self.getCommands(cog, message)
+    #         embedList.append(message)
+    #     await ctx.send(embeds=embedList)
         
     def getAppCommands(self, cog, embed):
         commands = cog.get_app_commands()
