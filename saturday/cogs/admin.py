@@ -34,6 +34,7 @@ class Admin(commands.Cog):
         cogs = self.bot.cogs
         for cog in cogs:
             message = f'{cog.qualified_name} commands:\n'
+            print(message)
             commands = cog.get_app_commands()
             for command in commands:
                 message += f'  - {command.name}: {command.description}'
