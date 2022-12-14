@@ -52,21 +52,21 @@ class Saturday(commands.Bot):
             f'{self.user} has connected to Discord!\n'
             f'{self.user} is connected to {self.currGuild.name}(id: {self.currGuild.id})\n\n'
         )
-        updateRoles(self, self.currGuild.roles)
+        updateRoles(self.currGuild.roles)
 
     async def on_guild_role_create(self, role):
         if(role.guild == self.currGuild):
-            updateRoles(self, self.currGuild.roles)
+            updateRoles(self.currGuild.roles)
             print(f'Roles file has been updated! Added role {role.name}({role.id})')
 
     async def on_guild_role_delete(self, role):
         if(role.guild == self.currGuild):
-            updateRoles(self, self.currGuild.roles)
+            updateRoles(self.currGuild.roles)
             print(f'Roles file has been updated! Removed role {role.name}({role.id})')
 
     async def on_guild_role_update(self, before, after):
         if(before.guild == self.currGuild):
-            updateRoles(self, self.currGuild.roles)
+            updateRoles(self.currGuild.roles)
             print(f'Roles file has been updated! Updated role from {before.name}({before.id}) to {after.name}({after.id})')
     
     
