@@ -43,15 +43,23 @@ class Admin(commands.Cog):
         print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
     
     @commands.command(name="clear", description="For clearing app commands", usage="!clear")
+    @is_guild_owner_ctx()
     async def clear(self, ctx):
         await ctx.bot.tree.clear_commands()
         print("Commands cleared.")
+    @clear.error
+    async def clear_error(self, ctx, error):
+        print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
 
     @commands.command(name="sync", description="For syncing app commands", usage="!sync")
+    @is_guild_owner_ctx()
     async def sync(self, ctx):
         
         fmt = await self.bot.tree.sync()
         print(f'Synced {len(fmt)} commands.')
+    @sync.error
+    async def sync_error(self, ctx, error):
+        print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Admin(bot))
