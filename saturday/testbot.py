@@ -1,11 +1,9 @@
 import os
 import json
 import discord
-import random
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord.utils import get
-from discord import app_commands
 
 ## INITIALISING INTENTS
 intents = discord.Intents.default()
@@ -104,11 +102,6 @@ class Saturday(commands.Bot):
         if(isinstance(error, commands.BadArgument)):
             if(ctx.command.name == 'roll'):
                 await ctx.send('Roll was given unsuitable arguments! Please retry with valid integer inputs.')
-
-    @commands.command()
-    async def showAppCommands(self, ctx):
-        cogs = self.cogs
-        print(cogs)
 
 ## HELPER FUNCTIONS
 def updateRoles(self, guildRoles):
