@@ -83,7 +83,7 @@ class Utility(commands.Cog):
     async def hi(self, interaction: discord.Interaction):
         await interaction.response.send_message('hello')
 
-    @app_commands.command(name="roll", description="For rolling a number of dices with a number of sides")
+    @app_commands.command(name="roll", description="For rolling a number of dices with a number of sides", guild=discord.Object(id=1051422874143035412))
     async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
         if(dice_num > 30):
             await interaction.response.send_message('Sorry, max value for the number of dice is 30!')
@@ -98,14 +98,14 @@ class Utility(commands.Cog):
             msgMax = str(dice_num * sides_num)
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
-    @app_commands.command(name="maketeams")
+    @app_commands.command(name="maketeams", guild=discord.Object(id=1051422874143035412))
     async def makeTeams(self, interaction: discord.Interaction):
         selectUsers = SelectUsers(interaction.channel)
         view = View()
         view.add_item(selectUsers)
         await interaction.response.send_message("Choose users:", view=view)
     
-    @app_commands.command(name='help', description='For getting information on usable commands')
+    @app_commands.command(name='help', description='For getting information on usable commands', guild=discord.Object(id=1051422874143035412))
     async def help(self, interaction: discord.Interaction):
         cogs = self.bot.cogs
         embedList = []
@@ -124,7 +124,7 @@ class Utility(commands.Cog):
             embedList.append(message)
         await interaction.response.send_message(embeds=embedList, ephemeral=True)
 
-    @commands.hybrid_command(name='ping', with_app_command=True, description="For really bored people", usage="!ping")
+    @commands.hybrid_command(name='ping', with_app_command=True, description="For really bored people", usage="!ping", guild=discord.Object(id=1051422874143035412))
     async def ping(self, ctx):
         await ctx.send('Pong')
 
