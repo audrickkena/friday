@@ -35,9 +35,9 @@ class Admin(commands.Cog):
         message = ''
         for cogName, cog in cogs.items():
             message += f'{cogName} cog slash-commands:\n'
-            message += await self.getAppCommands(cog)
+            message += self.getAppCommands(cog)
             message += f'{cogName} cog prefix-commands:\n'
-            message += await self.getCommands(cog)
+            message += self.getCommands(cog)
             message += '\n'
         await ctx.send(content=message)
         
