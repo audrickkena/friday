@@ -40,6 +40,7 @@ class Admin(commands.Cog):
             )
             message.add_field(name='', value='')
             message.add_field(name='Slash commands', value='')
+            print(message.fields)
             self.getAppCommands(cog, message)
             message.add_field(name='', value='')
             message.add_field(name='Prefix commands', value='')
