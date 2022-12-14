@@ -89,7 +89,7 @@ class Utility(commands.Cog):
 
     @commands.command(name="sync", description="For syncing app commands", usage="!sync")
     async def sync(self, ctx):
-        fmt = await ctx.bot.tree.sync(discord.Object(id=1051422874143035412))
+        fmt = await ctx.bot.tree.sync()
         await ctx.send(f'Synced {len(fmt)} commands.')
 
     @app_commands.command(name="roll", description="For rolling a number of dices with a number of sides")
@@ -114,7 +114,7 @@ class Utility(commands.Cog):
         view.add_item(selectUsers)
         await interaction.channel.send("Choose users:", view=view)
 
-    @commands.command(name="maketeams", description="For making teams", usage="!makeateams")
+    @commands.command(name="maketeams", description="For making teams", usage="!maketeams")
     async def makeTeams(self, ctx):
         selectUsers = SelectUsers(ctx)
         view = View()
