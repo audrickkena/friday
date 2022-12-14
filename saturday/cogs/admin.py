@@ -29,9 +29,14 @@ class Admin(commands.Cog):
     async def reload_error(self, interaction: discord.Interaction, error):
         await interaction.response.send_message(f'You do not have the necessary permissions to access /{interaction.command.name}. If this is not the intended effect, please contact the server admin.', ephemeral=True)
 
+    @commands.command(name="clear", description="For clearing app commands", usage="!clear")
+    async def clear(self, ctx):
+        fmt = await ctx.bot.tree.clear_commands(guild=ctx.guild)
+        await ctx.send(f'Cleared {len(fmt)} commands.')
+        
     @commands.command(name="sync", description="For syncing app commands", usage="!sync")
     async def sync(self, ctx):
-        ctx.bot.tree.clear_commands(guild=ctx.guild)
+        
         fmt = await self.bot.tree.sync(guild=ctx.guild)
         await ctx.send(f'Synced {len(fmt)} commands.')
     
