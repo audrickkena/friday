@@ -92,14 +92,6 @@ class Utility(commands.Cog):
         fmt = await ctx.bot.tree.sync()
         await ctx.send(f'Synced {len(fmt)} commands.')
 
-    @commands.command()
-    async def showAppCommands(self, ctx):
-        commands = self.get_app_commands()
-        result = 'Currently synced app commands:\n'
-        for command in commands:
-            result += f'{command.name}: {command.description}\n'
-        await ctx.send(result)
-
     @app_commands.command(name="roll")
     async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
         if(dice_num > 30):
