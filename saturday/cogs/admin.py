@@ -39,9 +39,9 @@ class Admin(commands.Cog):
                 description=f'{cogName} cog commands:\n',
                 color=discord.Colour.blue()
             )
-            message.add_field(name='Slash commands', value='\n\u200b', inline=True)
+            message.add_field(name='\n\u200b', value='**Slash commands**', inline=False)
             self.getAppCommands(cog, message)
-            message.add_field(name='Prefix commands', value='\n\u200b')
+            message.add_field(name='\n\u200b', value='**Prefix commands**', inline=False)
             self.getCommands(cog, message)
             embedList.append(message)
         await ctx.send(embeds=embedList)
