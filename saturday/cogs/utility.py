@@ -79,7 +79,7 @@ class Utility(commands.Cog):
     async def on_ready(self):
         print('Utility cog loaded.')
 
-    @app_commands.command(name='hi', description="For lonely people")
+    @app_commands.command(name='hi', description="For lonely people", guild=discord.Object(id=1051422874143035412))
     async def hi(self, interaction: discord.Interaction):
         await interaction.response.send_message('hello')
 
@@ -124,7 +124,7 @@ class Utility(commands.Cog):
             embedList.append(message)
         await interaction.response.send_message(embeds=embedList, ephemeral=True)
 
-    @commands.hybrid_command(name='ping', with_app_command=True, description="For really bored people", usage="!ping", guild=discord.Object(id=1051422874143035412))
+    @commands.hybrid_command(name='ping', with_app_command=True, description="For really bored people", usage="!ping")
     async def ping(self, ctx):
         await ctx.send('Pong')
 
