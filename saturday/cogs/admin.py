@@ -11,8 +11,12 @@ guild = None
 class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print('Admin cog loaded.')
         global guild
-        guild = bot.getGuild()
+        guild = self.bot.getGuild()
 
     def is_guild_owner_intr():
         def predicate(interaction: discord.Interaction):

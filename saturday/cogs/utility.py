@@ -69,8 +69,6 @@ class UsersIntoTeams(Select):
 class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        global guild
-        guild = bot.getGuild()
         # self.prevTrog = None
         # self.path = os.path.dirname(__file__) + '/../roles_test.json'
         # self.roleFile = open(self.path, 'r')
@@ -81,6 +79,8 @@ class Utility(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('Utility cog loaded.')
+        global guild
+        guild = self.bot.getGuild()
 
     @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
