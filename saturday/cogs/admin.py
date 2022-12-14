@@ -31,8 +31,8 @@ class Admin(commands.Cog):
 
     @commands.command(name="sync", description="For syncing app commands", usage="!sync")
     async def sync(self, ctx):
-        fmt = await ctx.bot.tree.sync()
+        fmt = await ctx.bot.tree.sync(guild=ctx.guild)
         await ctx.send(f'Synced {len(fmt)} commands.')
     
 async def setup(bot: commands.Bot):
-    await bot.add_cog(Admin(bot))
+    await bot.add_cog(Admin(bot), guilds=[discord.Object(id=1051422874143035412)])
