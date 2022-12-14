@@ -54,14 +54,10 @@ class UsersIntoTeams(Select):
 
     async def callback(self, interaction: discord.Interaction):
         teams = [[] for i in range(int(self.values[0]))]
-        print(f'before\n{teams}\n\n')
-        print(f'numusers\n{self.numUsers}\n\n')
         for i in range(self.numUsers):
             tempInt = random.randint(0, len(self.users) - 1)
             teams[i % int(self.values[0])].append(self.users[tempInt].display_name)
             self.users.pop(tempInt)
-            print(f'loop {i}:\n{teams}\n\n')
-        print(f'after\n{teams}')
         teamString = ''
         for i in range(len(teams)):
             teamString += f'Team {i+1}: {", ".join(teams[i])}\n'
@@ -85,12 +81,10 @@ class Utility(commands.Cog):
 
     @commands.hybrid_command(name='ping', with_app_command=True)
     async def ping(self, ctx):
-        print('Pong')
         await ctx.send('Pong')
 
     @app_commands.command(name='hi')
     async def hi(self, interaction: discord.Interaction):
-        print('here')
         await interaction.response.send_message('hello')
 
     @commands.command()
