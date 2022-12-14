@@ -88,6 +88,11 @@ class Utility(commands.Cog):
     async def hi(self, interaction: discord.Interaction):
         await interaction.response.send_message('hello')
 
+    @commands.command()
+    async def sync(self, ctx):
+        fmt = await ctx.bot.tree.sync(guild=ctx.guild)
+        await ctx.send(f'Synced {len(fmt)} commands.')
+
     @app_commands.command(name="roll")
     async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
         if(dice_num > 30):
