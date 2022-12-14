@@ -16,7 +16,7 @@ class Admin(commands.Cog):
             return interaction.guild is not None and interaction.guild.owner_id == interaction.user.id
         return app_commands.check(predicate)
 
-    @app_commands.command(name="reload")
+    @app_commands.command(name="reload", description="For reloading cogs")
     @is_guild_owner()
     async def reload(self, interaction: discord.Interaction, module: str):
         try:
@@ -29,7 +29,7 @@ class Admin(commands.Cog):
     async def reload_error(self, interaction: discord.Interaction, error):
         await interaction.response.send_message(f'You do not have the necessary permissions to access /{interaction.command.name}. If this is not the intended effect, please contact the server admin.', ephemeral=True)
     
-    @commands.command(name='help')
+    @commands.command(name='help', description='For getting information on usable commands', usage='!help')
     async def help(self, ctx):
         cogs = self.bot.cogs
         embedList = []

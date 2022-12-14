@@ -83,16 +83,16 @@ class Utility(commands.Cog):
     async def ping(self, ctx):
         await ctx.send('Pong')
 
-    @app_commands.command(name='hi')
+    @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
         await interaction.response.send_message('hello')
 
-    @commands.command()
+    @commands.command(name="sync", description="For syncing app commands", usage="!sync")
     async def sync(self, ctx):
         fmt = await ctx.bot.tree.sync()
         await ctx.send(f'Synced {len(fmt)} commands.')
 
-    @app_commands.command(name="roll")
+    @app_commands.command(name="roll", description="For rolling a number of dices with a number of sides")
     async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
         if(dice_num > 30):
             await interaction.response.send_message('Sorry, max value for the number of dice is 30!')
@@ -114,7 +114,7 @@ class Utility(commands.Cog):
         view.add_item(selectUsers)
         await interaction.channel.send("Choose users:", view=view)
 
-    @commands.command(name="maketeams")
+    @commands.command(name="maketeams", description="For making teams", usage="!makeateams")
     async def makeTeams(self, ctx):
         selectUsers = SelectUsers(ctx)
         view = View()
