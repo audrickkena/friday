@@ -32,33 +32,32 @@ class Admin(commands.Cog):
     @commands.command(name='help')
     async def help(self, ctx):
         cogs = self.bot.cogs
-        message = ''
         for cogName, cog in cogs.items():
-            message += f'{cogName} cog slash-commands:\n'
-            message += self.getAppCommands(cog)
-            message += f'{cogName} cog prefix-commands:\n'
-            message += self.getCommands(cog)
-            message += '\n'
-        await ctx.send(content=message)
+            message = discord.Embed(
+                title=cogName,
+                description=f'{cogName} cog commands:\n',
+            )
+            message.add_field(name='', value='')
+            message.add_field(name='Slash commands', value='')
+            self.getAppCommands(cog, message)
+            message.add_field(name='', value='')
+            message.add_field(name='Prefix commands', value='')
+            self.getCommands(cog, message)
+            await ctx.send(embed=message)
         
-    def getAppCommands(self, cog):
-        message = ''
+    def getAppCommands(self, cog, embed):
         commands = cog.get_app_commands()
         for command in commands:
-            message += f'  - /{command.name}: {command.description}\n'
-            message += f'      - usage: /{command.name}'
+            message = f'{command.description}\n    - usage: /{command.name}'
             for parameter in command.parameters:
                 message += f' {{{parameter.name}}}'
-            message += '\n'
-        return message
+            embed.add_field(name=command.name, value=message)
 
-    def getCommands(self, cog):
-        message = ''
+    def getCommands(self, cog, embed):
         commands = cog.get_commands()
         for command in commands:
-            message += f'  - !{command.name}: {command.description}\n'
-            message += f'      - usage: {command.usage}\n'
-        return message
+            message = f'{command.description}\n    - usage: {command.usage}'
+        embed.add_field(name=command.name, value=message)
     
 async def setup(bot: commands.Bot):
     await bot.add_cog(Admin(bot))
