@@ -113,4 +113,5 @@ def updateRoles(self, guildRoles):
     roleFile.close()
 
 bot = Saturday()
+bot.remove_command('help')
 bot.run(TOKEN)
