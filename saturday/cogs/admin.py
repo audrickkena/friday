@@ -44,8 +44,8 @@ class Admin(commands.Cog):
             self.getAppCommands(cog, message)
             message.add_field(name='', value='')
             message.add_field(name='Prefix commands', value='')
-            self.getCommands(cog, message)
             print(message.fields)
+            self.getCommands(cog, message)
             await ctx.send(embed=message)
         
     def getAppCommands(self, cog, embed):
