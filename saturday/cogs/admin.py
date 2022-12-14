@@ -39,8 +39,8 @@ class Admin(commands.Cog):
                 description=f'{cogName} cog commands:\n',
                 color=discord.Colour.blue()
             )
-            message.add_field(name='------', value='-----')
-            message.add_field(name='Slash commands', value='-----')
+            message.add_field(name=' ', value=' ', inline=False)
+            message.add_field(name='Slash commands', value=' ', inline=False)
             self.getAppCommands(cog, message)
             # message.add_field(name=' ', value='-----')
             # message.add_field(name='Prefix commands', value='------')
@@ -51,10 +51,10 @@ class Admin(commands.Cog):
     def getAppCommands(self, cog, embed):
         commands = cog.get_app_commands()
         for command in commands:
-            message = f'{command.description}    - usage: /{command.name}'
+            message = f'{command.description}\n    - usage: /{command.name}'
             for parameter in command.parameters:
                 message += f' {{{parameter.name}}}'
-            embed.add_field(name=command.name, value=message)
+            embed.add_field(name=command.name, value=message, inline=False)
 
     def getCommands(self, cog, embed):
         commands = cog.get_commands()
