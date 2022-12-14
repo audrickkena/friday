@@ -7,13 +7,12 @@ from discord.ext import commands
 from discord.ext import tasks
 from discord import app_commands
 
+guild = None
 class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.initial_extensions = [
-            "cogs.utility",
-            "cogs.admin"
-        ]
+        global guild
+        guild = self.bot.getGuild()
 
     def is_guild_owner_intr():
         def predicate(interaction: discord.Interaction):
@@ -29,7 +28,7 @@ class Admin(commands.Cog):
     @is_guild_owner_ctx()
     async def reloadAll(self, ctx):
         try:
-            for ext in self.initial_extensions:
+            for ext in self.bot.getCogs():
                 await self.bot.reload_extension(ext)
             print("All cogs reloaded successfully")
         except commands.ExtensionError as e:
@@ -40,8 +39,8 @@ class Admin(commands.Cog):
 
     @commands.command(name="clear", description="For clearing app commands", usage="!clear")
     async def clear(self, ctx):
-        fmt = await ctx.bot.tree.clear_commands(guild=ctx.guild)
-        await ctx.send(f'Cleared {len(fmt)} commands.')
+        await ctx.bot.tree.clear_commands(guild=ctx.guild)
+        print("Commands cleared.")
 
     @commands.command(name="sync", description="For syncing app commands", usage="!sync")
     async def sync(self, ctx):
@@ -50,4 +49,4 @@ class Admin(commands.Cog):
         await ctx.send(f'Synced {len(fmt)} commands.')
     
 async def setup(bot: commands.Bot):
-    await bot.add_cog(Admin(bot), guilds=[discord.Object(id=1051422874143035412)])
+    await bot.add_cog(Admin(bot), guilds=[guild])

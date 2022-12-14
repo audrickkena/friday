@@ -8,6 +8,7 @@ from discord.ext import tasks
 from discord import app_commands
 from discord.ui import Select, UserSelect, View
 
+guild = None
 class SelectUsers(UserSelect):
     def __init__(self, ctx):
         super().__init__(
@@ -68,6 +69,8 @@ class UsersIntoTeams(Select):
 class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        global guild
+        guild = self.bot.getGuild()
         # self.prevTrog = None
         # self.path = os.path.dirname(__file__) + '/../roles_test.json'
         # self.roleFile = open(self.path, 'r')
@@ -98,7 +101,7 @@ class Utility(commands.Cog):
             msgMax = str(dice_num * sides_num)
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
-    @app_commands.command(name="teams")
+    @app_commands.command(name="teams", description='For making teams based on the selected users')
     async def teams(self, interaction: discord.Interaction):
         selectUsers = SelectUsers(interaction.channel)
         view = View()
@@ -193,4 +196,4 @@ class Utility(commands.Cog):
 
 
 async def setup(bot: commands.Bot):
-    await bot.add_cog(Utility(bot), guilds=[discord.Object(id=1051422874143035412)])
+    await bot.add_cog(Utility(bot), guilds=[guild])

@@ -109,6 +109,11 @@ class Saturday(commands.Bot):
             if(ctx.command.name == 'roll'):
                 await ctx.send('Roll was given unsuitable arguments! Please retry with valid integer inputs.')
 
+    def getGuild(self):
+        return self.currGuild
+
+    def getCogs(self):
+        return self.initial_extensions
 ## HELPER FUNCTIONS
 def updateRoles(self, guildRoles):
     roleDict = {}
