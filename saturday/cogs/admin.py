@@ -32,7 +32,12 @@ class Admin(commands.Cog):
     @commands.command()
     async def showAppCommands(self, ctx):
         cogs = self.bot.cogs
-        print(cogs)
+        for cog in cogs:
+            message = f'{cog.qualified_name} commands:\n'
+            commands = cog.get_app_commands()
+            for command in commands:
+                message += f'  - {command.name}: {command.description}'
+        await ctx.send(content=message)
         
 
 async def setup(bot: commands.Bot):
