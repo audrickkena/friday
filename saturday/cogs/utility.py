@@ -90,7 +90,7 @@ class Utility(commands.Cog):
 
     @commands.command()
     async def sync(self, ctx):
-        fmt = await ctx.bot.tree.sync(guild=ctx.guild)
+        fmt = await ctx.bot.tree.sync()
         await ctx.send(f'Synced {len(fmt)} commands.')
 
     @app_commands.command(name="roll")
