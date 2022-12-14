@@ -106,7 +106,7 @@ class Utility(commands.Cog):
         await interaction.channel.send("Choose users:", view=view)
     
     @app_commands.command(name='help', description='For getting information on usable commands')
-    async def help(self, interaction: discord.Interation):
+    async def help(self, interaction: discord.Interaction):
         cogs = self.bot.cogs
         embedList = []
         for cogName, cog in cogs.items():
