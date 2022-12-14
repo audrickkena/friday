@@ -32,6 +32,7 @@ class Admin(commands.Cog):
     @commands.command(name='help')
     async def help(self, ctx):
         cogs = self.bot.cogs
+        embedList = []
         for cogName, cog in cogs.items():
             message = discord.Embed(
                 title=cogName,
@@ -44,7 +45,8 @@ class Admin(commands.Cog):
             message.add_field(name=' ', value='-----')
             message.add_field(name='Prefix commands', value='------')
             self.getCommands(cog, message)
-            await ctx.channel.send(embed=message)
+            embedList.append(message)
+        await ctx.send(embeds=embedList)
         
     def getAppCommands(self, cog, embed):
         commands = cog.get_app_commands()
