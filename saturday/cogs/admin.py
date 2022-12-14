@@ -46,7 +46,7 @@ class Admin(commands.Cog):
         commands = cog.get_app_commands()
         for command in commands:
             message += f'  - /{command.name}: {command.description}\n'
-            message += f'    - usage: /{command.name}'
+            message += f'      - usage: /{command.name}'
             for parameter in command.parameters:
                 message += f' {{{parameter.name}}}'
             message += '\n'
@@ -57,7 +57,7 @@ class Admin(commands.Cog):
         commands = cog.get_commands()
         for command in commands:
             message += f'  - !{command.name}: {command.description}\n'
-            message += f'    - usage: {command.usage}\n'
+            message += f'      - usage: {command.usage}\n'
         return message
     
 async def setup(bot: commands.Bot):
