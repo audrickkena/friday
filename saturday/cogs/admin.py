@@ -32,8 +32,8 @@ class Admin(commands.Cog):
     @commands.command()
     async def showAppCommands(self, ctx):
         cogs = self.bot.cogs
-        for cog in cogs:
-            message = f'{cog.qualified_name} commands:\n'
+        for cogName, cog in cogs:
+            message = f'{cogName} commands:\n'
             print(message)
             commands = cog.get_app_commands()
             for command in commands:
