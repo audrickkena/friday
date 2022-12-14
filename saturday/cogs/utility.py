@@ -15,7 +15,7 @@ class SelectUsers(UserSelect):
     def __init__(self, ctx):
         super().__init__(
             placeholder='Select users:',
-            min_values=1,
+            min_values=3,
             max_values=25
         )
         self.ctx = ctx
