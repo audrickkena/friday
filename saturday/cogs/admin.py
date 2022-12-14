@@ -29,8 +29,8 @@ class Admin(commands.Cog):
     async def reload_error(self, interaction: discord.Interaction, error):
         await interaction.response.send_message(f'You do not have the necessary permissions to access /{interaction.command.name}. If this is not the intended effect, please contact the server admin.', ephemeral=True)
     
-    @commands.command(name='help')
-    async def help(self, ctx):
+    @commands.command(name='allCommands')
+    async def allCommands(self, ctx):
         cogs = self.bot.cogs
         message = ''
         for cogName, cog in cogs.items():

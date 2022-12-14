@@ -38,7 +38,6 @@ class Saturday(commands.Bot):
         This performs an asynchronous setup after the bot is logged in,
         but before it has connected to the Websocket (quoted from d.py docs)
         """
-        self.remove_command('help')
         for ext in self.initial_extensions:
             await self.load_extension(ext)
     
