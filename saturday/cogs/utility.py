@@ -98,15 +98,15 @@ class Utility(commands.Cog):
             msgMax = str(dice_num * sides_num)
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
-    @app_commands.command(name="maketeams")
-    async def makeTeams(self, interaction: discord.Interaction):
+    @app_commands.command(name="teams")
+    async def teams(self, interaction: discord.Interaction):
         selectUsers = SelectUsers(interaction.channel)
         view = View()
         view.add_item(selectUsers)
         await interaction.response.send_message("Choose users:", view=view)
     
-    @app_commands.command(name='help', description='For getting information on usable commands')
-    async def help(self, interaction: discord.Interaction):
+    @app_commands.command(name='h', description='For getting information on usable commands')
+    async def h(self, interaction: discord.Interaction):
         cogs = self.bot.cogs
         embedList = []
         for cogName, cog in cogs.items():
