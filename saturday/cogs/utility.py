@@ -79,18 +79,9 @@ class Utility(commands.Cog):
     async def on_ready(self):
         print('Utility cog loaded.')
 
-    @commands.hybrid_command(name='ping', with_app_command=True)
-    async def ping(self, ctx):
-        await ctx.send('Pong')
-
     @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
         await interaction.response.send_message('hello')
-
-    @commands.command(name="sync", description="For syncing app commands", usage="!sync")
-    async def sync(self, ctx):
-        fmt = await ctx.bot.tree.sync()
-        await ctx.send(f'Synced {len(fmt)} commands.')
 
     @app_commands.command(name="roll", description="For rolling a number of dices with a number of sides")
     async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
@@ -114,12 +105,47 @@ class Utility(commands.Cog):
         view.add_item(selectUsers)
         await interaction.channel.send("Choose users:", view=view)
 
+    @commands.hybrid_command(name='ping', with_app_command=True, description="For really bored people", usage="!ping")
+    async def ping(self, ctx):
+        await ctx.send('Pong')
+
     @commands.command(name="maketeams", description="For making teams", usage="!maketeams")
     async def makeTeams(self, ctx):
         selectUsers = SelectUsers(ctx)
         view = View()
         view.add_item(selectUsers)
         await ctx.send("Choose users:", view=view)
+
+    @commands.command(name='help', description='For getting information on usable commands', usage='!help')
+    async def help(self, ctx):
+        cogs = self.bot.cogs
+        embedList = []
+        for cogName, cog in cogs.items():
+            message = discord.Embed(
+                title=cogName,
+                description=f'{cogName} cog commands:\n',
+                color=discord.Colour.blue()
+            )
+            message.add_field(name='\n\u200b', value='**Slash commands**', inline=False)
+            self.getAppCommands(cog, message)
+            message.add_field(name='\n\u200b', value='**Prefix commands**', inline=False)
+            self.getCommands(cog, message)
+            embedList.append(message)
+        await ctx.send(embeds=embedList)
+        
+    def getAppCommands(self, cog, embed):
+        commands = cog.get_app_commands()
+        for command in commands:
+            message = f'- description: {command.description}\n- usage: /{command.name}'
+            for parameter in command.parameters:
+                message += f' {{{parameter.name}}}'
+            embed.add_field(name=command.name, value=message, inline=False)
+
+    def getCommands(self, cog, embed):
+        commands = cog.get_commands()
+        for command in commands:
+            message = f'- description: {command.description}\n- usage: {command.usage}'
+            embed.add_field(name=command.name, value=message, inline=False)
 
 
     # @app_commands.command(name="close")
