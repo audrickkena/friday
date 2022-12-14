@@ -51,7 +51,7 @@ class Admin(commands.Cog):
     def getAppCommands(self, cog, embed):
         commands = cog.get_app_commands()
         for command in commands:
-            message = f'{command.description}\n    - usage: /{command.name}'
+            message = f'{command.description}    - usage: /{command.name}'
             for parameter in command.parameters:
                 message += f' {{{parameter.name}}}'
             embed.add_field(name=command.name, value=message, inline=False)
