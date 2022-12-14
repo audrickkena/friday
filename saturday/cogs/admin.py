@@ -32,6 +32,7 @@ class Admin(commands.Cog):
     @commands.command()
     async def showAppCommands(self, ctx):
         cogs = self.bot.cogs
+        print(cogs)
         for cogName, cog in cogs:
             message = f'{cogName} commands:\n'
             print(message)
