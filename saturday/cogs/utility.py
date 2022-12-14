@@ -78,7 +78,6 @@ class Utility(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('Utility cog loaded.')
-        print(f'App Commands in utility: {self.get_app_commands()}')
 
     @commands.hybrid_command(name='ping', with_app_command=True)
     async def ping(self, ctx):
@@ -92,6 +91,13 @@ class Utility(commands.Cog):
     async def sync(self, ctx):
         fmt = await ctx.bot.tree.sync()
         await ctx.send(f'Synced {len(fmt)} commands.')
+
+    @commands.command()
+    async def showAppCommands(self, ctx):
+        commands = self.get_app_commands()
+        result = 'Currently synced app commands:\n'
+        for command in commands:
+            result += f'{command.name}: {command.description}\n'
 
     @app_commands.command(name="roll")
     async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
