@@ -41,14 +41,14 @@ class Admin(commands.Cog):
             message += '\n'
         await ctx.send(content=message)
         
-    async def getAppCommands(self, cog):
+    def getAppCommands(self, cog):
         message = ''
         commands = cog.get_app_commands()
         for command in commands:
             message += f'  - {command.name}: {command.description}\n'
         return message
 
-    async def getCommands(self, cog):
+    def getCommands(self, cog):
         message = ''
         commands = cog.commands()
         for command in commands:
