@@ -33,13 +33,18 @@ class Friday(commands.Bot):
             "cogs.admin"
         ]
     async def setup_hook(self):
+        """!
+        A coroutine to be called to setup the bot, by default this is blank.
+        This performs an asynchronous setup after the bot is logged in,
+        but before it has connected to the Websocket (quoted from d.py docs)
+        """
+        self.remove_command('help')
         for ext in self.initial_extensions:
             await self.load_extension(ext)
-        await bot.tree.sync(guild = self.currGuild)
     
     async def on_ready(self):
         for guild in self.guilds:
-            if guild.name == GUILD: 
+            if guild.id == int(GUILD): 
                 self.currGuild = guild
                 break
         print(discord.__version__)
@@ -103,7 +108,12 @@ class Friday(commands.Bot):
         if(isinstance(error, commands.BadArgument)):
             if(ctx.command.name == 'roll'):
                 await ctx.send('Roll was given unsuitable arguments! Please retry with valid integer inputs.')
+    
+    def getGuild(self):
+        return self.currGuild
 
+    def getCogs(self):
+        return self.initial_extensions
 ## HELPER FUNCTIONS
 def updateRoles(self, guildRoles):
     roleDict = {}
