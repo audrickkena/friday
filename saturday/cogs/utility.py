@@ -121,6 +121,8 @@ class Utility(commands.Cog):
         cogs = self.bot.cogs
         embedList = []
         for cogName, cog in cogs.items():
+            if(cogName == 'Admin' and ctx.guild.owner_id != ctx.author.id):
+                continue
             message = discord.Embed(
                 title=cogName,
                 description=f'{cogName} cog commands:\n',
