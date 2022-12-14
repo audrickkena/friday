@@ -79,11 +79,11 @@ class Utility(commands.Cog):
     async def on_ready(self):
         print('Utility cog loaded.')
 
-    @app_commands.command(name='hi', description="For lonely people", guild=discord.Object(id=1051422874143035412))
+    @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
         await interaction.response.send_message('hello')
 
-    @app_commands.command(name="roll", description="For rolling a number of dices with a number of sides", guild=discord.Object(id=1051422874143035412))
+    @app_commands.command(name="roll", description="For rolling a number of dices with a number of sides")
     async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
         if(dice_num > 30):
             await interaction.response.send_message('Sorry, max value for the number of dice is 30!')
@@ -98,14 +98,14 @@ class Utility(commands.Cog):
             msgMax = str(dice_num * sides_num)
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
-    @app_commands.command(name="maketeams", guild=discord.Object(id=1051422874143035412))
+    @app_commands.command(name="maketeams")
     async def makeTeams(self, interaction: discord.Interaction):
         selectUsers = SelectUsers(interaction.channel)
         view = View()
         view.add_item(selectUsers)
         await interaction.response.send_message("Choose users:", view=view)
     
-    @app_commands.command(name='help', description='For getting information on usable commands', guild=discord.Object(id=1051422874143035412))
+    @app_commands.command(name='help', description='For getting information on usable commands')
     async def help(self, interaction: discord.Interaction):
         cogs = self.bot.cogs
         embedList = []
