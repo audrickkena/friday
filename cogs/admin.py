@@ -45,7 +45,7 @@ class Admin(commands.Cog):
     @commands.command(name="clear", description="For clearing app commands", usage="!clear")
     @is_guild_owner_ctx()
     async def clear(self, ctx):
-        await ctx.bot.tree.clear_commands()
+        await self.bot.tree.clear_commands()
         print("Commands cleared.")
     @clear.error
     async def clear_error(self, ctx, error):
