@@ -124,6 +124,10 @@ class Utility(commands.Cog):
             embedList.append(message)
         await interaction.response.send_message(embeds=embedList, ephemeral=True)
 
+    @app_commands.command(name='test')
+    async def test(self, interaction: discord.Interaction):
+        await interaction.response.send_message("test succeeded")
+
     @commands.hybrid_command(name='ping', with_app_command=True, description="For really bored people", usage="!ping")
     async def ping(self, ctx):
         await ctx.send('Pong')
