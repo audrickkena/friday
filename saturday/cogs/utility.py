@@ -89,7 +89,7 @@ class Utility(commands.Cog):
 
     @commands.command(name="sync", description="For syncing app commands", usage="!sync")
     async def sync(self, ctx):
-        fmt = await ctx.bot.tree.sync()
+        fmt = await ctx.bot.tree.sync(discord.Object(id=1051422874143035412))
         await ctx.send(f'Synced {len(fmt)} commands.')
 
     @app_commands.command(name="roll", description="For rolling a number of dices with a number of sides")
