@@ -104,6 +104,25 @@ class Utility(commands.Cog):
         view = View()
         view.add_item(selectUsers)
         await interaction.channel.send("Choose users:", view=view)
+    
+    @app_commands.command(name='help', description='For getting information on usable commands')
+    async def help(self, interaction: discord.Interation):
+        cogs = self.bot.cogs
+        embedList = []
+        for cogName, cog in cogs.items():
+            if(cogName == 'Admin' and interaction.guild.owner_id != interaction.author.id):
+                continue
+            message = discord.Embed(
+                title=cogName,
+                description=f'{cogName} cog commands:\n',
+                color=discord.Colour.blue()
+            )
+            message.add_field(name='\n\u200b', value='**Slash commands**', inline=False)
+            self.getAppCommands(cog, message)
+            message.add_field(name='\n\u200b', value='**Prefix commands**', inline=False)
+            self.getCommands(cog, message)
+            embedList.append(message)
+        await interaction.response.send_message(embeds=embedList, ephemeral=True)
 
     @commands.hybrid_command(name='ping', with_app_command=True, description="For really bored people", usage="!ping")
     async def ping(self, ctx):
@@ -116,11 +135,10 @@ class Utility(commands.Cog):
         view.add_item(selectUsers)
         await ctx.send("Choose users:", view=view)
 
-    @commands.hybrid_command(name='help', description='For getting information on usable commands', usage='!help')
+    @commands.command(name='help', description='For getting information on usable commands', usage='!help')
     async def help(self, ctx):
         cogs = self.bot.cogs
         embedList = []
-        await ctx.defer(ephemeral = True)
         for cogName, cog in cogs.items():
             if(cogName == 'Admin' and ctx.guild.owner_id != ctx.author.id):
                 continue
