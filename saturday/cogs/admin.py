@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.split(os.path.realpath(__file__))[0], '..', '.env'))
 GUILD = os.getenv('DISCORD_GUILD')
+
 class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -50,4 +51,4 @@ class Admin(commands.Cog):
         await ctx.send(f'Synced {len(fmt)} commands.')
     
 async def setup(bot: commands.Bot):
-    await bot.add_cog(Admin(bot), guilds=[GUILD])
+    await bot.add_cog(Admin(bot), guilds=[discord.Object(id=int(GUILD))])
