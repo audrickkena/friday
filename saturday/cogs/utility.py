@@ -103,7 +103,7 @@ class Utility(commands.Cog):
         selectUsers = SelectUsers(interaction.channel)
         view = View()
         view.add_item(selectUsers)
-        await interaction.channel.send("Choose users:", view=view)
+        await interaction.response.send_message("Choose users:", view=view)
     
     @app_commands.command(name='help', description='For getting information on usable commands')
     async def help(self, interaction: discord.Interaction):
