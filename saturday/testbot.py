@@ -107,7 +107,7 @@ class Saturday(commands.Bot):
 
     @commands.command()
     async def sync(self, ctx):
-        fmt = await ctx.bot.tree.sync(guild=ctx.guild)
+        fmt = await self.tree.sync(guild=self.currGuild)
         await ctx.send(f'Synced {len(fmt)} commands.')
 
 ## HELPER FUNCTIONS
