@@ -36,7 +36,7 @@ class Admin(commands.Cog):
             message = discord.Embed(
                 title=cogName,
                 description=f'{cogName} cog commands:\n',
-                colour=discord.Colour.blue
+                colour=discord.Colour.blue()
             )
             print("here")
             message.add_field(name='', value='')
