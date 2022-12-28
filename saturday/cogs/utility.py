@@ -5,7 +5,7 @@ import os
 from discord.ext import commands
 from discord.ext import tasks
 from discord import app_commands
-from discord.ui import Select, UserSelect, View, Modal, TextInput
+from discord.ui import Select, UserSelect, View, Modal, TextInput, Button
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.split(os.path.realpath(__file__))[0], '..', '.env'))
@@ -65,10 +65,20 @@ class UsersIntoTeams(Select):
         for i in range(len(teams)):
             teamString += f'Team {i+1}: {", ".join(teams[i])}\n'
         await interaction.response.send_message(content=teamString)
+
+class AddOption(Button):
+    def __init__(self, label: str, modal: Modal, optionCount: int):
+        super().__init__(label=label)
+        self.modal = modal
+        self.count = optionCount
+
+    async def callback(self, interaction: discord.Interaction):
+        self.modal.add_item(TextInput(label=f'Option {self.count}:', required=True))
+        self.count += 1
         
 class PollModal(Modal, title='Make a Poll'):
-    pollName = TextInput(label="Poll Name:", max_length=50, required=True)
-    
+    pollName = TextInput(label='Poll name:', max_length=50, required=True)
+    addOptionButton = AddOption('+', Modal, 1)
     async def on_submit(self, interaction: discord.Interaction):
         await interaction.response.send_message(f'Poll name is:\n{self.pollName}', ephemeral=True)
 
