@@ -52,12 +52,12 @@ class Admin(commands.Cog):
     @commands.command(name="sync", description="For syncing app commands", usage="!sync")
     @is_guild_owner_ctx()
     async def sync(self, ctx):
-        
         fmt = await self.bot.tree.sync(guild=ctx.guild)
         await ctx.send(f'Synced {len(fmt)} commands.')
     @sync.error
     async def sync_error(self, ctx, error):
         print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
+        print(error)
     
 async def setup(bot: commands.Bot):
     await bot.add_cog(Admin(bot), guilds=[discord.Object(id=int(GUILD))])
