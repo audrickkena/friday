@@ -154,8 +154,8 @@ class Utility(commands.Cog):
         await interaction.response.send_message('Pong', ephemeral=True)
 
     @app_commands.command(name='poll', description="For making a server wide poll")
-    async def poll(self, interaction: discord.Interaction, numOfOptions: int):
-        await interaction.response.send_modal(PollModal(numOfOptions))
+    async def poll(self, interaction: discord.Interaction, num_of_options: int):
+        await interaction.response.send_modal(PollModal(num_of_options))
 
     # @commands.command(name="maketeams", description="For making teams", usage="!maketeams")
     # async def makeTeams(self, ctx):
