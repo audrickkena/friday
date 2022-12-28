@@ -66,19 +66,25 @@ class UsersIntoTeams(Select):
             teamString += f'Team {i+1}: {", ".join(teams[i])}\n'
         await interaction.response.send_message(content=teamString)
 
-class AddOption(Button):
-    def __init__(self, label: str, modal: Modal, optionCount: int):
-        super().__init__(label=label)
-        self.modal = modal
-        self.count = optionCount
+# class AddOption(Button):
+#     def __init__(self, label: str, modal: Modal, optionCount: int):
+#         super().__init__(label=label)
+#         self.modal = modal
+#         self.count = optionCount
 
-    async def callback(self, interaction: discord.Interaction):
-        self.modal.add_item(TextInput(label=f'Option {self.count}:', required=True))
-        self.count += 1
+#     async def callback(self, interaction: discord.Interaction):
+#         self.modal.add_item(TextInput(label=f'Option {self.count}:', required=True))
+#         self.count += 1
         
-class PollModal(Modal, title='Make a Poll'):
-    pollName = TextInput(label='Poll name:', max_length=50, required=True)
-    addOptionButton = AddOption('+', Modal, 1)
+class PollModal(Modal):
+    def __init__(self, numOfOptions: int):
+        super().__init__(
+            title='Make A Poll'
+        )
+        self.numOfOptions = numOfOptions
+        self.pollName = TextInput(label='Poll name:', max_length=50, required=True)
+        for i in range(self.numOfOptions):
+            temp = TextInput(label=f'Option {i}:', max_length=50, required=True)
     async def on_submit(self, interaction: discord.Interaction):
         await interaction.response.send_message(f'Poll name is:\n{self.pollName}', ephemeral=True)
 
@@ -150,8 +156,8 @@ class Utility(commands.Cog):
         await interaction.response.send_message('Pong', ephemeral=True)
 
     @app_commands.command(name='poll', description="For making a server wide poll")
-    async def poll(self, interaction: discord.Interaction):
-        await interaction.response.send_modal(PollModal())
+    async def poll(self, interaction: discord.Interaction, numOfOptions: int):
+        await interaction.response.send_modal(PollModal(numOfOptions))
 
     # @commands.command(name="maketeams", description="For making teams", usage="!maketeams")
     # async def makeTeams(self, ctx):
