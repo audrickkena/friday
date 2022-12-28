@@ -82,7 +82,7 @@ class PollModal(Modal):
             title='Make A Poll'
         )
         self.numOfOptions = numOfOptions
-    pollName = TextInput(label='Poll name:', max_length=50, required=True)
+        pollName = TextInput(label='Poll name:', max_length=50, required=True)
     async def on_submit(self, interaction: discord.Interaction):
         await interaction.response.send_message(f'Poll name is:\n{self.pollName}\nNumber of options is:{self.numOfOptions}', ephemeral=True)
 
