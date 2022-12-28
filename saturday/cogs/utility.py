@@ -5,7 +5,7 @@ import os
 from discord.ext import commands
 from discord.ext import tasks
 from discord import app_commands
-from discord.ui import Select, UserSelect, View
+from discord.ui import Select, UserSelect, View, Modal, TextInput
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.split(os.path.realpath(__file__))[0], '..', '.env'))
@@ -66,7 +66,13 @@ class UsersIntoTeams(Select):
             teamString += f'Team {i+1}: {", ".join(teams[i])}\n'
         await interaction.response.send_message(content=teamString)
         
+class PollModal(Modal, title='Make a Poll'):
+    pollName = TextInput(label="Poll Name:", max_length=50, required=True)
     
+    async def on_submit(self, interaction: discord.Interaction):
+        await interaction.response.send_message(f'Poll name is:\n{self.pollName}', ephemeral=True)
+
+
 
 class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -132,6 +138,10 @@ class Utility(commands.Cog):
     @app_commands.command(name='ping', description="For really bored people")
     async def ping(self, interaction: discord.Interaction):
         await interaction.response.send_message('Pong', ephemeral=True)
+
+    @app_commands.command(name='poll', description="For making a server wide poll")
+    async def poll(self, interaction: discord.Interaction):
+        await interaction.response.send_modal(PollModal())
 
     # @commands.command(name="maketeams", description="For making teams", usage="!maketeams")
     # async def makeTeams(self, ctx):
