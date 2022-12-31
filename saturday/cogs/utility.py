@@ -82,8 +82,10 @@ class PollModal(Modal):
             title='Make A Poll'
         )
         self.pollOptions = []
-        self.pollName = self.add_item(TextInput(label='Poll name:', max_length=50, required=True))
-        self.pollDesc = self.add_item(TextInput(label='Poll description:', max_length=50, required=False))
+        self.pollName = TextInput(label='Poll name:', max_length=50, required=True)
+        self.pollDesc = TextInput(label='Poll description:', max_length=50, required=False)
+        self.add_item(self.pollName)
+        self.add_item(self.pollDesc)
         for i in range(numOfOptions):
             temp = TextInput(label=f'Option {i + 1}:', max_length=50, required=True)
             self.pollOptions.append(temp)
