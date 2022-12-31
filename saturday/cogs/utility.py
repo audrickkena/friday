@@ -92,10 +92,8 @@ class PollModal(Modal):
 
 
     async def on_submit(self, interaction: discord.Interaction):
-        message = discord.Embed(
-            title=f'Poll: {self.pollName}',
-            color=discord.Colour.blue()
-        )
+        message = discord.Embed(color=discord.Colour.blue())
+        message.title = f'Poll: {self.pollName}'
         message.set_footer(text=f'Poll made by: {interaction.user.display_name}')
         for i in range(len(self.pollOptions)):
             message.add_field(name=f'Option {i+1}:', value=f'{self.pollOptions[i]}', inline=False)
