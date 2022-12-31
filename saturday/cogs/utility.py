@@ -96,7 +96,7 @@ class PollModal(Modal):
             title=f'Poll: {self.pollName}',
             color=discord.Colour.blue()
         )
-        message.footer = f'Poll made by: {interaction.user.display_name}'
+        message.set_footer(text=f'Poll made by: {interaction.user.display_name}')
         for i in range(len(self.pollOptions)):
             message.add_field(name=f'Option {i+1}:', value=f'{self.pollOptions[i]}', inline=False)
         await interaction.response.send_message(embeds=message, ephemeral=True)
