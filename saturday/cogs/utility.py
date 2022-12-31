@@ -87,6 +87,7 @@ class PollModal(Modal):
         for i in range(numOfOptions):
             temp = TextInput(label=f'Option {i + 1}:', max_length=50, required=True)
             self.pollOptions.append(temp)
+            self.add_item(temp)
 
 
 
