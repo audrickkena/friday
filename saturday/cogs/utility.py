@@ -87,7 +87,7 @@ class PollModal(Modal):
         self.add_item(self.pollName)
         self.add_item(self.pollDesc)
         for i in range(numOfOptions):
-            temp = TextInput(label=f'Option {i + 1}:', max_length=50, required=True, row=(numOfOptions%3)+2)
+            temp = TextInput(label=f'Option {i + 1}:', max_length=50, required=True, row=(i%3)+2)
             self.pollOptions.append(temp)
             self.add_item(temp)
 
