@@ -90,7 +90,7 @@ class PollModal(Modal):
             temp = TextInput(label=f'Option {i + 1}:', max_length=50, required=True)
             self.pollOptions.append(temp)
             self.add_item(temp)
-            print("here")
+            print(super().super().self.__weights.weights)
 
     async def on_submit(self, interaction: discord.Interaction):
         message = discord.Embed(
