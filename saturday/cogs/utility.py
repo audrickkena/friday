@@ -81,24 +81,36 @@ class PollModal(Modal):
         super().__init__(
             title='Make A Poll'
         )
-        self.pollOptions = []
-        self.pollName = TextInput(label='Poll name:', max_length=50, required=True)
-        self.pollDesc = TextInput(label='Poll description:', max_length=50, required=False)
-        self.add_item(self.pollName)
-        self.add_item(self.pollDesc)
-        for i in range(numOfOptions):
-            temp = TextInput(label=f'Option {i + 1}:', max_length=50, required=True)
-            self.pollOptions.append(temp)
-            self.add_item(temp)
-            print(f'{self.__weights.weights} > weights')
+        # self.pollOptions = []
+        # self.pollName = TextInput(label='Poll name:', max_length=50, required=True)
+        # self.pollDesc = TextInput(label='Poll description:', max_length=50, required=False)
+        # self.add_item(self.pollName)
+        # self.add_item(self.pollDesc)
+        # for i in range(numOfOptions):
+        #     temp = TextInput(label=f'Option {i + 1}:', max_length=50, required=True)
+        #     self.pollOptions.append(temp)
+        #     self.add_item(temp)
+
+    pollOpt1 = TextInput(label='Poll1', max_length=50, required=True)
+    pollOpt2 = TextInput(label='Poll2', max_length=50, required=True)
+    pollOpt3 = TextInput(label='Poll3', max_length=50, required=True)
+    pollOpt4 = TextInput(label='Poll4', max_length=50, required=True)
+    pollOpt5 = TextInput(label='Poll5', max_length=50, required=True)
+    pollOpt6 = TextInput(label='Poll6', max_length=50, required=True)
 
     async def on_submit(self, interaction: discord.Interaction):
         message = discord.Embed(
             title=f'Poll: {self.pollName}',
             color=discord.Colour.blue())
         message.set_footer(text=f'Poll made by: {interaction.user.display_name}')
-        for i in range(len(self.pollOptions)):
-            message.add_field(name=f'Option {i+1}:', value=f'{self.pollOptions[i]}', inline=False)
+        # for i in range(len(self.pollOptions)):
+        #     message.add_field(name=f'Option {i+1}:', value=f'{self.pollOptions[i]}', inline=False)
+        message.add_field(name=f'Option 1:', value=f'pollOpt1', inline=False)
+        message.add_field(name=f'Option 2:', value=f'pollOpt2', inline=False)
+        message.add_field(name=f'Option 3:', value=f'pollOpt3', inline=False)
+        message.add_field(name=f'Option 4:', value=f'pollOpt4', inline=False)
+        message.add_field(name=f'Option 5:', value=f'pollOpt5', inline=False)
+        message.add_field(name=f'Option 6:', value=f'pollOpt6', inline=False)
         sent = await interaction.response.send_message(embed=message, ephemeral=True)
         sent.add_reaction()
 
