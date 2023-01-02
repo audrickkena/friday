@@ -95,14 +95,14 @@ class PollModal(Modal):
 
     async def on_submit(self, interaction: discord.Interaction):
         self.pollOptions = self.options.value.split(",")
-        for option in self.pollOptions: #remove trailing and leading whitespace per option
-            option = option.strip()
+        for option in self.pollOptions:
+            option = option.strip().capitalize() #remove trailing and leading whitespace per option then capitalize
         message = discord.Embed(
             title=f'Poll: {self.pollName}',
             color=discord.Colour.blue())
         message.set_footer(text=f'Poll made by: {interaction.user.display_name}')
         for i in range(len(self.pollOptions)):
-            message.add_field(name=f'\n\u200b', value=f'Option {i+1}: {self.pollOptions[i]}', inline=False)
+            message.add_field(name=f'\u200b', value=f'Option {i+1}: {self.pollOptions[i]}', inline=False)
         sent = await interaction.response.send_message(embed=message, ephemeral=True)
         sent.add_reaction()
 
