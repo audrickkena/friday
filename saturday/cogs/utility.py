@@ -85,7 +85,7 @@ class PollModal(Modal):
         self.pollName = TextInput(label='Poll name:', max_length=50, required=True)
         self.pollDesc = TextInput(label='Poll description:', max_length=50, required=False)
         self.pollOptions = TextInput(
-            label='Poll options: (enter options separated by commas, captilization will be done automatically)', 
+            label='Poll options: (enter options separated by commas, case insensitive)', 
             max_length=2000, 
             style=discord.TextStyle.paragraph, 
             placeholder='Example: (option1,option2,option3)\nOutput:\nOption1\nOption2\nOption3')
