@@ -84,17 +84,17 @@ class PollModal(Modal):
         self.pollOptions = []
         self.pollName = TextInput(label='Poll name:', max_length=50, required=True)
         self.pollDesc = TextInput(label='Poll description:', max_length=50, required=False)
-        self.pollOptions = TextInput(
+        self.options = TextInput(
             label='Options: (comma separated, case insensitive)', 
             max_length=2000, 
             style=discord.TextStyle.paragraph, 
             placeholder='Example: (option1,option2,option3)\nOutput:\nOption1\nOption2\nOption3')
         self.add_item(self.pollName)
         self.add_item(self.pollDesc)
-        self.add_item(self.pollOptions)
+        self.add_item(self.options)
 
     async def on_submit(self, interaction: discord.Interaction):
-        self.pollOptions = self.pollOptions.split(",")
+        self.pollOptions = self.options.value.split(",")
         for option in self.pollOptions: #remove trailing and leading whitespace per option
             option = option.strip()
         message = discord.Embed(
