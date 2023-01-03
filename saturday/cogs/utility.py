@@ -104,7 +104,7 @@ class PollModal(Modal):
         for i in range(len(self.pollOptions)):
             message.add_field(name=f'\u200b', value=f'Option {i+1}: {self.pollOptions[i]}', inline=False)
         sent = await interaction.channel.send(embed=message)
-        sent.add_reaction(':smile:')
+        await sent.add_reaction(':smile:')
 
 
 
