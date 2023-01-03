@@ -103,7 +103,7 @@ class PollModal(Modal):
         message.set_footer(text=f'Poll made by: {interaction.user.display_name}')
         for i in range(len(self.pollOptions)):
             message.add_field(name=f'\u200b', value=f'Option {i+1}: {self.pollOptions[i]}', inline=False)
-        sent = await interaction.response.send_message(embed=message, ephemeral=True)
+        sent = await interaction.channel.send(embed=message)
         sent.add_reaction(':smile:')
 
 
