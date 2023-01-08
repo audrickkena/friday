@@ -122,7 +122,7 @@ class PollModal(Modal):
         sent = await interaction.original_response()
         for i in range(len(self.emojiList)):
             print(self.emojiList[i])
-            await sent.add_reaction('\U0001FAB0')
+            await sent.add_reaction(f'\{self.emojiList[i][1:]}')
 
 
 
