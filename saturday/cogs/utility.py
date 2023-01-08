@@ -97,7 +97,7 @@ class PollModal(Modal):
         self.emojis = []
 
     def initEmojis(self):
-        infile = open('cogs/resources/emojis.txt', 'r')
+        infile = open('cogs/resources/emojis copy.txt', 'r')
         for line in infile:
             if line != '::':
                 self.emojis.append(line[:-1])
@@ -116,12 +116,12 @@ class PollModal(Modal):
             temp = random.choice(self.emojis)
             while(temp in self.emojiList):
                 temp = random.choice(self.emojis)
-            self.emojiList.append(emoji.emojize(temp))
-            message.add_field(name=f'\u200b', value=f'Option {self.emojiList[i]}: {self.pollOptions[i]}', inline=False)
+            self.emojiList.append(temp)
+            message.add_field(name=f'\u200b', value=f'Option {emoji.emojize(self.emojiList[i])}: {self.pollOptions[i]}', inline=False)
         await interaction.response.send_message(embed=message)
         sent = await interaction.original_response()
         for i in range(len(self.emojiList)):
-            await sent.add_reaction("\U0001f600")
+            await sent.add_reaction(self.emojiList[i].decode('unicode_escape'))
 
 
 
