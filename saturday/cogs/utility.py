@@ -98,7 +98,7 @@ class PollModal(Modal):
         self.initEmojis()
 
     def initEmojis(self):
-        infile = open('resources/emojis.txt', 'r')
+        infile = open('cogs/resources/emojis.txt', 'r')
         for line in infile:
             if line != '::':
                 self.emojis.append(line)
