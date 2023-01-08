@@ -121,6 +121,7 @@ class PollModal(Modal):
         await interaction.response.send_message(embed=message)
         sent = await interaction.original_response()
         for i in range(len(self.emojiList)):
+            print(type(self.emojiList[i]))
             await sent.add_reaction(self.emojiList[i])
             print("here")
 
