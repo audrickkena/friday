@@ -95,7 +95,6 @@ class PollModal(Modal):
         self.add_item(self.pollDesc)
         self.add_item(self.options)
         self.emojis = []
-        self.initEmojis()
 
     def initEmojis(self):
         infile = open('cogs/resources/emojis.txt', 'r')
@@ -105,6 +104,7 @@ class PollModal(Modal):
         infile.close()
 
     async def on_submit(self, interaction: discord.Interaction):
+        self.initEmojis()
         self.pollOptions = self.options.value.split(",")
         for option in self.pollOptions:
             option = option.strip().capitalize() #remove trailing and leading whitespace per option then capitalize
