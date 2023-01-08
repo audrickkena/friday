@@ -100,7 +100,7 @@ class PollModal(Modal):
         infile = open('cogs/resources/emojis.txt', 'r')
         for line in infile:
             if line != '::':
-                self.emojis.append(line)
+                self.emojis.append(line[:-1])
         infile.close()
 
     async def on_submit(self, interaction: discord.Interaction):
