@@ -116,11 +116,11 @@ class PollModal(Modal):
             temp = random.choice(self.emojis)
             while(temp in self.emojiList):
                 temp = random.choice(self.emojis)
-            self.emojiList.append(temp)
-            message.add_field(name=f'\u200b', value=f'Option {emoji.emojize(self.emojiList[i])}: {self.pollOptions[i]}', inline=False)
+            self.emojiList.append(emoji.emojize(temp))
+            message.add_field(name=f'\u200b', value=f'Option {self.emojiList[i]}: {self.pollOptions[i]}', inline=False)
         sent = await interaction.channel.send(embed=message)
         for i in range(len(self.emojiList)):
-            await sent.add_reaction(emoji.emojize(self.emojiList[i]))
+            await sent.add_reaction(self.emojiList[i])
 
 
 
