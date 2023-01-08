@@ -82,7 +82,6 @@ class PollModal(Modal):
         super().__init__(
             title='Make A Poll'
         )
-        print(os.getcwd())
         self.pollOptions = []
         self.emojiList = []
         self.pollName = TextInput(label='Poll name:', max_length=50, required=True)
@@ -180,6 +179,7 @@ class Utility(commands.Cog):
     
     @app_commands.command(name='help', description='For getting information on usable commands')
     async def help(self, interaction: discord.Interaction):
+        print(os.getcwd())
         cogs = self.bot.cogs
         embedList = []
         for cogName, cog in cogs.items():
