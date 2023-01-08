@@ -82,6 +82,7 @@ class PollModal(Modal):
         super().__init__(
             title='Make A Poll'
         )
+        print(os.getcwd())
         self.pollOptions = []
         self.emojiList = []
         self.pollName = TextInput(label='Poll name:', max_length=50, required=True)
