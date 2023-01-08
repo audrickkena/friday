@@ -113,15 +113,15 @@ class PollModal(Modal):
             color=discord.Colour.blue())
         message.set_footer(text=f'Poll made by: {interaction.user.display_name}')
         for i in range(len(self.pollOptions)):
-            temp = random.choice(self.emojis)
-            while(temp in self.emojiList):
-                temp = random.choice(self.emojis)
-            self.emojiList.append(emoji.emojize(temp))
+            # temp = random.choice(self.emojis)
+            # while(temp in self.emojiList):
+            #     temp = random.choice(self.emojis)
+            # self.emojiList.append(emoji.emojize(temp))
             message.add_field(name=f'\u200b', value=f'Option {self.emojiList[i]}: {self.pollOptions[i]}', inline=False)
         sent = await interaction.channel.send(embed=message)
-        for i in range(len(self.emojiList)):
-            await sent.add_reaction('\U0001F60E')
-            print("here")
+        # for i in range(len(self.emojiList)):
+        #     await sent.add_reaction('\U0001F60E')
+        #     print("here")
 
 
 
