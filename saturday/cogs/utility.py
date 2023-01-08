@@ -2,6 +2,7 @@ import discord
 import random
 import functools
 import os
+import emoji
 from discord.ext import commands
 from discord.ext import tasks
 from discord import app_commands
@@ -93,6 +94,15 @@ class PollModal(Modal):
         self.add_item(self.pollName)
         self.add_item(self.pollDesc)
         self.add_item(self.options)
+        self.emojis = []
+        self.initEmojis()
+
+    def initEmojis(self):
+        infile = open('resources/emojis.txt', 'r')
+        for line in infile:
+            if line != '::':
+                self.emojis.append(line)
+        infile.close()
 
     async def on_submit(self, interaction: discord.Interaction):
         self.pollOptions = self.options.value.split(",")
@@ -103,9 +113,11 @@ class PollModal(Modal):
             color=discord.Colour.blue())
         message.set_footer(text=f'Poll made by: {interaction.user.display_name}')
         for i in range(len(self.pollOptions)):
-            print(f'{interaction.guild.emojis}\n\n Interaction emojis')
-            self.emojiList.append(random.choice(interaction.guild.emojis))
-            message.add_field(name=f'\u200b', value=f'Option {self.emojiList[i]}: {self.pollOptions[i]}', inline=False)
+            temp = random.choice(self.emojis)
+            while(temp in self.emojiList):
+                temp = random.choice(self.emojis)
+            self.emojiList.append(temp)
+            message.add_field(name=f'\u200b', value=f'Option {emoji.emojize(self.emojiList[i])}: {self.pollOptions[i]}', inline=False)
         sent = await interaction.channel.send(embed=message)
 
 
@@ -119,6 +131,21 @@ class Utility(commands.Cog):
         # self.roleDict  = json.loads(self.roleFile.read())
         # self.roleFile.close()
         # self.trogOTD.start()
+
+    def getAppCommands(self, cog, embed):
+        commands = cog.get_app_commands()
+        for command in commands:
+            message = f'- description: {command.description}\n- usage: `/{command.name}'
+            for parameter in command.parameters:
+                message += f' {{{parameter.name}}}'
+            message += '`'
+            embed.add_field(name=command.name, value=message, inline=False)
+
+    def getCommands(self, cog, embed):
+        commands = cog.get_commands()
+        for command in commands:
+            message = f'- description: {command.description}\n- usage: `{command.usage}`'
+            embed.add_field(name=command.name, value=message, inline=False)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -204,21 +231,6 @@ class Utility(commands.Cog):
     #         self.getCommands(cog, message)
     #         embedList.append(message)
     #     await ctx.send(embeds=embedList)
-        
-    def getAppCommands(self, cog, embed):
-        commands = cog.get_app_commands()
-        for command in commands:
-            message = f'- description: {command.description}\n- usage: `/{command.name}'
-            for parameter in command.parameters:
-                message += f' {{{parameter.name}}}'
-            message += '`'
-            embed.add_field(name=command.name, value=message, inline=False)
-
-    def getCommands(self, cog, embed):
-        commands = cog.get_commands()
-        for command in commands:
-            message = f'- description: {command.description}\n- usage: `{command.usage}`'
-            embed.add_field(name=command.name, value=message, inline=False)
 
 
     # @app_commands.command(name="close")
