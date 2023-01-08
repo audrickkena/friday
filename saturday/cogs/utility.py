@@ -121,8 +121,8 @@ class PollModal(Modal):
         await interaction.response.send_message(embed=message)
         sent = await interaction.original_response()
         for i in range(len(self.emojiList)):
-            print(emoji.emojize(':thumbsup:'))
-            await sent.add_reaction(emoji.emojize(':thumbsup:'))
+            print(emoji.emojize(':smile:'))
+            await sent.add_reaction(emoji.emojize(':smile:'))
 
 
 
