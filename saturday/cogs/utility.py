@@ -119,7 +119,8 @@ class PollModal(Modal):
         await interaction.response.send_message(embed=message)
         sent = await interaction.original_response()
         for i in range(len(self.emojiList)):
-            await sent.add_reaction(f'{self.emojiList[i]}')
+            temp = self.emojiList[i]
+            await sent.add_reaction(f'{temp}')
 
 
 
