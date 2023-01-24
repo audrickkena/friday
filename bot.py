@@ -91,13 +91,13 @@ class Friday(commands.Bot):
         if(member == self.user):
             return
         if(before.channel == None):
-            if(after.channel == 'all hail the thocc'):
+            if(after.channel.name == 'all hail the thocc'):
                 return
             msg = f'{member.display_name} just joined {after.channel}'
             channel = get(self.currGuild.channels, name='voiceless-spam', type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
         if(after.channel == None):
-            if(before.channel == 'all hail the thocc'):
+            if(before.channel.name == 'all hail the thocc'):
                 return
             msg = f'{member.display_name} just left {before.channel}'
             channel = get(self.currGuild.channels, name='voiceless-spam', type=discord.ChannelType.text)
