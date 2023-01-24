@@ -91,17 +91,15 @@ class Friday(commands.Bot):
         if(member == self.user):
             return
         if(before.channel == None):
-            if(member.nick == None):
-                msg = f'{member.name} just joined {after.channel}'
-            else:
-                msg = f'{member.nick} just joined {after.channel}'
+            if(after.channel == 'all hail the thocc'):
+                return
+            msg = f'{member.display_name} just joined {after.channel}'
             channel = get(self.currGuild.channels, name='voiceless-spam', type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
         if(after.channel == None):
-            if(member.nick == None):
-                msg = f'{member.name} just left {before.channel}'
-            else:
-                msg = f'{member.nick} just left {before.channel}'
+            if(before.channel == 'all hail the thocc'):
+                return
+            msg = f'{member.display_name} just left {before.channel}'
             channel = get(self.currGuild.channels, name='voiceless-spam', type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
 
