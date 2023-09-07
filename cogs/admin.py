@@ -104,26 +104,23 @@ class Admin(commands.Cog):
     @is_guild_owner_ctx()
     async def removeBackup(self, ctx, user:str):
         namesFile = open('backups/memberNamesBackup.json', 'r+')
-        # rolesFile = open('backups/memberRolesBackup.json', 'r+')
+        rolesFile = open('backups/memberRolesBackup.json', 'r+')
         namesDict = json.loads(namesFile.read())
-        # rolesDict = json.loads(rolesFile.read())
+        rolesDict = json.loads(rolesFile.read())
         delete = ''
         if user in namesDict.values():
             for uID in namesDict:
-                print(namesDict[uID])
                 if namesDict[uID] == user:
                     print(f'{namesDict[uID]} still backed up -> Deleting Backup')
                     delete = uID
                     break
-            # for uID in rolesDict:
-            #     if rolesDict[uID] == user:
-            #         rolesDict.pop(uID)
-        namesDict.pop(delete)
-        namesFile.write(json.dumps(namesDict, indent=4))
+        if delete != '':
+            namesDict.pop(delete)
+            rolesDict.pop(delete)
+            namesFile.write(json.dumps(namesDict, indent=4))
+            rolesFile.write(json.dumps(rolesDict, indent=4))
         namesFile.close()
-        # rolesFile.write(json.dumps(rolesDict, indent=4))
-        
-        # rolesFile.close()
+        rolesFile.close()
     @removeBackup
     async def removeBackup_error(self, ctx, error):
         print(error)
