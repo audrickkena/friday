@@ -91,6 +91,7 @@ class Utility(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        dictionary = dict(name="dict", description="Commands relating to servers dictionary")
         print('Utility cog loaded.')
 
     @app_commands.command(name='hi', description="For lonely people")
@@ -180,5 +181,4 @@ class Utility(commands.Cog):
     #     self.prevTrog = member
     
 async def setup(bot: commands.Bot):
-    await bot.tree.add_command(dict(name="dict", description="Commands relating to servers dictionary"))
     await bot.add_cog(Utility(bot))
