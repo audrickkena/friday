@@ -74,11 +74,6 @@ class UsersIntoTeams(Select):
     # async def dictList(self, interaction: discord.Interaction):
     #     await interaction.response.send_message('Placeholder text', ephemeral=True)
 
-class dict(app_commands.Group):
-    @app_commands.command(name='list', description='For listing contents of server dictionary')
-    async def listDict(self, interaction: discord.Interaction):
-        await interaction.response.send_message('Hi', ephemeral=True)
-
 class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -91,8 +86,6 @@ class Utility(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        dictionary = dict(name="dict", description="Commands relating to servers dictionary")
-        self.bot.tree.add_command(dictionary)
         print('Utility cog loaded.')
 
     @app_commands.command(name='hi', description="For lonely people")
