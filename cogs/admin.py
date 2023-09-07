@@ -119,7 +119,7 @@ class Admin(commands.Cog):
             # for uID in rolesDict:
             #     if rolesDict[uID] == user:
             #         rolesDict.pop(uID)
-        namesDict.pop(uID)
+        namesDict.pop(delete)
         print(namesDict)
         namesFile.close()
         namesFile = open('backups/memberNamesBackup.json', 'w')
