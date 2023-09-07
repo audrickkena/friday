@@ -92,6 +92,7 @@ class Utility(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         dictionary = dict(name="dict", description="Commands relating to servers dictionary")
+        self.bot.tree.add_command(dictionary)
         print('Utility cog loaded.')
 
     @app_commands.command(name='hi', description="For lonely people")
