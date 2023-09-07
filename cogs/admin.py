@@ -114,6 +114,7 @@ class Admin(commands.Cog):
             for uID in rolesDict:
                 if rolesDict[uID] == user:
                     rolesDict.pop(uID)
+        print(namesDict)
         namesFile.write(json.dumps(namesDict, indent=4))
         rolesFile.write(json.dumps(rolesDict, indent=4))
         namesFile.close()
