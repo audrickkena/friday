@@ -106,19 +106,19 @@ class Admin(commands.Cog):
         namesFile = open('backups/memberNamesBackup.json', 'rw')
         rolesFile = open('backups/memberRolesBackup.json', 'rw')
         namesDict = json.loads(namesFile.read())
-        rolesDict = json.loads(rolesFile.read())
+        # rolesDict = json.loads(rolesFile.read())
         print(namesDict)
-        if user in namesDict.values():
-            for uID in namesDict:
-                if namesDict[uID] == user:
-                    namesDict.pop(uID)
-            for uID in rolesDict:
-                if rolesDict[uID] == user:
-                    rolesDict.pop(uID)
-        namesFile.write(json.dumps(namesDict, indent=4))
-        rolesFile.write(json.dumps(rolesDict, indent=4))
+        # if user in namesDict.values():
+        #     for uID in namesDict:
+        #         if namesDict[uID] == user:
+        #             namesDict.pop(uID)
+        #     for uID in rolesDict:
+        #         if rolesDict[uID] == user:
+        #             rolesDict.pop(uID)
+        # namesFile.write(json.dumps(namesDict, indent=4))
+        # rolesFile.write(json.dumps(rolesDict, indent=4))
         namesFile.close()
-        rolesFile.close()
+        # rolesFile.close()
     @removeBackup
     async def removeBackup_error(self, ctx, error):
         print(error)
