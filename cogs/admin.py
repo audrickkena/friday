@@ -72,6 +72,8 @@ class Admin(commands.Cog):
             roleList = []
             currRoles = members[i].roles
             for e in currRoles:
+                if e.id == 866927479419830282:
+                    continue
                 roleList.append(str(e.id))
             roleList = ','.join(roleList)
             backup[members[i].id] = roleList
