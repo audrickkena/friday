@@ -73,14 +73,11 @@ class Friday(commands.Bot):
     async def on_member_join(self, member):
         namesFile = open('backups/memberNamesBackup.json', 'r')
         namesDict = json.loads(namesFile.read())
-        print(member.id)
-        print(namesDict.keys())
         if str(member.id) in namesDict.keys():
             roleFile = open('backups/memberRolesBackup.json', 'r')
             roleDict = json.loads(roleFile.read())
             prevRoles = roleDict[str(member.id)].split(',')
             for e in prevRoles:
-                print(e)
                 await member.add_roles(self.currGuild.get_role(int(e)))
             print(f'{member.name} has recovered their previous roles!')
             roleFile.close()
