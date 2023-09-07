@@ -121,9 +121,12 @@ class Admin(commands.Cog):
             rolesFile.seek(0)
             namesFile.write(json.dumps(namesDict, indent=4))
             rolesFile.write(json.dumps(rolesDict, indent=4))
+        else:
+            print(f'{user} is already not backed up!')
         namesFile.close()
         rolesFile.close()
-    @removeBackup
+
+    @removeBackup.error
     async def removeBackup_error(self, ctx, error):
         print(error)
 
