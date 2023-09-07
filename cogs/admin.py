@@ -112,6 +112,7 @@ class Admin(commands.Cog):
             for uID in namesDict:
                 if namesDict[uID] == user:
                     namesDict.pop(uID)
+                print(namesDict[uID])
             # for uID in rolesDict:
             #     if rolesDict[uID] == user:
             #         rolesDict.pop(uID)
