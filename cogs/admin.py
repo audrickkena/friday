@@ -66,7 +66,7 @@ class Admin(commands.Cog):
     @commands.command(name="backupRoles", description="For backing up roles of users in server", usage="!backupRoles")
     @is_guild_owner_ctx()
     async def backupRoles(self, ctx):
-        members = self.guild.members
+        members = ctx.guild.members
         backup = {}
         for i in range(len(members)):
             roleList = []
