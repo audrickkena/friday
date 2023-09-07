@@ -73,6 +73,8 @@ class Friday(commands.Bot):
     async def on_member_join(self, member):
         namesFile = open('backups/memberNamesBackup.json', 'r')
         namesDict = json.loads(namesFile.read())
+        print(member.id)
+        print(namesDict.keys())
         if str(member.id) in namesDict.keys():
             roleFile = open('backups/memberRolesBackup.json', 'r')
             roleDict = json.loads(roleFile.read())
