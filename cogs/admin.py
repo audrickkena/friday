@@ -60,6 +60,27 @@ class Admin(commands.Cog):
         print(f'Synced {len(fmt)} commands.')
     @sync.error
     async def sync_error(self, ctx, error):
+        print(error)
+        print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
+    
+    @commands.command(name="backupRoles", description="For backing up roles of users in server", usage="!backupRoles")
+    @is_guild_owner_ctx()
+    async def backupRoles(self):
+        members = self.guild.members
+        backup = {}
+        for i in range(len(members)):
+            roleList = []
+            currRoles = members[i].roles
+            for e in currRoles:
+                roleList.append(e.id)
+            roleList = ','.join(roleList)
+            backup[members[i].id] = roleList
+        roleFile = open('memberRolesBackup.json', 'w')
+        roleFile.write(json.dumps(backup, indent=4))
+        roleFile.close()
+    @backupRoles.error
+    async def backupRoles_error(self, ctx, error):
+        print(error)
         print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
 
 async def setup(bot: commands.Bot):
