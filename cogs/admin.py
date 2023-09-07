@@ -117,6 +117,8 @@ class Admin(commands.Cog):
         if delete != '':
             namesDict.pop(delete)
             rolesDict.pop(delete)
+            namesFile.seek(0)
+            rolesFile.seek(0)
             namesFile.write(json.dumps(namesDict, indent=4))
             rolesFile.write(json.dumps(rolesDict, indent=4))
         namesFile.close()
