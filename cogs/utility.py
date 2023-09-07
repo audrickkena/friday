@@ -137,7 +137,7 @@ class Utility(commands.Cog):
         await interaction.response.send_message('Pong', ephemeral=True)
 
     ########## DICTIONARY GROUP FUNCTIONS ##########
-    
+
     # TODO: commands for server dictionary: /dict list, /dict add, /dict remove(admin only) /dict find {word}
     @dictGrp.command(name='list', description='For listing contents of server dictionary')
     async def listDict(self, interaction: discord.Interaction):
@@ -146,7 +146,10 @@ class Utility(commands.Cog):
     ########## END OF DICTIONARY GROUP FUNCTIONS ##########
         
     def getAppCommands(self, cog, embed):
-        commands = cog.get_app_commands()
+        if type(cog) == discord.app_commands.Group:
+            commands = cog.commands
+        else:
+            commands = cog.get_app_commands()
         for command in commands:
             message = f'- description: {command.description}\n- usage: `/{command.name}'
             for parameter in command.parameters:
