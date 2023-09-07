@@ -104,22 +104,22 @@ class Admin(commands.Cog):
     @is_guild_owner_ctx()
     async def removeBackup(self, ctx, user:str):
         namesFile = open('backups/memberNamesBackup.json', 'r+')
-        rolesFile = open('backups/memberRolesBackup.json', 'r+')
+        # rolesFile = open('backups/memberRolesBackup.json', 'r+')
         namesDict = json.loads(namesFile.read())
-        rolesDict = json.loads(rolesFile.read())
+        # rolesDict = json.loads(rolesFile.read())
         print(namesDict)
         if user in namesDict.values():
             for uID in namesDict:
                 if namesDict[uID] == user:
                     namesDict.pop(uID)
-            for uID in rolesDict:
-                if rolesDict[uID] == user:
-                    rolesDict.pop(uID)
+            # for uID in rolesDict:
+            #     if rolesDict[uID] == user:
+            #         rolesDict.pop(uID)
         print(namesDict)
         namesFile.write(json.dumps(namesDict, indent=4))
-        rolesFile.write(json.dumps(rolesDict, indent=4))
+        # rolesFile.write(json.dumps(rolesDict, indent=4))
         namesFile.close()
-        rolesFile.close()
+        # rolesFile.close()
     @removeBackup
     async def removeBackup_error(self, ctx, error):
         print(error)
