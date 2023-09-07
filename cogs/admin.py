@@ -72,6 +72,7 @@ class Admin(commands.Cog):
             roleList = []
             currRoles = members[i].roles
             for e in currRoles:
+                print(e)
                 roleList.append(e.id)
             roleList = ','.join(roleList)
             backup[members[i].id] = roleList
