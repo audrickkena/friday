@@ -69,6 +69,16 @@ class UsersIntoTeams(Select):
             teamString += f'Team {i+1}: {", ".join(teams[i])}\n'
         await interaction.response.send_message(content=teamString)
 
+ #commands for server dictionary: /dict list, /dict add, /dict remove(admin only)
+    # @app_commands.command(name='dict list', description="For viewing server's dictionary")
+    # async def dictList(self, interaction: discord.Interaction):
+    #     await interaction.response.send_message('Placeholder text', ephemeral=True)
+
+class dict(app_commands.Group):
+    @app_commands.command(name='list', description='For listing contents of server dictionary')
+    async def listDict(self, interaction: discord.Interaction):
+        await interaction.response.send_message('Hi', ephemeral=True)
+
 class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -149,11 +159,6 @@ class Utility(commands.Cog):
             message = f'- description: {command.description}\n- usage: `{command.usage}`'
             embed.add_field(name=command.name, value=message, inline=False)
 
-    #commands for server dictionary: /dict list, /dict add, /dict remove(admin only)
-    @app_commands.command(name='dict list', description="For viewing server's dictionary")
-    async def dictList(self, interaction: discord.Interaction):
-        await interaction.response.send_message('Placeholder text', ephemeral=True)
-
     # @app_commands.command(name="close")
     # @app_commands.default_permissions(administrator=True)
     # async def close(self):
@@ -175,4 +180,5 @@ class Utility(commands.Cog):
     #     self.prevTrog = member
     
 async def setup(bot: commands.Bot):
+    await bot.tree.add_command(dict(name="dict", description="Commands relating to servers dictionary"))
     await bot.add_cog(Utility(bot))
