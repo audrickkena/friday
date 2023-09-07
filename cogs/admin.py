@@ -76,13 +76,37 @@ class Admin(commands.Cog):
             roleList = ','.join(roleList)
             backup[members[i].id] = roleList
             print(f'Backed up {members[i].name}\'s roles sucessfully')
-        roleFile = open('memberRolesBackup.json', 'w')
+        roleFile = open('backups/memberRolesBackup.json', 'w')
         roleFile.write(json.dumps(backup, indent=4))
         roleFile.close()
     @backupRoles.error
     async def backupRoles_error(self, ctx, error):
         print(error)
         print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
+
+    @commands.command(name="backupIDs", description="For backing up ids of users in server", usage="!backupIDs")
+    @is_guild_owner_ctx()
+    async def backupIDs(self, ctx):
+        members = ctx.guild.members
+        backup = []
+        for i in range(len(members)):
+            backup.append(members[i].id)
+            print(f'Backed up {members[i].name}\'s id sucessfully')
+        roleFile = open('backups/memberIDsBackup.json', 'w')
+        roleFile.write(json.dumps(backup, indent=4))
+        roleFile.close()
+    @backupIDs.error
+    async def backupIDs_error(self, ctx, error):
+        print(error)
+        print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
+
+    @commands.command(name="removeBackup", description="For permanently removing backup of a user", usage="!removeBackup {username}")
+    @is_guild_owner_ctx()
+    async def removeBackup(self, ctx, user:str):
+        print(user)
+    @removeBackup
+    async def removeBackup_error(self, ctx, error):
+        print(error)
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Admin(bot))
