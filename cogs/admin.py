@@ -107,6 +107,7 @@ class Admin(commands.Cog):
         rolesFile = open('backups/memberRolesBackup.json', 'rw')
         namesDict = json.loads(namesFile.read())
         rolesDict = json.loads(rolesFile.read())
+        print(namesDict)
         if user in namesDict.values():
             for uID in namesDict:
                 if namesDict[uID] == user:
@@ -114,7 +115,6 @@ class Admin(commands.Cog):
             for uID in rolesDict:
                 if rolesDict[uID] == user:
                     rolesDict.pop(uID)
-        print(namesDict)
         namesFile.write(json.dumps(namesDict, indent=4))
         rolesFile.write(json.dumps(rolesDict, indent=4))
         namesFile.close()
