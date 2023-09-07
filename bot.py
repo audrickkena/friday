@@ -80,7 +80,7 @@ class Friday(commands.Bot):
             roleDict = json.loads(roleFile.read())
             prevRoles = roleDict[str(member.id)].split(',')
             for e in prevRoles:
-                await member.add_roles(self.currGuild.get_role(e))
+                await member.add_roles(self.currGuild.get_role(int(e)))
             print(f'{member.name} has recovered their previous roles!')
             roleFile.close()
         elif(member.guild == self.currGuild):
@@ -88,9 +88,9 @@ class Friday(commands.Bot):
             roleDict = json.loads(roleFile.read())
             print(f'{member.name} has joined the server!')
             await member.add_roles(self.currGuild.get_role(roleDict['Lvl 0 Thief']))
-            await member.add_roles(self.currGuild.get_role('1059332235028856893'))
-            await member.add_roles(self.currGuild.get_role('1059324888906743878'))
-            await member.add_roles(self.currGuild.get_role('1059331288533843989'))
+            await member.add_roles(self.currGuild.get_role(1059332235028856893))
+            await member.add_roles(self.currGuild.get_role(1059324888906743878))
+            await member.add_roles(self.currGuild.get_role(1059331288533843989))
             print(f'{member.name} has been given role "Lvl 0 Thief"')
             roleFile.close()
         namesFile.close()
