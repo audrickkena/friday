@@ -149,6 +149,11 @@ class Utility(commands.Cog):
             message = f'- description: {command.description}\n- usage: `{command.usage}`'
             embed.add_field(name=command.name, value=message, inline=False)
 
+    #commands for server dictionary: /dict list, /dict add, /dict remove(admin only)
+    @app_commands.command(name='dict list', description="For viewing server's dictionary")
+    async def dictList(self, interaction: discord.Interaction):
+        await interaction.response.send_message('Placeholder text', ephemeral=True)
+
     # @app_commands.command(name="close")
     # @app_commands.default_permissions(administrator=True)
     # async def close(self):
