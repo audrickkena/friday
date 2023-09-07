@@ -73,7 +73,7 @@ class Friday(commands.Bot):
     
     async def on_member_join(self, member):
         if(member.guild == self.currGuild):
-            roleFile = open('roles_test.json', 'r')
+            roleFile = open('roles.json', 'r')
             roleDict = json.loads(roleFile.read())
             print(f'{member.name} has joined the server!')
             await member.add_roles(self.currGuild.get_role(roleDict['Lvl 0 Thief']))
@@ -113,10 +113,11 @@ class Friday(commands.Bot):
 
     def getCogs(self):
         return self.initial_extensions
+    
 ## HELPER FUNCTIONS
 def updateRoles(self, guildRoles):
     roleDict = {}
-    roleFile = open('roles_test.json', 'w')
+    roleFile = open('roles.json', 'w')
     for i in range(len(guildRoles)):
         roleDict[guildRoles[i].name] = guildRoles[i].id
     roleFile.write(json.dumps(roleDict, indent=4))
