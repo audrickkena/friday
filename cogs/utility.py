@@ -69,11 +69,6 @@ class UsersIntoTeams(Select):
             teamString += f'Team {i+1}: {", ".join(teams[i])}\n'
         await interaction.response.send_message(content=teamString)
 
- #commands for server dictionary: /dict list, /dict add, /dict remove(admin only)
-    # @app_commands.command(name='dict list', description="For viewing server's dictionary")
-    # async def dictList(self, interaction: discord.Interaction):
-    #     await interaction.response.send_message('Placeholder text', ephemeral=True)
-
 class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -87,6 +82,8 @@ class Utility(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('Utility cog loaded.')
+    
+    dictGrp = app_commands.Group(name='dict', description='For commands related to the server\'s dictionary')
 
     @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
@@ -138,6 +135,15 @@ class Utility(commands.Cog):
     @app_commands.command(name='ping', description="For really bored people")
     async def ping(self, interaction: discord.Interaction):
         await interaction.response.send_message('Pong', ephemeral=True)
+
+    ########## DICTIONARY GROUP FUNCTIONS ##########
+    
+    # TODO: commands for server dictionary: /dict list, /dict add, /dict remove(admin only) /dict find {word}
+    @dictGrp.command(name='list', description='For listing contents of server dictionary')
+    async def listDict(self, interaction: discord.Interaction):
+        await interaction.response.send_message('Hi', ephemeral=True)
+
+    ########## END OF DICTIONARY GROUP FUNCTIONS ##########
         
     def getAppCommands(self, cog, embed):
         commands = cog.get_app_commands()
