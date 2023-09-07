@@ -31,7 +31,8 @@ class Friday(commands.Bot):
         self.currGuild = None
         self.initial_extensions = [
             "cogs.utility",
-            "cogs.admin"
+            "cogs.admin",
+            "cogs.utility"
         ]
     async def setup_hook(self):
         """!
