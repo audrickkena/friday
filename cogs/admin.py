@@ -75,6 +75,7 @@ class Admin(commands.Cog):
                 roleList.append(e.id)
             roleList = ','.join(roleList)
             backup[members[i].id] = roleList
+            print(f'Backed up {members[i].name}\'s roles sucessfully')
         roleFile = open('memberRolesBackup.json', 'w')
         roleFile.write(json.dumps(backup, indent=4))
         roleFile.close()
