@@ -12,3 +12,4 @@ a means of practice in python and developing bots.
 ## Planned Features
 * votekick function (being debated)
 * music streaming
+* dictionary of server slang (viewing, adding/suggesting, deleting)
