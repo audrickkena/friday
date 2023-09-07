@@ -108,12 +108,14 @@ class Admin(commands.Cog):
         namesDict = json.loads(namesFile.read())
         # rolesDict = json.loads(rolesFile.read())
         print(namesDict)
+        delete = ''
         if user in namesDict.values():
             for uID in namesDict:
                 print(namesDict[uID])
                 if namesDict[uID] == user:
                     print(f'{namesDict[uID]} -> Tested')
-                    namesDict.pop(uID)
+                    delete = uID
+                    break
             # for uID in rolesDict:
             #     if rolesDict[uID] == user:
             #         rolesDict.pop(uID)
