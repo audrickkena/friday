@@ -146,6 +146,7 @@ class Utility(commands.Cog):
     ########## END OF DICTIONARY GROUP FUNCTIONS ##########
         
     def getAppCommands(self, cog, embed):
+        print(type(cog))
         if type(cog) == discord.app_commands.Group:
             commands = cog.commands
         else:
