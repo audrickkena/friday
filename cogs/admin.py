@@ -84,26 +84,40 @@ class Admin(commands.Cog):
         print(error)
         print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
 
-    @commands.command(name="backupIDs", description="For backing up ids of users in server", usage="!backupIDs")
+    @commands.command(name="backupNames", description="For backing up usernames of users in server", usage="!backupNames")
     @is_guild_owner_ctx()
-    async def backupIDs(self, ctx):
+    async def backupNames(self, ctx):
         members = ctx.guild.members
-        backup = []
+        backup = {}
         for i in range(len(members)):
-            backup.append(members[i].id)
+            backup[members[i].id] = members[i].name
             print(f'Backed up {members[i].name}\'s id sucessfully')
-        roleFile = open('backups/memberIDsBackup.json', 'w')
+        roleFile = open('backups/memberNamesBackup.json', 'w')
         roleFile.write(json.dumps(backup, indent=4))
         roleFile.close()
-    @backupIDs.error
-    async def backupIDs_error(self, ctx, error):
+    @backupNames.error
+    async def backupNames_error(self, ctx, error):
         print(error)
         print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
 
     @commands.command(name="removeBackup", description="For permanently removing backup of a user", usage="!removeBackup {username}")
     @is_guild_owner_ctx()
     async def removeBackup(self, ctx, user:str):
-        print(user)
+        namesFile = open('backups/memberNamesBackup.json', 'rw')
+        rolesFile = open('backups/memberRolesBackup.json', 'rw')
+        namesDict = json.loads(namesFile.read())
+        rolesDict = json.loads(rolesFile.read())
+        if user in namesDict.values():
+            for uID in namesDict:
+                if namesDict[uID] == user:
+                    namesDict.pop(uID)
+            for uID in rolesDict:
+                if rolesDict[uID] == user:
+                    rolesDict.pop(uID)
+        namesFile.write(json.dumps(namesDict, indent=4))
+        rolesFile.write(json.dumps(rolesDict, indent=4))
+        namesFile.close()
+        rolesFile.close()
     @removeBackup
     async def removeBackup_error(self, ctx, error):
         print(error)
