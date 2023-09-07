@@ -80,6 +80,7 @@ class Friday(commands.Bot):
             roleDict = json.loads(roleFile.read())
             prevRoles = roleDict[str(member.id)].split(',')
             for e in prevRoles:
+                print(e)
                 await member.add_roles(self.currGuild.get_role(int(e)))
             print(f'{member.name} has recovered their previous roles!')
             roleFile.close()
