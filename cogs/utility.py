@@ -89,13 +89,12 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
             if self.entryExists():
                 await interaction.response.send_message(f'{self.word.value} is already in the dictionary! LMAO can\'t read moment', ephemeral=True)
                 return
-        with open('dict.json', 'w+') as f:
+        with open('dict.json', 'r+') as f:
             currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
             date = currDateTime.strftime('%x')
             time = currDateTime.strftime('%X')
             print(f'length: {len(f.readlines())}')
             if len(f.readlines()) > 0:
-                f.seek(0)
                 prevDict = json.loads(f.read())
                 print(f'prevDict = {prevDict}')
                 prevDict[self.word.value.lower()] = f'{self.meaning.value},{self.usage.value},{date},{time}'
