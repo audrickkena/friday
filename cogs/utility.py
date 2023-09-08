@@ -151,16 +151,16 @@ class Utility(commands.Cog):
         
     def getAppCommands(self, cog, embed):
         commands = cog.get_app_commands()
-        message = ''
         for command in commands:
             if isinstance(command, discord.app_commands.Group):
                 temp = command.commands
+                message = ''
                 for e in temp:
-                    message = f'- name: *{e.name}*\n\t- description: {e.description}\n- usage: `/{command.name} {e.name}'
+                    message += f'- name: *{e.name}*\n\t- description: {e.description}\n\t- usage: `/{command.name} {e.name}'
                     for parameter in e.parameters:
                         message += f' {{{parameter.name}}}'
-                    message += '`'
-                    embed.add_field(name=f'{command.name} group commands', value=message, inline=False)
+                    message += '`\n'
+                embed.add_field(name=f'{command.name} group commands', value=message, inline=False)
             else:
                 message = f'- description: {command.description}\n- usage: `/{command.name}'
                 for parameter in command.parameters:
