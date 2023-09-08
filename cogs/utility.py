@@ -181,8 +181,9 @@ class Utility(commands.Cog):
             entries = json.loads(f.read())
             words = entries.keys()
             for i in range(len(words)):
-                entryDate = entries[words[i]].split(',')[-2]
-                entryTime = entries[words[i]].split(',')[-1]
+                # entryDate = entries[words[i]].split(',')[-2]
+                # entryTime = entries[words[i]].split(',')[-1]
+                print(entries[words[i]])
                 message.add_field(name=f'{words[i]}', value=f'Created: {entryDate} {entryTime}', inline=True)
         await interaction.response.send_message(embed=message, ephemeral=True)
 
