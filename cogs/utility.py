@@ -93,6 +93,7 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
             currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
             date = currDateTime.strftime('%x')
             time = currDateTime.strftime('%X')
+            print(f'length: {len(f.readlines())}')
             if len(f.readlines()) > 0:
                 f.seek(0)
                 prevDict = json.loads(f.read())
