@@ -143,6 +143,10 @@ class Utility(commands.Cog):
     async def listDict(self, interaction: discord.Interaction):
         await interaction.response.send_message('Hi', ephemeral=True)
 
+    @dictGrp.command(name='add', description='For adding a word or phrase into the server dictionary')
+    async def addDict(self, interaction: discord.Interaction):
+        await interaction.response.send_message('addDict', ephemeral=True)
+
     ########## END OF DICTIONARY GROUP FUNCTIONS ##########
         
     def getAppCommands(self, cog, embed):
@@ -152,7 +156,7 @@ class Utility(commands.Cog):
             if isinstance(command, discord.app_commands.Group):
                 temp = command.commands
                 for e in temp:
-                    message = f'- name: *{e.name}*\n\t- description: {e.description}\n\t- usage: `/{command.name} {e.name}'
+                    message = f'- name: *{e.name}*\n\t- description: {e.description}\n- usage: `/{command.name} {e.name}'
                     for parameter in e.parameters:
                         message += f' {{{parameter.name}}}'
                     message += '`'
