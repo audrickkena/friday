@@ -180,11 +180,10 @@ class Utility(commands.Cog):
         with open('dict.json', 'r') as f:
             entries = json.loads(f.read())
             words = entries.keys()
-            for i in range(len(words)):
-                # entryDate = entries[words[i]].split(',')[-2]
-                # entryTime = entries[words[i]].split(',')[-1]
-                print(entries[words[i]])
-                message.add_field(name=f'{words[i]}', value=f'Created: {entryDate} {entryTime}', inline=True)
+            for e in words:
+                entryDate = entries[e].split(',')[-2]
+                entryTime = entries[e].split(',')[-1]
+                message.add_field(name=f'{e}', value=f'Created: {entryDate} {entryTime}', inline=True)
         await interaction.response.send_message(embed=message, ephemeral=True)
 
     @dictGrp.command(name='add', description='For adding a word or phrase into the server dictionary')
