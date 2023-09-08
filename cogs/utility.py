@@ -96,7 +96,9 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
             if len(f.readlines()) > 0:
                 f.seek(0)
                 prevDict = json.loads(f.read())
-                temp = prevDict[self.word.value.lower()] = f'{self.meaning.value},{self.usage.value},{date},{time}'
+                print(f'prevDict = {prevDict}')
+                prevDict[self.word.value.lower()] = f'{self.meaning.value},{self.usage.value},{date},{time}'
+                temp = prevDict
             else:
                 temp = {self.word.value.lower(): f'{self.meaning.value},{self.usage.value},{date},{time}'}
             f.seek(0)
