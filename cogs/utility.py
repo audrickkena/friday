@@ -146,12 +146,9 @@ class Utility(commands.Cog):
     ########## END OF DICTIONARY GROUP FUNCTIONS ##########
         
     def getAppCommands(self, cog, embed):
-        print(type(cog))
-        if type(cog) == discord.app_commands.Group:
-            commands = cog.commands
-        else:
-            commands = cog.get_app_commands()
+        commands = cog.get_app_commands()
         for command in commands:
+            print(type(command))
             message = f'- description: {command.description}\n- usage: `/{command.name}'
             for parameter in command.parameters:
                 message += f' {{{parameter.name}}}'
