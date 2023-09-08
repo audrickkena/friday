@@ -1,5 +1,6 @@
 import discord
 import random
+import datetime
 import functools
 import json
 import os
@@ -78,7 +79,7 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
     def entryExists(self):
         with open('dict.json', 'r') as f:
             temp = json.loads(f.read())
-            if self.word.lower() in temp.keys():
+            if self.word.value.lower() in temp.keys():
                 return True
             else:
                 return False
@@ -86,12 +87,15 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
     async def on_submit(self, interaction: discord.Interaction):
         if os.path.exists('dict.json'):
             if self.entryExists():
-                await interaction.response.send_message(f'{self.word} is already in the dictionary! LMAO can\'t read moment', ephemeral=True)
+                await interaction.response.send_message(f'{self.word.value} is already in the dictionary! LMAO can\'t read moment', ephemeral=True)
                 return
         with open('dict.json', 'a') as f:
-            temp = {self.word.lower(): f'{self.meaning},{self.usage}'}
+            currDateTime = datetime.datetime.now()
+            date = currDateTime.strftime('%x')
+            time = currDateTime.strftime('%X')
+            temp = {self.word.value.lower(): f'{self.meaning.value},{self.usage.value},{date},{time}'}
             f.write(json.dumps(temp, indent=4))
-            await interaction.response.send_message(f'{self.word} has been added succesfully!', ephemeral=True)
+            await interaction.response.send_message(f'{self.word.value} has been added succesfully!', ephemeral=True)
             
 
     
@@ -168,7 +172,17 @@ class Utility(commands.Cog):
     # TODO: commands for server dictionary: /dict list, /dict add, /dict remove(admin only) /dict find {word}
     @dictGrp.command(name='list', description='For listing contents of server dictionary')
     async def listDict(self, interaction: discord.Interaction):
-        await interaction.response.send_message('Hi', ephemeral=True)
+        message = discord.Embed(
+            title='Dictionary of Server Slang',
+            description='Listing all words added to the server\'s dictionary',
+            color=discord.Colour.red()
+        )
+        with open('dict.json', 'r') as f:
+            temp = json.loads(f.read())
+            words = temp.keys()
+            for i in range(len(words)):
+                message.add_field(name=f'{words[i]}', value=f'Created: {temp[words[i]][-2]} {temp[words[i]][-1]}', inline=True)
+        await interaction.response.send_message(embed=message, ephemeral=True)
 
     @dictGrp.command(name='add', description='For adding a word or phrase into the server dictionary')
     async def addDict(self, interaction: discord.Interaction):
