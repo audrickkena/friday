@@ -71,9 +71,9 @@ class UsersIntoTeams(Select):
 
 # Server dictionary entry has 3 things: word/phrase, meaning, usage
 class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
-    word = discord.ui.TextInput(label='Word/phrase to add into dictionary', placeholder='smegwash', required=True, max_length=100, style=discord.Textstyle.short)
-    meaning = discord.ui.TextInput(label='Meaning of word/phrase', placeholder='What could it mean?', required=True, max_length=4000, style=discord.Textstyle.long)
-    usage = discord.ui.TextInput(label='Usage of word/phrase', placeholder='How is it used?', required=True, max_length=4000, style=discord.Textstyle.long)
+    word = discord.ui.TextInput(label='Word/phrase to add into dictionary', placeholder='smegwash', required=True, max_length=100, style=discord.TextStyle.short)
+    meaning = discord.ui.TextInput(label='Meaning of word/phrase', placeholder='What could it mean?', required=True, max_length=4000, style=discord.TextStyle.long)
+    usage = discord.ui.TextInput(label='Usage of word/phrase', placeholder='How is it used?', required=True, max_length=4000, style=discord.TextStyle.long)
 
     def entryExists(self):
         with open('dict.json', 'r') as f:
