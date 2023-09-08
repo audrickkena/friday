@@ -178,10 +178,12 @@ class Utility(commands.Cog):
             color=discord.Colour.red()
         )
         with open('dict.json', 'r') as f:
-            temp = json.loads(f.read())
-            words = temp.keys()
+            entries = json.loads(f.read())
+            words = entries.keys()
             for i in range(len(words)):
-                message.add_field(name=f'{words[i]}', value=f'Created: {temp[words[i]][-2]} {temp[words[i]][-1]}', inline=True)
+                entryDate = entries[words[i]].split(',')[-2]
+                entryTime = entries[words[i]].split(',')[-1]
+                message.add_field(name=f'{words[i]}', value=f'Created: {entryDate} {entryTime}', inline=True)
         await interaction.response.send_message(embed=message, ephemeral=True)
 
     @dictGrp.command(name='add', description='For adding a word or phrase into the server dictionary')
