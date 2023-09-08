@@ -94,6 +94,7 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
             date = currDateTime.strftime('%x')
             time = currDateTime.strftime('%X')
             if len(f.readlines()) > 0:
+                f.seek(0)
                 prevDict = json.loads(f.read())
                 print(f'prevDict = {prevDict}')
                 prevDict[self.word.value.lower()] = f'{self.meaning.value},{self.usage.value},{date},{time}'
