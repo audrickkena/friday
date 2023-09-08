@@ -69,6 +69,33 @@ class UsersIntoTeams(Select):
             teamString += f'Team {i+1}: {", ".join(teams[i])}\n'
         await interaction.response.send_message(content=teamString)
 
+# Server dictionary entry has 3 things: word/phrase, meaning, usage
+class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
+    word = discord.ui.TextInput(label='Word/phrase to add into dictionary', placeholder='smegwash', required=True, max_length=100, style=discord.Textstyle.short)
+    meaning = discord.ui.TextInput(label='Meaning of word/phrase', placeholder='What could it mean?', required=True, max_length=4000, style=discord.Textstyle.long)
+    usage = discord.ui.TextInput(label='Usage of word/phrase', placeholder='How is it used?', required=True, max_length=4000, style=discord.Textstyle.long)
+
+    def entryExists(self):
+        with open('dict.json', 'r') as f:
+            temp = json.loads(f.read())
+            if self.word.lower() in temp.keys():
+                return True
+            else:
+                return False
+
+    async def on_submit(self, interaction: discord.Interaction):
+        if os.path.exists('dict.json'):
+            if self.entryExists():
+                await interaction.response.send_message(f'{self.word} is already in the dictionary! LMAO can\'t read moment', ephemeral=True)
+                return
+        with open('dict.json', 'a') as f:
+            temp = {self.word.lower(): f'{self.meaning},{self.usage}'}
+            f.write(json.dumps(temp, indent=4))
+            await interaction.response.send_message(f'{self.word} has been added succesfully!', ephemeral=True)
+            
+
+    
+
 class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -144,8 +171,8 @@ class Utility(commands.Cog):
         await interaction.response.send_message('Hi', ephemeral=True)
 
     @dictGrp.command(name='add', description='For adding a word or phrase into the server dictionary')
-    async def addDict(self, interaction: discord.Interaction, word: str):
-        await interaction.response.send_message('addDict', ephemeral=True)
+    async def addDict(self, interaction: discord.Interaction):
+        await interaction.response.send_modal(addDictModal())
 
     ########## END OF DICTIONARY GROUP FUNCTIONS ##########
         
