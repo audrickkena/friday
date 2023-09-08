@@ -90,7 +90,7 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
                 await interaction.response.send_message(f'{self.word.value} is already in the dictionary! LMAO can\'t read moment', ephemeral=True)
                 return
         with open('dict.json', 'a') as f:
-            currDateTime = datetime.datetime.now()
+            currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
             date = currDateTime.strftime('%x')
             time = currDateTime.strftime('%X')
             temp = {self.word.value.lower(): f'{self.meaning.value},{self.usage.value},{date},{time}'}
