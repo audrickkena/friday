@@ -144,7 +144,7 @@ class Utility(commands.Cog):
         await interaction.response.send_message('Hi', ephemeral=True)
 
     @dictGrp.command(name='add', description='For adding a word or phrase into the server dictionary')
-    async def addDict(self, interaction: discord.Interaction):
+    async def addDict(self, interaction: discord.Interaction, word: str):
         await interaction.response.send_message('addDict', ephemeral=True)
 
     ########## END OF DICTIONARY GROUP FUNCTIONS ##########
