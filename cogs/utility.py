@@ -93,8 +93,12 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
             currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
             date = currDateTime.strftime('%x')
             time = currDateTime.strftime('%X')
-            prevDict = json.loads(f.read())
-            temp = prevDict[self.word.value.lower()] = f'{self.meaning.value},{self.usage.value},{date},{time}'
+            if f.readlines() > 0:
+                f.seek(0)
+                prevDict = json.loads(f.read())
+                temp = prevDict[self.word.value.lower()] = f'{self.meaning.value},{self.usage.value},{date},{time}'
+            else:
+                temp = {self.word.value.lower(): f'{self.meaning.value},{self.usage.value},{date},{time}'}
             f.seek(0)
             f.write(json.dumps(temp, indent=4))
             await interaction.response.send_message(f'{self.word.value} has been added succesfully!', ephemeral=True)
