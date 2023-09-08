@@ -191,7 +191,7 @@ class Utility(commands.Cog):
             for e in words:
                 entryDate = entries[e].split(',')[-2]
                 entryTime = entries[e].split(',')[-1]
-                message.add_field(name=f'{e}', value=f'Created: {entryDate} {entryTime}', inline=True)
+                message.add_field(name=f'{e}', value=f'Created: {entryDate} {entryTime}', inline=False)
         await interaction.response.send_message(embed=message, ephemeral=True)
 
     @dictGrp.command(name='add', description='For adding a word or phrase into the server dictionary')
