@@ -156,7 +156,7 @@ class Utility(commands.Cog):
                 temp = command.commands
                 message = ''
                 for e in temp:
-                    message += f'- name: *{e.name}*\n\t- description: {e.description}\n\t- usage: `/{command.name} {e.name}'
+                    message += f'- name: *{e.name}*\n    - description: {e.description}\n    - usage: `/{command.name} {e.name}'
                     for parameter in e.parameters:
                         message += f' {{{parameter.name}}}'
                     message += '`\n'
