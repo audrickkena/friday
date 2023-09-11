@@ -200,24 +200,24 @@ class Utility(commands.Cog):
         await interaction.response.send_modal(addDictModal())
 
     @dictGrp.command(name='find', description='For getting the meaning and usage of a word or phrase in the server dictionary')
-    async def findDict(self, interaction: discord.Interaction, strInput: str):
+    async def findDict(self, interaction: discord.Interaction, str_input: str):
         with open('dict.json', 'r') as f:
             entries = json.loads(f.read())
             words = entries.keys()
-            if strInput.lower() in words:
-                val = entries[strInput]
+            if str_input.lower() in words:
+                val = entries[str_input]
                 valList = val.split(',')
                 meaning = valList[0]
                 usage = valList[1]
                 message = discord.Embed(
-                    title=f'{strInput.lower()}',
-                    description=f'Here is the definition and usage of the entry {strInput.lower()} entered on {valList[2]} at {valList[3]}',
+                    title=f'{str_input.lower()}',
+                    description=f'Here is the definition and usage of the entry {str_input.lower()} entered on {valList[2]} at {valList[3]}',
                     color=discord.Colour.red()
                 )
                 message.add_field(name='\n\u200b', value=f'Definition: {meaning}\nUsage: {usage}')
                 await interaction.response.send_message(embed=message, ephemeral=True)
             else:
-                await interaction.response.send_message(f'{strInput} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
+                await interaction.response.send_message(f'{str_input} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
 
     ########## END OF DICTIONARY GROUP FUNCTIONS ##########
         
