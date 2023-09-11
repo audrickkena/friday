@@ -178,6 +178,7 @@ class Utility(commands.Cog):
     ########## DICTIONARY GROUP FUNCTIONS ##########
 
     # TODO: commands for server dictionary: /dict list, /dict add, /dict remove(admin only) /dict find {word}
+    # TODO: proper error handling of each command and the group command class
     @dictGrp.command(name='list', description='For listing contents of server dictionary')
     async def listDict(self, interaction: discord.Interaction):
         message = discord.Embed(
@@ -197,6 +198,26 @@ class Utility(commands.Cog):
     @dictGrp.command(name='add', description='For adding a word or phrase into the server dictionary')
     async def addDict(self, interaction: discord.Interaction):
         await interaction.response.send_modal(addDictModal())
+
+    @dictGrp.command(name='find', description='For getting the meaning and usage of a word or phrase in the server dictionary')
+    async def findDict(self, interaction: discord.Interaction, strInput: str):
+        with open('dict.json', 'r') as f:
+            entries = json.loads(f.read())
+            words = entries.keys()
+            if strInput.lower() in words:
+                val = entries[strInput]
+                valList = val.split(',')
+                meaning = valList[0]
+                usage = valList[1]
+                message = discord.Embed(
+                    title=f'{strInput.lower()}',
+                    description=f'Here is the definition and usage of the entry {strInput.lower()} entered on {valList[2]} at {valList[3]}',
+                    color=discord.Colour.red()
+                )
+                message.add_field(name='\n\u200b', value=f'Definition: {meaning}\nUsage: {usage}')
+                await interaction.response.send_message(embed=message, ephemeral=True)
+            else:
+                await interaction.response.send_message(f'{strInput} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
 
     ########## END OF DICTIONARY GROUP FUNCTIONS ##########
         
