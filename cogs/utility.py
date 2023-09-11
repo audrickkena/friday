@@ -97,7 +97,7 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
                 f.seek(0)
                 prevDict = json.loads(f.read())
                 print(f'prevDict = {prevDict}')
-                prevDict[self.word.value.lower()] = f'{self.meaning.value},{self.usage.value},{date},{time}'
+                prevDict[self.word.value.lower()] = f'{self.meaning.value},,,{self.usage.value},,,{date},,,{time}'
                 temp = prevDict
             else:
                 temp = {self.word.value.lower(): f'{self.meaning.value},{self.usage.value},{date},{time}'}
@@ -190,8 +190,8 @@ class Utility(commands.Cog):
             entries = json.loads(f.read())
             words = entries.keys()
             for e in words:
-                entryDate = entries[e].split(',')[-2]
-                entryTime = entries[e].split(',')[-1]
+                entryDate = entries[e].split(',,,')[-2]
+                entryTime = entries[e].split(',,,')[-1]
                 message.add_field(name=f'{e}', value=f'Created: {entryDate} {entryTime}', inline=False)
         await interaction.response.send_message(embed=message, ephemeral=True)
 
@@ -206,7 +206,7 @@ class Utility(commands.Cog):
             words = entries.keys()
             if str_input.lower() in words:
                 val = entries[str_input]
-                valList = val.split(',')
+                valList = val.split(',,,')
                 meaning = valList[0]
                 usage = valList[1]
                 message = discord.Embed(
