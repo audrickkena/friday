@@ -75,7 +75,7 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
     word = discord.ui.TextInput(label='Word/phrase to add into dictionary', placeholder='smegwash', required=True, max_length=100, style=discord.TextStyle.short)
     meaning = discord.ui.TextInput(label='Meaning of word/phrase', placeholder='What could it mean?', required=True, max_length=4000, style=discord.TextStyle.long)
     usage = discord.ui.TextInput(label='Usage of word/phrase', placeholder='How is it used?', required=True, max_length=4000, style=discord.TextStyle.long)
-
+    # TODO: Do the entry exists check before calling addDictModal 
     def entryExists(self):
         with open('dict.json', 'r') as f:
             temp = json.loads(f.read())
@@ -100,12 +100,33 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
                 prevDict[self.word.value.lower()] = f'{self.meaning.value},,,{self.usage.value},,,{date},,,{time}'
                 temp = prevDict
             else:
-                temp = {self.word.value.lower(): f'{self.meaning.value},{self.usage.value},{date},{time}'}
+                temp = {self.word.value.lower(): f'{self.meaning.value},,,{self.usage.value},,,{date},,,{time}'}
             f.seek(0)
             f.write(json.dumps(temp, indent=4))
             await interaction.response.send_message(f'{self.word.value} has been added succesfully!', ephemeral=True)
-            
 
+# TODO: Edit dictionary modal
+class editDictModal(discord.ui.Modal):
+    def __init__(self, entry, meaning, usage, date, time):
+        super.__init__(title='Edit Dictionary Entry')
+        self.entry = entry
+        self.date = date
+        self.time = time
+        self.word = discord.ui.TextInput(label='Word/phrase to edit from dictionary', default=entry, required=True, max_length=100, style=discord.TextStyle.short)
+        self.meaning = discord.ui.TextInput(label='Meaning of word/phrase', default=meaning, required=True, max_length=4000, style=discord.TextStyle.long)
+        self.usage = discord.ui.TextInput(label='Usage of word/phrase', default=usage, required=True, max_length=4000, style=discord.TextStyle.long)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        with open('dict.json', 'r+') as f:
+            prevDict = json.loads(f.read())
+            newDict = {}
+            for entry in prevDict.keys():
+                if entry != self.entry.lower():
+                    newDict[entry] = prevDict[entry]
+                else:
+                    newDict[self.word.value.lower()] = f'{self.meaning.value},,,{self.usage.value},,,{self.date},,,{self.time}'
+            f.seek(0)
+            f.write(json.dumps(newDict, indent=4))
     
 
 class Utility(commands.Cog):
@@ -175,9 +196,11 @@ class Utility(commands.Cog):
     async def ping(self, interaction: discord.Interaction):
         await interaction.response.send_message('Pong', ephemeral=True)
 
+
+
     ########## DICTIONARY GROUP FUNCTIONS ##########
 
-    # TODO: commands for server dictionary: /dict list, /dict add, /dict remove(admin only) /dict find {word}
+    # TODO: commands for server dictionary: /dict list, /dict add, /dict remove(admin only) /dict find {word} /dict edit {word}
     # TODO: proper error handling of each command and the group command class
     @dictGrp.command(name='list', description='For listing contents of server dictionary')
     async def listDict(self, interaction: discord.Interaction):
@@ -200,27 +223,49 @@ class Utility(commands.Cog):
         await interaction.response.send_modal(addDictModal())
 
     @dictGrp.command(name='find', description='For getting the meaning and usage of a word or phrase in the server dictionary')
-    async def findDict(self, interaction: discord.Interaction, str_input: str):
+    async def findDict(self, interaction: discord.Interaction, entry: str):
         with open('dict.json', 'r') as f:
             entries = json.loads(f.read())
             words = entries.keys()
-            if str_input.lower() in words:
-                val = entries[str_input]
+            if entry.lower() in words:
+                val = entries[entry]
                 valList = val.split(',,,')
                 meaning = valList[0]
                 usage = valList[1]
                 message = discord.Embed(
-                    title=f'{str_input.lower()}',
-                    description=f'Here is the definition and usage of the entry {str_input.lower()} entered on {valList[2]} at {valList[3]}',
+                    title=f'{entry.lower()}',
+                    description=f'Here is the definition and usage of the entry {entry.lower()} entered on {valList[2]} at {valList[3]}',
                     color=discord.Colour.red()
                 )
                 message.add_field(name='\n\u200b', value=f'Definition: {meaning}\nUsage: {usage}')
                 await interaction.response.send_message(embed=message, ephemeral=True)
             else:
-                await interaction.response.send_message(f'{str_input} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
+                await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
+
+    @dictGrp.command(name='edit', description='For editing an existing entry in the dictionary')
+    async def editDict(self, interaction: discord.Interaction, entry: str):
+        with open('dict.json', 'r') as f:
+            entries = json.loads(f.read())
+            words = entries.keys()
+            if entry.lower() in words:
+                oldVal = entries[entry]
+                valList = oldVal.split(',,,')
+                await interaction.response.send_modal(editDictModal(entry, valList[1], valList[2], valList[3], valList[4]))
+            else:
+                await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
 
     ########## END OF DICTIONARY GROUP FUNCTIONS ##########
-        
+
+
+
+    ########## START OF POLL GROUP FUNCTIONS ##########
+    # TODO: Implement a poll commands such as /poll create /poll start /poll end /poll del /poll update(can only update when poll is not started)
+    ######## check sequence diagram for poll command possible flow
+    ########## END OF POLL GROUP FUNCTIONS ##########
+
+
+
+
     def getAppCommands(self, cog, embed):
         commands = cog.get_app_commands()
         for command in commands:
