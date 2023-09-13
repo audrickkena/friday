@@ -122,6 +122,7 @@ class editDictModal(discord.ui.Modal):
         self.word = discord.ui.TextInput(label='Word/phrase to edit from dictionary', default=entry, required=True, max_length=100, style=discord.TextStyle.short)
         self.meaning = discord.ui.TextInput(label='Meaning of word/phrase', default=meaning, required=True, max_length=4000, style=discord.TextStyle.long)
         self.usage = discord.ui.TextInput(label='Usage of word/phrase', default=usage, required=True, max_length=4000, style=discord.TextStyle.long)
+    this = discord.ui.TextInput(label='test', required=True, max_length=100, style=discord.TextStyle.short)
 
     async def on_submit(self, interaction: discord.Interaction):
         with open('dict.json', 'r+') as f:
