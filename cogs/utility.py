@@ -250,7 +250,7 @@ class Utility(commands.Cog):
             if entry.lower() in words:
                 oldVal = entries[entry]
                 valList = oldVal.split(',,,')
-                await interaction.response.send_modal(editDictModal(entry, valList[1], valList[2], valList[3], valList[4]))
+                await interaction.response.send_modal(editDictModal(entry, valList[0], valList[1], valList[2], valList[3]))
             else:
                 await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
 
