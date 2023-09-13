@@ -208,7 +208,7 @@ class Utility(commands.Cog):
 
     ########## DICTIONARY GROUP FUNCTIONS ##########
 
-    # TODO: commands for server dictionary: /dict list, /dict add, /dict remove(admin only?) /dict find {word} /dict edit {word}
+    # TODO: commands for server dictionary: /dict list, /dict add, /dict remove(admin only?) /dict get {word} /dict edit {word}
     # TODO: proper error handling of each command and the group command class
     @dictGrp.command(name='list', description='For listing contents of server dictionary')
     async def listDict(self, interaction: discord.Interaction):
@@ -236,8 +236,8 @@ class Utility(commands.Cog):
             f.close()
         await interaction.response.send_modal(addDictModal())
 
-    @dictGrp.command(name='find', description='For getting the meaning and usage of a word or phrase in the server dictionary')
-    async def findDict(self, interaction: discord.Interaction, entry: str):
+    @dictGrp.command(name='get', description='For getting the meaning and usage of a word or phrase in the server dictionary')
+    async def getDict(self, interaction: discord.Interaction, entry: str):
         if not self.dictFileExists():
             await interaction.response.send_message('No entries in dictionary!', ephemeral=True)
         else:
