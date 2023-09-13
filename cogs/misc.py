@@ -52,9 +52,9 @@ class Misc(commands.Cog):
 
     def checkTime(self):
         currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
-        if currDateTime.hour() < 12:
+        if currDateTime.hour < 12:
             return 0
-        elif currDateTime.hour() > 18:
+        elif currDateTime.hour > 18:
             return 2
         return 1
 
