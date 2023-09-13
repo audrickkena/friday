@@ -128,6 +128,12 @@ class Admin(commands.Cog):
         namesFile.close()
         rolesFile.close()
 
+    @commands.command(name='close', description='For closing the bot', usage = '!close')
+    @is_guild_owner_ctx()
+    async def close(self, ctx):
+        await ctx.send('Shutting down bot')
+        await ctx.bot.close()
+
     @removeBackup.error
     async def removeBackup_error(self, ctx, error):
         print(error)
