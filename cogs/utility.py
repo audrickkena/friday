@@ -151,27 +151,6 @@ class Utility(commands.Cog):
     async def on_ready(self):
         print('Utility cog loaded.')
     
-    dictGrp = app_commands.Group(name='dict', description='For commands related to the server\'s dictionary')
-
-    @app_commands.command(name='hi', description="For lonely people")
-    async def hi(self, interaction: discord.Interaction):
-        await interaction.response.send_message('hello', ephemeral=True)
-
-    @app_commands.command(name="roll", description="For rolling a number of dices with a number of sides")
-    async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
-        if(dice_num > 30):
-            await interaction.response.send_message('Sorry, max value for the number of dice is 30!')
-            return
-        if(sides_num > 30):
-            await interaction.response.send_message('Sorry max value for the number of dice is 30!')
-            return
-        if(interaction.channel.name=="command-spam"):
-            result = [str(random.choice(range(1, sides_num + 1))) for _ in range(dice_num)]
-            msgDices = 'Individual dices: ' + ', '.join(result)
-            msgTotal = 'Total roll value: ' + str(functools.reduce(lambda a, b: int(a) + int(b), result))
-            msgMax = str(dice_num * sides_num)
-            await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
-    
     @app_commands.command(name="teams", description='For making teams based on the selected users')
     async def teams(self, interaction: discord.Interaction):
         selectUsers = SelectUsers(interaction.channel)
@@ -179,6 +158,10 @@ class Utility(commands.Cog):
         view.add_item(selectUsers)
         await interaction.response.send_message("Choose users:", view=view)
     
+
+
+    ########## HELP FUNCTIONS ##########
+
     @app_commands.command(name='help', description='For getting information on usable commands')
     async def help(self, interaction: discord.Interaction):
         cogs = self.bot.cogs
@@ -199,17 +182,41 @@ class Utility(commands.Cog):
                 self.getCommands(cog, message)
             embedList.append(message)
         await interaction.response.send_message(embeds=embedList, ephemeral=True)
+    
+    def getAppCommands(self, cog, embed):
+        commands = cog.get_app_commands()
+        for command in commands:
+            if isinstance(command, discord.app_commands.Group):
+                temp = command.commands
+                message = ''
+                for e in temp:
+                    message += f'- name: *{e.name}*\n  - description: {e.description}\n  - usage: `/{command.name} {e.name}'
+                    for parameter in e.parameters:
+                        message += f' {{{parameter.name}}}'
+                    message += '`\n'
+                embed.add_field(name=f'{command.name} group commands', value=message, inline=False)
+            else:
+                message = f'- description: {command.description}\n- usage: `/{command.name}'
+                for parameter in command.parameters:
+                    message += f' {{{parameter.name}}}'
+                message += '`'
+                embed.add_field(name=command.name, value=message, inline=False)
 
-    @app_commands.command(name='ping', description="For really bored people")
-    async def ping(self, interaction: discord.Interaction):
-        await interaction.response.send_message('Pong', ephemeral=True)
+    def getCommands(self, cog, embed):
+        commands = cog.get_commands()
+        for command in commands:
+            message = f'- description: {command.description}\n- usage: `{command.usage}`'
+            embed.add_field(name=command.name, value=message, inline=False)
+
+    ########## END OF HELP FUNCTIONS ##########
 
 
 
     ########## DICTIONARY GROUP FUNCTIONS ##########
+    
+    # TODO: commands for server dictionary: /dict remove(admin only?)
+    dictGrp = app_commands.Group(name='dict', description='For commands related to the server\'s dictionary')
 
-    # TODO: commands for server dictionary: /dict list, /dict add, /dict remove(admin only?) /dict get {word} /dict edit {word}
-    # TODO: proper error handling of each command and the group command class
     @dictGrp.command(name='list', description='For listing contents of server dictionary')
     async def listDict(self, interaction: discord.Interaction):
         if not self.dictFileExists():
@@ -290,32 +297,6 @@ class Utility(commands.Cog):
     ########## END OF POLL GROUP FUNCTIONS ##########
 
 
-
-
-    def getAppCommands(self, cog, embed):
-        commands = cog.get_app_commands()
-        for command in commands:
-            if isinstance(command, discord.app_commands.Group):
-                temp = command.commands
-                message = ''
-                for e in temp:
-                    message += f'- name: *{e.name}*\n  - description: {e.description}\n  - usage: `/{command.name} {e.name}'
-                    for parameter in e.parameters:
-                        message += f' {{{parameter.name}}}'
-                    message += '`\n'
-                embed.add_field(name=f'{command.name} group commands', value=message, inline=False)
-            else:
-                message = f'- description: {command.description}\n- usage: `/{command.name}'
-                for parameter in command.parameters:
-                    message += f' {{{parameter.name}}}'
-                message += '`'
-                embed.add_field(name=command.name, value=message, inline=False)
-
-    def getCommands(self, cog, embed):
-        commands = cog.get_commands()
-        for command in commands:
-            message = f'- description: {command.description}\n- usage: `{command.usage}`'
-            embed.add_field(name=command.name, value=message, inline=False)
 
     # @app_commands.command(name="close")
     # @app_commands.default_permissions(administrator=True)
