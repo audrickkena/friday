@@ -37,7 +37,7 @@ class Misc(commands.Cog):
 
     selamatGrp = app_commands.Group(name='selamat', description='For commands related to greeting others in the server')
     @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
-    async def pagi(self, interaction: discord.Interaction, usr):
+    async def pagi(self, interaction: discord.Interaction, usr: str):
         await interaction.response.send_message(f'User is {usr}')
 
 async def setup(bot: commands.Bot):
