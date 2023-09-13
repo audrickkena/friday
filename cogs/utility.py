@@ -273,7 +273,7 @@ class Utility(commands.Cog):
                 else:
                     await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
 
-    def dictFileExists():
+    def dictFileExists(self):
         try:
             with open('dict.json', 'r') as f:
                 return True
