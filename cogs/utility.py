@@ -108,7 +108,7 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
 # TODO: Edit dictionary modal
 class editDictModal(discord.ui.Modal):
     def __init__(self, entry, meaning, usage, date, time):
-        super.__init__(title='Edit Dictionary Entry')
+        super().__init__(title='Edit Dictionary Entry')
         self.entry = entry
         self.date = date
         self.time = time
