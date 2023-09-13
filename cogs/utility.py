@@ -255,9 +255,8 @@ class Utility(commands.Cog):
             entries = json.loads(f.read())
             words = entries.keys()
             if entry.lower() in words:
-                oldVal = entries[entry]
-                valList = oldVal.split(',,,')
-                await interaction.response.send_modal(editDictModal(entry.lower()))
+                edit = editDictModal(entry.lower())
+                await interaction.response.send_modal(edit)
             else:
                 await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
 
