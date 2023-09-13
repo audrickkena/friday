@@ -38,9 +38,10 @@ class Misc(commands.Cog):
     selamatGrp = app_commands.Group(name='selamat', description='For commands related to greeting others in the server')
     @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
     async def pagi(self, interaction: discord.Interaction, user: str):
-        if f'\{user}'[1] != '@':
+        if user[1] != '@':
             await interaction.response.send_message(f'{user} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!')
-        await interaction.response.send_message(f'User is \{user}')
+        else:
+            await interaction.response.send_message(f'User is \{user}')
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Misc(bot))
