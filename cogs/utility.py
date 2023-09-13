@@ -75,7 +75,6 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
     word = discord.ui.TextInput(label='Word/phrase to add into dictionary', placeholder='smegwash', required=True, max_length=100, style=discord.TextStyle.short)
     meaning = discord.ui.TextInput(label='Meaning of word/phrase', placeholder='What could it mean?', required=True, max_length=4000, style=discord.TextStyle.long)
     usage = discord.ui.TextInput(label='Usage of word/phrase', placeholder='How is it used?', required=True, max_length=4000, style=discord.TextStyle.long)
-    # TODO: Do the entry exists check before calling addDictModal 
     def entryExists(self):
         with open('dict.json', 'r') as f:
             temp = json.loads(f.read())
@@ -85,10 +84,9 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
                 return False
 
     async def on_submit(self, interaction: discord.Interaction):
-        if os.path.exists('dict.json'):
-            if self.entryExists():
-                await interaction.response.send_message(f'{self.word.value} is already in the dictionary! LMAO can\'t read moment', ephemeral=True)
-                return
+        if self.entryExists():
+            await interaction.response.send_message(f'{self.word.value} is already in the dictionary! LMAO can\'t read moment', ephemeral=True)
+            return
         with open('dict.json', 'r+') as f:
             currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
             date = currDateTime.strftime('%x')
@@ -105,7 +103,6 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
             f.write(json.dumps(temp, indent=4))
             await interaction.response.send_message(f'{self.word.value} has been added succesfully!', ephemeral=True)
 
-# TODO: Edit dictionary modal
 class editDictModal(discord.ui.Modal):
     def __init__(self, entry: str):
         super().__init__(title='Edit Dictionary Entry')
@@ -211,58 +208,77 @@ class Utility(commands.Cog):
 
     ########## DICTIONARY GROUP FUNCTIONS ##########
 
-    # TODO: commands for server dictionary: /dict list, /dict add, /dict remove(admin only) /dict find {word} /dict edit {word}
+    # TODO: commands for server dictionary: /dict list, /dict add, /dict remove(admin only?) /dict find {word} /dict edit {word}
     # TODO: proper error handling of each command and the group command class
     @dictGrp.command(name='list', description='For listing contents of server dictionary')
     async def listDict(self, interaction: discord.Interaction):
-        message = discord.Embed(
-            title='Dictionary of Server Slang',
-            description='Listing all words added to the server\'s dictionary',
-            color=discord.Colour.red()
-        )
-        with open('dict.json', 'r') as f:
-            entries = json.loads(f.read())
-            words = entries.keys()
-            for e in words:
-                entryDate = entries[e].split(',,,')[-2]
-                entryTime = entries[e].split(',,,')[-1]
-                message.add_field(name=f'{e}', value=f'Created: {entryDate} {entryTime}', inline=False)
-        await interaction.response.send_message(embed=message, ephemeral=True)
+        if not self.dictFileExists():
+            await interaction.response.send_message('No entries in dictionary!', ephemeral=True)
+        else:
+            message = discord.Embed(
+                title='Dictionary of Server Slang',
+                description='Listing all words added to the server\'s dictionary',
+                color=discord.Colour.red()
+            )
+            with open('dict.json', 'r') as f:
+                entries = json.loads(f.read())
+                words = entries.keys()
+                for e in words:
+                    entryDate = entries[e].split(',,,')[-2]
+                    entryTime = entries[e].split(',,,')[-1]
+                    message.add_field(name=f'{e}', value=f'Created: {entryDate} {entryTime}', inline=False)
+            await interaction.response.send_message(embed=message, ephemeral=True)
 
     @dictGrp.command(name='add', description='For adding a word or phrase into the server dictionary')
     async def addDict(self, interaction: discord.Interaction):
+        if not self.dictFileExists():
+            f = open('dict.json', 'x')
+            f.close()
         await interaction.response.send_modal(addDictModal())
 
     @dictGrp.command(name='find', description='For getting the meaning and usage of a word or phrase in the server dictionary')
     async def findDict(self, interaction: discord.Interaction, entry: str):
-        with open('dict.json', 'r') as f:
-            entries = json.loads(f.read())
-            words = entries.keys()
-            if entry.lower() in words:
-                val = entries[entry]
-                valList = val.split(',,,')
-                meaning = valList[0]
-                usage = valList[1]
-                message = discord.Embed(
-                    title=f'{entry.lower()}',
-                    description=f'Here is the definition and usage of the entry {entry.lower()} entered on {valList[2]} at {valList[3]}',
-                    color=discord.Colour.red()
-                )
-                message.add_field(name='\n\u200b', value=f'Definition: {meaning}\nUsage: {usage}')
-                await interaction.response.send_message(embed=message, ephemeral=True)
-            else:
-                await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
+        if not self.dictFileExists():
+            await interaction.response.send_message('No entries in dictionary!', ephemeral=True)
+        else:
+            with open('dict.json', 'r') as f:
+                entries = json.loads(f.read())
+                words = entries.keys()
+                if entry.lower() in words:
+                    val = entries[entry]
+                    valList = val.split(',,,')
+                    meaning = valList[0]
+                    usage = valList[1]
+                    message = discord.Embed(
+                        title=f'{entry.lower()}',
+                        description=f'Here is the definition and usage of the entry {entry.lower()} entered on {valList[2]} at {valList[3]}',
+                        color=discord.Colour.red()
+                    )
+                    message.add_field(name='\n\u200b', value=f'Definition: {meaning}\nUsage: {usage}')
+                    await interaction.response.send_message(embed=message, ephemeral=True)
+                else:
+                    await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
 
     @dictGrp.command(name='edit', description='For editing an existing entry in the dictionary')
     async def editDict(self, interaction: discord.Interaction, entry: str):
-        with open('dict.json', 'r') as f:
-            entries = json.loads(f.read())
-            words = entries.keys()
-            if entry.lower() in words:
-                edit = editDictModal(entry.lower())
-                await interaction.response.send_modal(edit)
-            else:
-                await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
+        if not self.dictFileExists():
+            await interaction.response.send_message('No entries in dictionary!', ephemeral=True)
+        else:
+            with open('dict.json', 'r') as f:
+                entries = json.loads(f.read())
+                words = entries.keys()
+                if entry.lower() in words:
+                    edit = editDictModal(entry.lower())
+                    await interaction.response.send_modal(edit)
+                else:
+                    await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
+
+    def dictFileExists():
+        try:
+            with open('dict.json', 'r') as f:
+                return True
+        except FileNotFoundError:
+            return False
 
     ########## END OF DICTIONARY GROUP FUNCTIONS ##########
 
