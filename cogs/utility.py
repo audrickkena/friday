@@ -77,11 +77,12 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
     usage = discord.ui.TextInput(label='Usage of word/phrase', placeholder='How is it used?', required=True, max_length=4000, style=discord.TextStyle.long)
     def entryExists(self):
         with open('dict.json', 'r') as f:
-            temp = json.loads(f.read())
-            if self.word.value.lower() in temp.keys():
-                return True
-            else:
-                return False
+            if len(f.readlines()) > 0:
+                f.seek(0)
+                temp = json.loads(f.read())
+                if self.word.value.lower() in temp.keys():
+                    return True 
+            return False
 
     async def on_submit(self, interaction: discord.Interaction):
         if self.entryExists():
