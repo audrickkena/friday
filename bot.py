@@ -31,7 +31,8 @@ class Friday(commands.Bot):
         self.currGuild = None
         self.initial_extensions = [
             "cogs.utility",
-            "cogs.admin"
+            "cogs.admin",
+            'cogs.misc'
         ]
     async def setup_hook(self):
         """!
@@ -115,11 +116,6 @@ class Friday(commands.Bot):
             msg = f'{member.display_name} just left {before.channel}'
             channel = get(self.currGuild.channels, name='voiceless-spam', type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
-
-    async def on_command_error(self, ctx, error):
-        if(isinstance(error, commands.BadArgument)):
-            if(ctx.command.name == 'roll'):
-                await ctx.send('Roll was given unsuitable arguments! Please retry with valid integer inputs.')
     
     def getGuild(self):
         return self.currGuild
