@@ -1,6 +1,7 @@
 import discord
 import functools
 import random
+import datetime
 from discord.ext import commands
 from discord import app_commands
 
@@ -36,12 +37,26 @@ class Misc(commands.Cog):
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
     selamatGrp = app_commands.Group(name='selamat', description='For commands related to greeting others in the server')
+
     @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
     async def pagi(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
-            await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!')
+            await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
         else:
-            await interaction.response.send_message(f'User is \{user_mention}')
+            if self.checkTime() == 1:
+                await interaction.response.send_message('It is currently afternoon! Try /selamat petang {username}!', ephemeral=True)
+            elif self.checkTime() == 2:
+                await interaction.response.send_message('It is currently evening! Try /selamat malam {username}!', ephemeral=True)
+            else:
+                await interaction.response.send_message(f'{user_mention[2:-1]}', ephemeral=True)
+
+    def checkTime():
+        currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
+        if currDateTime.hour() < 12:
+            return 0
+        elif currDateTime.hour() > 18:
+            return 2
+        return 1
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Misc(bot))
