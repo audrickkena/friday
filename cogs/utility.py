@@ -137,6 +137,7 @@ class editDictModal(discord.ui.Modal):
                     newDict[self.word.value.lower()] = f'{self.meaning.value},,,{self.usage.value},,,{self.date},,,{self.time}'
             f.seek(0)
             f.write(json.dumps(newDict, indent=4))
+            await interaction.response.send_message(f'{self.word.value} has been added succesfully!', ephemeral=True)
     
 
 class Utility(commands.Cog):
