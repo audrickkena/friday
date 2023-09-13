@@ -90,7 +90,7 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
             return
         with open('dict.json', 'r+') as f:
             currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
-            date = currDateTime.strftime('%x')
+            date = currDateTime.strftime('%d/%m/%y')
             time = currDateTime.strftime('%X')
             if len(f.readlines()) > 0:
                 f.seek(0)
