@@ -36,7 +36,7 @@ class Misc(commands.Cog):
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
     selamatGrp = app_commands.Group(name='selamat', description='For commands related to greeting others in the server')
-    @selamatGrp.command(name='pagi', desciprtion="For greeting a fellow member in the morning")
+    @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
     async def pagi(self, interaction: discord.Interaction, user):
         await interaction.response.send_message(f'User is {user}')
 
