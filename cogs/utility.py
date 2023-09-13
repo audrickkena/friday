@@ -107,9 +107,16 @@ class addDictModal(discord.ui.Modal, title='Add a word/phrase'):
 
 # TODO: Edit dictionary modal
 class editDictModal(discord.ui.Modal):
-    def __init__(self, entry, meaning, usage, date, time):
+    def __init__(self, entry):
         super().__init__(title='Edit Dictionary Entry')
         self.entry = entry
+        with open('dict.json', 'r') as f:
+            data = json.loads(f.read())[entry]
+            t = data.split(',,,')
+            meaning = t[0]
+            usage = t[1]
+            date = t[2]
+            time = t[3]
         self.date = date
         self.time = time
         self.word = discord.ui.TextInput(label='Word/phrase to edit from dictionary', default=entry, required=True, max_length=100, style=discord.TextStyle.short)
@@ -250,7 +257,7 @@ class Utility(commands.Cog):
             if entry.lower() in words:
                 oldVal = entries[entry]
                 valList = oldVal.split(',,,')
-                await interaction.response.send_modal(editDictModal(entry, valList[0], valList[1], valList[2], valList[3]))
+                await interaction.response.send_modal(editDictModal(entry))
             else:
                 await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
 
