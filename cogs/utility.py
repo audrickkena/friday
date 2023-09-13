@@ -170,15 +170,13 @@ class Utility(commands.Cog):
             if(cogName == 'Admin' and interaction.guild.owner_id != interaction.user.id):
                 continue
             message = discord.Embed(
-                title=cogName,
-                description=f'{cogName} cog commands:\n',
+                title=f'{cogName} commands:\n',
                 color=discord.Colour.blue()
             )
             if(len(cog.get_app_commands()) > 0):
-                message.add_field(name='\n\u200b', value='**Slash commands**', inline=False)
                 self.getAppCommands(cog, message)
             if(len(cog.get_commands()) > 0):
-                message.add_field(name='\n\u200b', value='**Prefix commands**', inline=False)
+                message.add_field(name='\n\u200b', value='\n', inline=False)
                 self.getCommands(cog, message)
             embedList.append(message)
         await interaction.response.send_message(embeds=embedList, ephemeral=True)
