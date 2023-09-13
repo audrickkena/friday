@@ -50,7 +50,7 @@ class Misc(commands.Cog):
             else:
                 await interaction.response.send_message(f'{user_mention[2:-1]}', ephemeral=True)
 
-    def checkTime():
+    def checkTime(self):
         currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
         if currDateTime.hour() < 12:
             return 0
