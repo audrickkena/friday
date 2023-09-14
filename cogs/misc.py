@@ -49,7 +49,7 @@ class Misc(commands.Cog):
                 await interaction.response.send_message('It is currently evening! Try /selamat malam {username}!', ephemeral=True)
             else:
                 member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
-                sender = interaction.member
+                sender = interaction.user
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {interaction.user.display_name}') == None:
                     role = await interaction.guild.create_role(name=f'rude to {interaction.user.display_name}')
                 else:
