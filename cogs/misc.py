@@ -16,7 +16,7 @@ class Misc(commands.Cog):
 
     @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f'hello', ephemeral=True)
+        await interaction.response.send_message(f'hello {interaction.user.status}', ephemeral=True)
 
     @app_commands.command(name='ping', description="For really bored people")
     async def ping(self, interaction: discord.Interaction):
@@ -66,7 +66,11 @@ class Misc(commands.Cog):
                 return True
         except FileNotFoundError:
             return False
+        
 
+
+    #######################################
+    ########## SELAMAT FUNCTIONS ##########
     selamatGrp = app_commands.Group(name='selamat', description='For commands related to greeting others in the server')
 
     @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
@@ -151,6 +155,11 @@ class Misc(commands.Cog):
         elif currDateTime.hour > 18:
             return 2
         return 1
+    
+    ########## SELAMAT FUNCTIONS ##########
+    #######################################
+
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Misc(bot))
