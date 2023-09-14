@@ -49,16 +49,19 @@ class Misc(commands.Cog):
                 await interaction.response.send_message('It is currently evening! Try /selamat malam {username}!', ephemeral=True)
             else:
                 member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
+                sender = interaction.user.id
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {interaction.user.display_name}') == None:
                     role = await interaction.guild.create_role(name=f'rude to {interaction.user.display_name}')
                 else:
                     role = discord.utils.get(interaction.guild.roles, name=f'rude to {interaction.user.display_name}')
-                    if member.get_role(role.id) != None:
-                        await member.remove_roles(role)
-                        await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{interaction.user.id}>')
-                        return
+                    rudeRole = discord.utils.get(interaction.guild.roles, name=f'rude to {member.display_name}')
+                    if rudeRole != None:
+                        if sender.get_role(rudeRole.id) != None:
+                            await member.remove_roles(role)
+                            await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{sender}>')
+                            return
                 await member.add_roles(role)
-                await interaction.response.send_message(f'{user_mention} you have been greeted by <@{interaction.user.id}>')
+                await interaction.response.send_message(f'{user_mention} you have been greeted by <@{sender}>')
 
     def checkTime(self):
         currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
