@@ -63,6 +63,56 @@ class Misc(commands.Cog):
                 await member.add_roles(role)
                 await interaction.response.send_message(f'{user_mention} you have been greeted by <@{sender.id}>')
 
+    @selamatGrp.command(name='petang', description="For greeting a fellow member in the afternoon")
+    async def petang(self, interaction: discord.Interaction, user_mention: str):
+        if user_mention[1] != '@' or user_mention[2] == '&':
+            await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
+        else:
+            if self.checkTime() == 0:
+                await interaction.response.send_message('It is currently morning! Try /selamat pagi {username}!', ephemeral=True)
+            elif self.checkTime() == 2:
+                await interaction.response.send_message('It is currently evening! Try /selamat malam {username}!', ephemeral=True)
+            else:
+                member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
+                sender = interaction.user
+                if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
+                    role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
+                else:
+                    role = discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}')
+                    rudeRole = discord.utils.get(interaction.guild.roles, name=f'rude to {member.display_name}')
+                    if rudeRole != None:
+                        if sender.get_role(rudeRole.id) != None:
+                            await sender.remove_roles(rudeRole)
+                            await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{sender.id}>')
+                            return
+                await member.add_roles(role)
+                await interaction.response.send_message(f'{user_mention} you have been greeted by <@{sender.id}>')
+
+    @selamatGrp.command(name='malam', description="For greeting a fellow member in the evening")
+    async def malam(self, interaction: discord.Interaction, user_mention: str):
+        if user_mention[1] != '@' or user_mention[2] == '&':
+            await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
+        else:
+            if self.checkTime() == 1:
+                await interaction.response.send_message('It is currently afternoon! Try /selamat petang {username}!', ephemeral=True)
+            elif self.checkTime() == 0:
+                await interaction.response.send_message('It is currently morning! Try /selamat pagi {username}!', ephemeral=True)
+            else:
+                member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
+                sender = interaction.user
+                if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
+                    role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
+                else:
+                    role = discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}')
+                    rudeRole = discord.utils.get(interaction.guild.roles, name=f'rude to {member.display_name}')
+                    if rudeRole != None:
+                        if sender.get_role(rudeRole.id) != None:
+                            await sender.remove_roles(rudeRole)
+                            await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{sender.id}>')
+                            return
+                await member.add_roles(role)
+                await interaction.response.send_message(f'{user_mention} you have been greeted by <@{sender.id}>')
+
     def checkTime(self):
         currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
         if currDateTime.hour < 12:
