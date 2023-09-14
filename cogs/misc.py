@@ -2,6 +2,7 @@ import discord
 import functools
 import random
 import datetime
+import json
 from discord.ext import commands
 from discord import app_commands
 
@@ -15,7 +16,7 @@ class Misc(commands.Cog):
 
     @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
-        await interaction.response.send_message('hello', ephemeral=True)
+        await interaction.response.send_message(f'hello {interaction.user.raw_status}', ephemeral=True)
 
     @app_commands.command(name='ping', description="For really bored people")
     async def ping(self, interaction: discord.Interaction):
@@ -35,6 +36,25 @@ class Misc(commands.Cog):
             msgTotal = 'Total roll value: ' + str(functools.reduce(lambda a, b: int(a) + int(b), result))
             msgMax = str(dice_num * sides_num)
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
+
+
+    # TODO: /popoff command
+    # @app_commands.command(name='popoff', description='For when a user is popping off')
+    # async def popoff(self, interaction: discord.Interaction, user_mention: str):
+    #     if user_mention[1] != '@' or user_mention[2] == '&':
+    #         await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
+    #     else:
+    #         if not self.fileExists('misc/popoff.json'):
+    #             with open('misc/popoff.json', 'w') as f:
+    #                 id = user_mention[2:-1]
+    #                 f.write(json.dumps({id : '1'}, indent=4))
+    
+    # def fileExists(self, filename):
+    #     try:
+    #         with open(filename, 'r') as f:
+    #             return True
+    #     except FileNotFoundError:
+    #         return False
 
     selamatGrp = app_commands.Group(name='selamat', description='For commands related to greeting others in the server')
 
