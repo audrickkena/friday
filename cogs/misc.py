@@ -39,22 +39,33 @@ class Misc(commands.Cog):
 
 
     # TODO: /popoff command
-    # @app_commands.command(name='popoff', description='For when a user is popping off')
-    # async def popoff(self, interaction: discord.Interaction, user_mention: str):
-    #     if user_mention[1] != '@' or user_mention[2] == '&':
-    #         await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
-    #     else:
-    #         if not self.fileExists('misc/popoff.json'):
-    #             with open('misc/popoff.json', 'w') as f:
-    #                 id = user_mention[2:-1]
-    #                 f.write(json.dumps({id : '1'}, indent=4))
+    @app_commands.command(name='popoff', description='For when a user is popping off')
+    async def popoff(self, interaction: discord.Interaction, user_mention: str):
+        if user_mention[1] != '@' or user_mention[2] == '&':
+            await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mentioned properly!', ephemeral=True)
+        else:
+            id = user_mention[2:-1]
+            if not self.fileExists('misc/popoff.json'):
+                with open('misc/popoff.json', 'w') as f:
+                    f.write(json.dumps({id : '1'}, indent=4))
+                    await interaction.response.send_message(f'{user_mention} has popped off 1 times')
+            else:
+                with open('misc/popoff.json', 'r+') as f:
+                    old = json.loads(f.read())
+                    if id in old.keys():
+                        old[id] = str(int(old[id]) + 1)
+                    else:
+                        old[id] = '1'
+                    f.seek(0)
+                    f.write(json.dumps(old, indent=4))
+                    await interaction.response.send_message(f'{user_mention} has popped off {old[id]} times')
     
-    # def fileExists(self, filename):
-    #     try:
-    #         with open(filename, 'r') as f:
-    #             return True
-    #     except FileNotFoundError:
-    #         return False
+    def fileExists(self, filename):
+        try:
+            with open(filename, 'r') as f:
+                return True
+        except FileNotFoundError:
+            return False
 
     selamatGrp = app_commands.Group(name='selamat', description='For commands related to greeting others in the server')
 
@@ -86,7 +97,7 @@ class Misc(commands.Cog):
     @selamatGrp.command(name='petang', description="For greeting a fellow member in the afternoon")
     async def petang(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
-            await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
+            await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mentioned properly!', ephemeral=True)
         else:
             if self.checkTime() == 0:
                 await interaction.response.send_message('It is currently morning! Try /selamat pagi {username}!', ephemeral=True)
