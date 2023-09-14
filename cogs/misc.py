@@ -16,8 +16,7 @@ class Misc(commands.Cog):
 
     @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
-        stat = interaction.guild.get_member(interaction.user.id).status
-        await interaction.response.send_message(f'hello {stat == discord.Status.online}', ephemeral=True)
+        await interaction.response.send_message(f'hello {interaction.user.display_name}', ephemeral=True)
 
     @app_commands.command(name='ping', description="For really bored people")
     async def ping(self, interaction: discord.Interaction):
@@ -85,23 +84,25 @@ class Misc(commands.Cog):
                 await interaction.response.send_message('It is currently evening! Try /selamat malam {username}!', ephemeral=True)
             else:
                 member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
+                sender = interaction.user
                 if member.status == discord.Status.offline or member.status == discord.Status.dnd:
                     await interaction.response.send_message(f'{member.display_name} is not available! Wait till they\'re free and online to greet them!', ephemeral=True)
                     return
+                if sender.status == discord.Status.offline or sender.status == discord.Status.dnd:
+                    await interaction.response.send_message(f'You are appearing busy or offline! Go online for you to greet your friends!', ephemeral=True)
+                    return 
+                if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
+                    role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
                 else:
-                    sender = interaction.user
-                    if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
-                        role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
-                    else:
-                        role = discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}')
-                        rudeRole = discord.utils.get(interaction.guild.roles, name=f'rude to {member.display_name}')
-                        if rudeRole != None:
-                            if sender.get_role(rudeRole.id) != None:
-                                await sender.remove_roles(rudeRole)
-                                await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{sender.id}>')
-                                return
-                    await member.add_roles(role)
-                    await interaction.response.send_message(f'{user_mention} you have been greeted by <@{sender.id}>')
+                    role = discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}')
+                    rudeRole = discord.utils.get(interaction.guild.roles, name=f'rude to {member.display_name}')
+                    if rudeRole != None:
+                        if sender.get_role(rudeRole.id) != None:
+                            await sender.remove_roles(rudeRole)
+                            await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{sender.id}>')
+                            return
+                await member.add_roles(role)
+                await interaction.response.send_message(f'{user_mention} you have been greeted by <@{sender.id}>')
 
     @selamatGrp.command(name='petang', description="For greeting a fellow member in the afternoon")
     async def petang(self, interaction: discord.Interaction, user_mention: str):
