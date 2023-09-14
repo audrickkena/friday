@@ -50,10 +50,10 @@ class Misc(commands.Cog):
             else:
                 member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
                 sender = interaction.user
-                if discord.utils.get(interaction.guild.roles, name=f'rude to {interaction.user.display_name}') == None:
-                    role = await interaction.guild.create_role(name=f'rude to {interaction.user.display_name}')
+                if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
+                    role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
                 else:
-                    role = discord.utils.get(interaction.guild.roles, name=f'rude to {interaction.user.display_name}')
+                    role = discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}')
                     rudeRole = discord.utils.get(interaction.guild.roles, name=f'rude to {member.display_name}')
                     if rudeRole != None:
                         if sender.get_role(rudeRole.id) != None:
