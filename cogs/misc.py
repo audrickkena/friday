@@ -54,10 +54,10 @@ class Misc(commands.Cog):
                 else:
                     role = discord.utils.get(interaction.guild.roles, name=f'rude to {interaction.user.display_name}')
                     if member.get_role(role.id) != None:
-                        member.remove_roles(role)
+                        await member.remove_roles(role)
                         await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{interaction.user.id}>', ephemeral=True)
                         return
-                member.add_roles(role)
+                await member.add_roles(role)
                 await interaction.response.send_message(f'{user_mention} you have been greeted by <@{interaction.user.id}>', ephemeral=True)
 
     def checkTime(self):
