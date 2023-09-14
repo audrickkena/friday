@@ -12,6 +12,7 @@ intents.messages = True
 intents.message_content = True
 intents.members = True
 intents.voice_states = True
+intents.presences = True
 
 ## LOADING ENVIRONMENT
 load_dotenv()
