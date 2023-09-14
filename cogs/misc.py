@@ -57,7 +57,7 @@ class Misc(commands.Cog):
                     rudeRole = discord.utils.get(interaction.guild.roles, name=f'rude to {member.display_name}')
                     if rudeRole != None:
                         if sender.get_role(rudeRole.id) != None:
-                            await sender.remove_roles(role)
+                            await sender.remove_roles(rudeRole)
                             await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{sender.id}>')
                             return
                 await member.add_roles(role)
