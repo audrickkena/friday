@@ -55,10 +55,10 @@ class Misc(commands.Cog):
                     role = discord.utils.get(interaction.guild.roles, name=f'rude to {interaction.user.display_name}')
                     if member.get_role(role.id) != None:
                         await member.remove_roles(role)
-                        await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{interaction.user.id}>', ephemeral=True)
+                        await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{interaction.user.id}>')
                         return
                 await member.add_roles(role)
-                await interaction.response.send_message(f'{user_mention} you have been greeted by <@{interaction.user.id}>', ephemeral=True)
+                await interaction.response.send_message(f'{user_mention} you have been greeted by <@{interaction.user.id}>')
 
     def checkTime(self):
         currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
