@@ -16,7 +16,7 @@ class Misc(commands.Cog):
 
     @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f'hello {interaction.user.raw_status}', ephemeral=True)
+        await interaction.response.send_message(f'hello {interaction.user.status}', ephemeral=True)
 
     @app_commands.command(name='ping', description="For really bored people")
     async def ping(self, interaction: discord.Interaction):
