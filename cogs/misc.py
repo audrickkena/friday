@@ -58,10 +58,10 @@ class Misc(commands.Cog):
                     if rudeRole != None:
                         if sender.get_role(rudeRole.id) != None:
                             await sender.remove_roles(role)
-                            await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{sender.display_name}>')
+                            await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{sender.id}>')
                             return
                 await member.add_roles(role)
-                await interaction.response.send_message(f'{user_mention} you have been greeted by <@{sender.display_name}>')
+                await interaction.response.send_message(f'{user_mention} you have been greeted by <@{sender.id}>')
 
     def checkTime(self):
         currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
