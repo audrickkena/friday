@@ -84,7 +84,7 @@ class Misc(commands.Cog):
                 await interaction.response.send_message('It is currently evening! Try /selamat malam {username}!', ephemeral=True)
             else:
                 member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
-                sender = interaction.user
+                sender = interaction.guild.get_member(interaction.user.id)
                 if member.status == discord.Status.offline or member.status == discord.Status.dnd:
                     await interaction.response.send_message(f'{member.display_name} is not available! Wait till they\'re free and online to greet them!', ephemeral=True)
                     return
@@ -115,7 +115,7 @@ class Misc(commands.Cog):
                 await interaction.response.send_message('It is currently evening! Try /selamat malam {username}!', ephemeral=True)
             else:
                 member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
-                sender = interaction.user
+                sender = interaction.guild.get_member(interaction.user.id)
                 if member.status == discord.Status.offline or member.status == discord.Status.dnd:
                     await interaction.response.send_message(f'{member.display_name} is not available! Wait till they\'re free and online to greet them!', ephemeral=True)
                     return
@@ -146,7 +146,7 @@ class Misc(commands.Cog):
                 await interaction.response.send_message('It is currently morning! Try /selamat pagi {username}!', ephemeral=True)
             else:
                 member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
-                sender = interaction.user
+                sender = interaction.guild.get_member(interaction.user.id)
                 if member.status == discord.Status.offline or member.status == discord.Status.dnd:
                     await interaction.response.send_message(f'{member.display_name} is not available! Wait till they\'re free and online to greet them!', ephemeral=True)
                     return
