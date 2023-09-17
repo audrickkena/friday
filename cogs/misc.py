@@ -194,7 +194,7 @@ class Misc(commands.Cog):
                     # dates saved in YYYY-MM-DD-HH-MIN format
                     pastDate = datetime.datetime(int(entries[receiverID].split('-')[0]), int(entries[receiverID].split('-')[1]), int(entries[receiverID].split('-')[2]), int(entries[receiverID].split('-')[3]), int(entries[receiverID].split('-')[4]))
                     if pastDate + datetime.timedelta(days=1) > currDate: # if it's been 1 day since the previous selamat
-                        print((datetime.timedelta(days=1) - (currDate - pastDate)).strfrtime('%H-%M'))
+                        print(datetime.timedelta(days=1) - (currDate - pastDate))
                         return False
                 entries[receiverID] = currDate.strftime('%Y-%m-%d-%H-%M')
                 f.seek(0)
