@@ -151,6 +151,8 @@ class Utility(commands.Cog):
     async def on_ready(self):
         print('Utility cog loaded.')
     
+    # TODO: /remindme command for reminding user of something
+
     @app_commands.command(name="teams", description='For making teams based on the selected users')
     async def teams(self, interaction: discord.Interaction):
         selectUsers = SelectUsers(interaction.channel)
@@ -160,6 +162,7 @@ class Utility(commands.Cog):
     
 
 
+    ####################################
     ########## HELP FUNCTIONS ##########
 
     @app_commands.command(name='help', description='For getting information on usable commands')
@@ -207,9 +210,11 @@ class Utility(commands.Cog):
             embed.add_field(name=command.name, value=message, inline=False)
 
     ########## END OF HELP FUNCTIONS ##########
+    ###########################################
 
 
 
+    ################################################
     ########## DICTIONARY GROUP FUNCTIONS ##########
     
     # TODO: commands for server dictionary: /dict remove(admin only?)
@@ -286,35 +291,20 @@ class Utility(commands.Cog):
             return False
 
     ########## END OF DICTIONARY GROUP FUNCTIONS ##########
+    #######################################################
 
 
 
+    ###################################################
     ########## START OF POLL GROUP FUNCTIONS ##########
-    # TODO: Implement a poll commands such as /poll create /poll start /poll end /poll del /poll update(can only update when poll is not started)
+
+    # TODO: Implement a poll commands such as /poll create /poll start /poll end /poll results /poll del /poll update(can only update when poll is not started)
     ######## check sequence diagram for poll command possible flow
+
     ########## END OF POLL GROUP FUNCTIONS ##########
+    #################################################
 
 
 
-    # @app_commands.command(name="close")
-    # @app_commands.default_permissions(administrator=True)
-    # async def close(self):
-    #     await self.bot.close(self)
-
-    # @tasks.loop(hours=24.0)
-    # async def trogOTD(self):
-    #     await self.bot.wait_until_ready()
-    #     guild = discord.utils.get(self.bot.guilds, name='Dankinton')
-    #     member = random.choice(guild.members)
-    #     while(discord.utils.get(member.roles, id=self.roleDict['Lvl 10 Boss']) == None and discord.utils.get(member.roles, id=self.roleDict['Lvl 100 Mafia Warlord']) == None):
-    #         member = random.choice(guild.members)
-    #     print(f'{member.name} has been chosen to be today\'s trog!')
-    #     await member.add_roles(guild.get_role(self.roleDict['Trog']))
-    #     ctx = discord.utils.get(guild.channels, name='command-spam')
-    #     await ctx.send(content=f'{member.name}({member.mention}) is today\'s trog!')
-    #     if(self.prevTrog != None):
-    #         await self.prevTrog.remove_roles(guild.get_role(self.roleDict['Trog']))
-    #     self.prevTrog = member
-    
 async def setup(bot: commands.Bot):
     await bot.add_cog(Utility(bot))
