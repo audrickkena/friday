@@ -5,5 +5,8 @@
 roles.json
 roles_test.json
 
+# Ignore seq dia files
+*.uxf
+
 # ignore python cache
 cogs/__pycache__
