@@ -194,8 +194,8 @@ class Misc(commands.Cog):
                     # dates saved in YYYY-MM-DD-HH-MIN format
                     pastDate = datetime.datetime(int(entries[receiverID].split('-')[0]), int(entries[receiverID].split('-')[1]), int(entries[receiverID].split('-')[2]), int(entries[receiverID].split('-')[3]), int(entries[receiverID].split('-')[4]))
                     if pastDate + datetime.timedelta(days=1) > currDate: # if it's been 1 day since the previous selamat
-                        countdown = datetime.timedelta(days=1) - (currDate - pastDate)
-                        print(str(countdown))
+                        countdown = str(datetime.timedelta(days=1) - (currDate - pastDate)).split('.')[0]
+                        print(f'Time left till next greeting: {countdown}')
                         return False
                 entries[receiverID] = currDate.strftime('%Y-%m-%d-%H-%M')
                 f.seek(0)
