@@ -91,8 +91,9 @@ class Misc(commands.Cog):
                 if sender.status == discord.Status.offline or sender.status == discord.Status.dnd:
                     await interaction.response.send_message(f'You are appearing busy or offline! Go online for you to greet your friends!', ephemeral=True)
                     return 
-                if self.checkCooldown(str(sender.id), str(member.id)) == False:
-                    await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again later!', ephemeral=True)
+                if self.checkCooldown(str(sender.id), str(member.id))[0] == False:
+                    countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
+                    await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
                     return 
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
                     role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
@@ -126,7 +127,8 @@ class Misc(commands.Cog):
                     await interaction.response.send_message(f'You are appearing busy or offline! Go online for you to greet your friends!', ephemeral=True)
                     return 
                 if self.checkCooldown(str(sender.id), str(member.id)) == False:
-                    await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again later!', ephemeral=True)
+                    countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
+                    await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
                     return 
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
                     role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
@@ -160,7 +162,8 @@ class Misc(commands.Cog):
                     await interaction.response.send_message(f'You are appearing busy or offline! Go online for you to greet your friends!', ephemeral=True)
                     return 
                 if self.checkCooldown(str(sender.id), str(member.id)) == False:
-                    await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again later!', ephemeral=True)
+                    countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
+                    await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
                     return 
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
                     role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
@@ -194,9 +197,8 @@ class Misc(commands.Cog):
                     # dates saved in YYYY-MM-DD-HH-MIN format
                     pastDate = datetime.datetime(int(entries[receiverID].split('-')[0]), int(entries[receiverID].split('-')[1]), int(entries[receiverID].split('-')[2]), int(entries[receiverID].split('-')[3]), int(entries[receiverID].split('-')[4]))
                     if pastDate + datetime.timedelta(days=1) > currDate: # if it's been 1 day since the previous selamat
-                        countdown = str(datetime.timedelta(days=1) - (currDate - pastDate)).split('.')[0]
-                        print(f'Time left till next greeting: {countdown}')
-                        return False
+                        countdown = str(datetime.timedelta(days=1) - (currDate - pastDate)).split('.')[0].split(':')
+                        return [False, countdown]
                 entries[receiverID] = currDate.strftime('%Y-%m-%d-%H-%M')
                 f.seek(0)
                 f.write(json.dumps(entries, indent=4))
@@ -204,7 +206,7 @@ class Misc(commands.Cog):
             with open(f'{senderID}.json', 'w') as f:
                 entries[receiverID] = currDate.strftime('%Y-%m-%d-%H-%M')
                 f.write(json.dumps(entries, indent=4))
-        return True
+        return [True, None]
 
 
     
