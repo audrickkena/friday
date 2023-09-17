@@ -126,7 +126,7 @@ class Misc(commands.Cog):
                 if sender.status == discord.Status.offline or sender.status == discord.Status.dnd:
                     await interaction.response.send_message(f'You are appearing busy or offline! Go online for you to greet your friends!', ephemeral=True)
                     return 
-                if self.checkCooldown(str(sender.id), str(member.id)) == False:
+                if self.checkCooldown(str(sender.id), str(member.id))[0] == False:
                     countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
                     await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
                     return 
@@ -161,7 +161,7 @@ class Misc(commands.Cog):
                 if sender.status == discord.Status.offline or sender.status == discord.Status.dnd:
                     await interaction.response.send_message(f'You are appearing busy or offline! Go online for you to greet your friends!', ephemeral=True)
                     return 
-                if self.checkCooldown(str(sender.id), str(member.id)) == False:
+                if self.checkCooldown(str(sender.id), str(member.id))[0] == False:
                     countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
                     await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
                     return 
