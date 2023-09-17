@@ -8,8 +8,11 @@ a means of practice in python and developing bots.
 * Voice activity announcement (when user joins or leaves a voice channel, a tts message is sent to a specified text channel)
 * /roll command for rolling dices (usage: `!roll {number of dice} {number of sides of each dice}`)
 * /teams command for splitting selected users into a specified number of teams
+* /dict command group for server specific slang
+* /popoff command for members in server who popoff
 
 ## Planned Features
 * votekick function (being debated)
 * music streaming
-* dictionary of server slang (viewing, adding/suggesting, deleting)
+* poll function
+* reminder function
