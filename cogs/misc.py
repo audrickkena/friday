@@ -38,7 +38,6 @@ class Misc(commands.Cog):
             await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
 
 
-    # TODO: /popoff command
     @app_commands.command(name='popoff', description='For when a user is popping off')
     async def popoff(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
