@@ -179,7 +179,7 @@ class Misc(commands.Cog):
     
     # check misc/selamat/senderID.json 
     def checkCooldown(self, senderID : str, receiverID : str):
-        currDate = datetime.datetime.now()
+        currDate = datetime.datetime.now() + datetime.timedelta(hours=8)
         entries = {}
         if self.fileExists(f'{senderID}.json'):
             with open(f'{senderID}.json', 'r+') as f:
