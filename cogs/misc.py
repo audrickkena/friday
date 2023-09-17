@@ -91,6 +91,9 @@ class Misc(commands.Cog):
                 if sender.status == discord.Status.offline or sender.status == discord.Status.dnd:
                     await interaction.response.send_message(f'You are appearing busy or offline! Go online for you to greet your friends!', ephemeral=True)
                     return 
+                if self.checkCooldown(str(sender.id), str(member.id)) == False:
+                    await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again later!', ephemeral=True)
+                    return 
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
                     role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
                 else:
@@ -121,6 +124,9 @@ class Misc(commands.Cog):
                     return
                 if sender.status == discord.Status.offline or sender.status == discord.Status.dnd:
                     await interaction.response.send_message(f'You are appearing busy or offline! Go online for you to greet your friends!', ephemeral=True)
+                    return 
+                if self.checkCooldown(str(sender.id), str(member.id)) == False:
+                    await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again later!', ephemeral=True)
                     return 
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
                     role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
