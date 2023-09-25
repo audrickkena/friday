@@ -220,7 +220,7 @@ class Utility(commands.Cog):
     # TODO: commands for server dictionary: /dict remove(admin only?)
     dictGrp = app_commands.Group(name='dict', description='For commands related to the server\'s dictionary')
 
-    async def dictAuto(interaction: discord.Interaction, current: str) -> typing.List[app_commands.Choice[str]]:
+    async def dictAuto(interaction: discord.Interaction, current: str) -> list[app_commands.Choice[str]]:
         data = []
         with open('dict.json', 'r') as f:
             entries = json.loads(f.read())
