@@ -99,7 +99,7 @@ class Misc(commands.Cog):
                     countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
                     await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
                     return 
-                if int(user_mention) == self.bot.application_id:
+                if int(user_mention[2:-1]) == self.bot.application_id:
                     await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat pagi to you too!')
                     return
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
@@ -137,7 +137,7 @@ class Misc(commands.Cog):
                     countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
                     await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
                     return 
-                if int(user_mention) == self.bot.application_id:
+                if int(user_mention[2:-1]) == self.bot.application_id:
                     await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat petang to you too!')
                     return
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
@@ -175,7 +175,7 @@ class Misc(commands.Cog):
                     countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
                     await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
                     return 
-                if int(user_mention) == self.bot.application_id:
+                if int(user_mention[2:-1]) == self.bot.application_id:
                     await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat pagi to you too!')
                     return
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
