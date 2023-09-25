@@ -270,7 +270,7 @@ class Utility(commands.Cog):
                     await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
 
     @getDict.autocomplete('entry')
-    async def dictAuto(interaction: discord.Interaction, current: str) -> list[app_commands.Choice[str]]:
+    async def dictAuto(interaction: discord.Interaction, current: str):
         data = []
         with open('dict.json', 'r') as f:
             entries = json.loads(f.read())
