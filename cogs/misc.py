@@ -176,7 +176,7 @@ class Misc(commands.Cog):
                     await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
                     return 
                 if int(user_mention[2:-1]) == self.bot.application_id:
-                    await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat pagi to you too!')
+                    await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat malam to you too!')
                     return
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
                     role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
@@ -203,7 +203,7 @@ class Misc(commands.Cog):
     def checkCooldown(self, senderID : str, receiverID : str):
         currDate = datetime.datetime.now() + datetime.timedelta(hours=8)
         entries = {}
-        if self.fileExists(f'{senderID}.json'):
+        if self.fileExists(f'misc/selamat/{senderID}.json'):
             with open(f'{senderID}.json', 'r+') as f:
                 entries = json.loads(f.read())
                 if receiverID in entries.keys():
@@ -216,7 +216,7 @@ class Misc(commands.Cog):
                 f.seek(0)
                 f.write(json.dumps(entries, indent=4))
         else:
-            with open(f'{senderID}.json', 'w') as f:
+            with open(f'misc/selamat/{senderID}.json', 'w') as f:
                 entries[receiverID] = currDate.strftime('%Y-%m-%d-%H-%M')
                 f.write(json.dumps(entries, indent=4))
         return [True, None]
