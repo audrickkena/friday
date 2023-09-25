@@ -76,7 +76,6 @@ class Misc(commands.Cog):
     ########## SELAMAT FUNCTIONS ##########
     selamatGrp = app_commands.Group(name='selamat', description='For commands related to greeting others in the server')
 
-    # TODO: CLEAN UP SELAMAT COMMANDS AND CONSOLIDATE SIMILAR FUNCTIONS INTO SEPARATE FUNCTION CALLABLE BY EACH COMMAND
     @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
     async def pagi(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
@@ -89,31 +88,8 @@ class Misc(commands.Cog):
             else:
                 member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
                 sender = interaction.guild.get_member(interaction.user.id)
-                if member.status == discord.Status.offline or member.status == discord.Status.dnd:
-                    await interaction.response.send_message(f'{member.display_name} is not available! Wait till they\'re free and online to greet them!', ephemeral=True)
-                    return
-                if sender.status == discord.Status.offline or sender.status == discord.Status.dnd:
-                    await interaction.response.send_message(f'You are appearing busy or offline! Go online for you to greet your friends!', ephemeral=True)
-                    return 
-                if self.checkCooldown(str(sender.id), str(member.id))[0] == False:
-                    countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
-                    await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
-                    return 
-                if int(user_mention[2:-1]) == self.bot.application_id:
-                    await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat pagi to you too!')
-                    return
-                if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
-                    role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
-                else:
-                    role = discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}')
-                rudeRole = discord.utils.get(interaction.guild.roles, name=f'rude to {member.display_name}')
-                if rudeRole != None:
-                    if sender.get_role(rudeRole.id) != None:
-                        await sender.remove_roles(rudeRole)
-                        await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{sender.id}>')
-                        return
-                await member.add_roles(role)
-                await interaction.response.send_message(f'{user_mention} you have been greeted by <@{sender.id}>')
+                greeting = 'Selamat pagi'
+                await self.greet(interaction, sender, member, user_mention, greeting)
 
     @selamatGrp.command(name='petang', description="For greeting a fellow member in the afternoon")
     async def petang(self, interaction: discord.Interaction, user_mention: str):
@@ -127,31 +103,8 @@ class Misc(commands.Cog):
             else:
                 member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
                 sender = interaction.guild.get_member(interaction.user.id)
-                if member.status == discord.Status.offline or member.status == discord.Status.dnd:
-                    await interaction.response.send_message(f'{member.display_name} is not available! Wait till they\'re free and online to greet them!', ephemeral=True)
-                    return
-                if sender.status == discord.Status.offline or sender.status == discord.Status.dnd:
-                    await interaction.response.send_message(f'You are appearing busy or offline! Go online for you to greet your friends!', ephemeral=True)
-                    return 
-                if self.checkCooldown(str(sender.id), str(member.id))[0] == False:
-                    countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
-                    await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
-                    return 
-                if int(user_mention[2:-1]) == self.bot.application_id:
-                    await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat petang to you too!')
-                    return
-                if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
-                    role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
-                else:
-                    role = discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}')
-                rudeRole = discord.utils.get(interaction.guild.roles, name=f'rude to {member.display_name}')
-                if rudeRole != None:
-                    if sender.get_role(rudeRole.id) != None:
-                        await sender.remove_roles(rudeRole)
-                        await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{sender.id}>')
-                        return
-                await member.add_roles(role)
-                await interaction.response.send_message(f'{user_mention} you have been greeted by <@{sender.id}>')
+                greeting = 'Selamat petang'
+                await self.greet(interaction, sender, member, user_mention, greeting)
 
     @selamatGrp.command(name='malam', description="For greeting a fellow member in the evening")
     async def malam(self, interaction: discord.Interaction, user_mention: str):
@@ -165,10 +118,11 @@ class Misc(commands.Cog):
             else:
                 member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
                 sender = interaction.guild.get_member(interaction.user.id)
-                await self.greet(interaction, sender, member, user_mention)
+                greeting = 'Selamat malam'
+                await self.greet(interaction, sender, member, user_mention, greeting)
                 
 
-    async def greet(self, interaction: discord.Interaction, sender, member, user_mention):
+    async def greet(self, interaction: discord.Interaction, sender, member, user_mention, greeting):
         if member.status == discord.Status.offline or member.status == discord.Status.dnd:
             await interaction.response.send_message(f'{member.display_name} is not available! Wait till they\'re free and online to greet them!', ephemeral=True)
             return
@@ -180,7 +134,7 @@ class Misc(commands.Cog):
             await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
             return 
         if int(user_mention[2:-1]) == self.bot.application_id:
-            await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat malam to you too!')
+            await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! {greeting} to you too!')
             return
         if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
             role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
