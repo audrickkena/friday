@@ -220,15 +220,6 @@ class Utility(commands.Cog):
     # TODO: commands for server dictionary: /dict remove(admin only?)
     dictGrp = app_commands.Group(name='dict', description='For commands related to the server\'s dictionary')
 
-    async def dictAuto(interaction: discord.Interaction, current: str) -> list[app_commands.Choice[str]]:
-        data = []
-        with open('dict.json', 'r') as f:
-            entries = json.loads(f.read())
-            for entry in entries.keys():
-                if current.lower() in entry.lower():
-                    data.append(app_commands.Choice(name=entry, value=entry))
-        return data
-
     @dictGrp.command(name='list', description='For listing contents of server dictionary')
     async def listDict(self, interaction: discord.Interaction):
         if not self.dictFileExists():
@@ -256,7 +247,6 @@ class Utility(commands.Cog):
         await interaction.response.send_modal(addDictModal())
 
     @dictGrp.command(name='get', description='For getting the meaning and usage of a word or phrase in the server dictionary')
-    @app_commands.autocomplete(entry=dictAuto)
     async def getDict(self, interaction: discord.Interaction, entry: str):
         if not self.dictFileExists():
             await interaction.response.send_message('No entries in dictionary!', ephemeral=True)
@@ -278,6 +268,16 @@ class Utility(commands.Cog):
                     await interaction.response.send_message(embed=message, ephemeral=True)
                 else:
                     await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
+
+    @getDict.autocomplete('entry')
+    async def dictAuto(interaction: discord.Interaction, current: str) -> list[app_commands.Choice[str]]:
+        data = []
+        with open('dict.json', 'r') as f:
+            entries = json.loads(f.read())
+            for entry in entries.keys():
+                if current.lower() in entry.lower():
+                    data.append(app_commands.Choice(name=entry, value=entry))
+        return data
 
     @dictGrp.command(name='edit', description='For editing an existing entry in the dictionary')
     async def editDict(self, interaction: discord.Interaction, entry: str):
