@@ -58,6 +58,10 @@ class Misc(commands.Cog):
                     f.seek(0)
                     f.write(json.dumps(old, indent=4))
                     await interaction.response.send_message(f'{user_mention} has popped off {old[id]} times')
+            if int(id) == self.bot.application_id:
+                sender = interaction.guild.get_member(interaction.user.id)
+                channel = self.bot.get_channel(interaction.channel_id)
+                await channel.send(f'Danki thanks {sender.display_name} for the popoff!')
     
     def fileExists(self, filename):
         try:
@@ -72,6 +76,7 @@ class Misc(commands.Cog):
     ########## SELAMAT FUNCTIONS ##########
     selamatGrp = app_commands.Group(name='selamat', description='For commands related to greeting others in the server')
 
+    # TODO: CLEAN UP SELAMAT COMMANDS AND CONSOLIDATE SIMILAR FUNCTIONS INTO SEPARATE FUNCTION CALLABLE BY EACH COMMAND
     @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
     async def pagi(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
@@ -94,6 +99,9 @@ class Misc(commands.Cog):
                     countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
                     await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
                     return 
+                if int(user_mention) == self.bot.application_id:
+                    await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat pagi to you too!')
+                    return
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
                     role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
                 else:
@@ -129,6 +137,9 @@ class Misc(commands.Cog):
                     countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
                     await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
                     return 
+                if int(user_mention) == self.bot.application_id:
+                    await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat petang to you too!')
+                    return
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
                     role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
                 else:
@@ -164,6 +175,9 @@ class Misc(commands.Cog):
                     countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
                     await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
                     return 
+                if int(user_mention) == self.bot.application_id:
+                    await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat pagi to you too!')
+                    return
                 if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
                     role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
                 else:
