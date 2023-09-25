@@ -204,7 +204,7 @@ class Misc(commands.Cog):
         currDate = datetime.datetime.now() + datetime.timedelta(hours=8)
         entries = {}
         if self.fileExists(f'misc/selamat/{senderID}.json'):
-            with open(f'{senderID}.json', 'r+') as f:
+            with open(f'misc/selamat/{senderID}.json', 'r+') as f:
                 entries = json.loads(f.read())
                 if receiverID in entries.keys():
                     # dates saved in YYYY-MM-DD-HH-MIN format
