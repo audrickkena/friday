@@ -247,6 +247,7 @@ class Utility(commands.Cog):
         await interaction.response.send_modal(addDictModal())
 
     @dictGrp.command(name='get', description='For getting the meaning and usage of a word or phrase in the server dictionary')
+    @app_commands.autocomplete(entry=dictAuto)
     async def getDict(self, interaction: discord.Interaction, entry: str):
         if not self.dictFileExists():
             await interaction.response.send_message('No entries in dictionary!', ephemeral=True)
@@ -283,6 +284,15 @@ class Utility(commands.Cog):
                 else:
                     await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
 
+    async def dictAuto(interaction: discord.Interaction, current: str) -> typing.List[app_commands.Choice[str]]:
+        data = []
+        with open('dict.json', 'r') as f:
+            entries = json.loads(f.read())
+            for entry in entries.keys():
+                if current.lower() in entry.lower():
+                    data.append(app_commands.Choice(name=entry, value=entry))
+        return data
+
     def dictFileExists(self):
         try:
             with open('dict.json', 'r') as f:
@@ -298,7 +308,7 @@ class Utility(commands.Cog):
     ###################################################
     ########## START OF POLL GROUP FUNCTIONS ##########
 
-    # TODO: Implement a poll commands such as /poll create /poll start /poll end /poll results /poll del /poll update(can only update when poll is not started)
+    # TODO: Implement a poll commands such as /poll create /poll start /poll end /poll results /poll del /poll edit(can only edit when poll is not started)
     ######## check sequence diagram for poll command possible flow
 
     ########## END OF POLL GROUP FUNCTIONS ##########
