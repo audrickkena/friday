@@ -165,7 +165,7 @@ class Misc(commands.Cog):
             else:
                 member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
                 sender = interaction.guild.get_member(interaction.user.id)
-                self.greet(interaction, sender, member, user_mention)
+                await self.greet(interaction, sender, member, user_mention)
                 
 
     async def greet(self, interaction: discord.Interaction, sender, member, user_mention):
