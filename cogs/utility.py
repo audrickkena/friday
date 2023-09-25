@@ -220,6 +220,15 @@ class Utility(commands.Cog):
     # TODO: commands for server dictionary: /dict remove(admin only?)
     dictGrp = app_commands.Group(name='dict', description='For commands related to the server\'s dictionary')
 
+    async def dictAuto(interaction: discord.Interaction, current: str) -> typing.List[app_commands.Choice[str]]:
+        data = []
+        with open('dict.json', 'r') as f:
+            entries = json.loads(f.read())
+            for entry in entries.keys():
+                if current.lower() in entry.lower():
+                    data.append(app_commands.Choice(name=entry, value=entry))
+        return data
+
     @dictGrp.command(name='list', description='For listing contents of server dictionary')
     async def listDict(self, interaction: discord.Interaction):
         if not self.dictFileExists():
@@ -283,15 +292,6 @@ class Utility(commands.Cog):
                     await interaction.response.send_modal(edit)
                 else:
                     await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
-
-    async def dictAuto(interaction: discord.Interaction, current: str) -> typing.List[app_commands.Choice[str]]:
-        data = []
-        with open('dict.json', 'r') as f:
-            entries = json.loads(f.read())
-            for entry in entries.keys():
-                if current.lower() in entry.lower():
-                    data.append(app_commands.Choice(name=entry, value=entry))
-        return data
 
     def dictFileExists(self):
         try:
