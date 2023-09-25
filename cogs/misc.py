@@ -165,31 +165,35 @@ class Misc(commands.Cog):
             else:
                 member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
                 sender = interaction.guild.get_member(interaction.user.id)
-                if member.status == discord.Status.offline or member.status == discord.Status.dnd:
-                    await interaction.response.send_message(f'{member.display_name} is not available! Wait till they\'re free and online to greet them!', ephemeral=True)
-                    return
-                if sender.status == discord.Status.offline or sender.status == discord.Status.dnd:
-                    await interaction.response.send_message(f'You are appearing busy or offline! Go online for you to greet your friends!', ephemeral=True)
-                    return 
-                if self.checkCooldown(str(sender.id), str(member.id))[0] == False:
-                    countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
-                    await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
-                    return 
-                if int(user_mention[2:-1]) == self.bot.application_id:
-                    await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat malam to you too!')
-                    return
-                if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
-                    role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
-                else:
-                    role = discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}')
-                rudeRole = discord.utils.get(interaction.guild.roles, name=f'rude to {member.display_name}')
-                if rudeRole != None:
-                    if sender.get_role(rudeRole.id) != None:
-                        await sender.remove_roles(rudeRole)
-                        await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{sender.id}>')
-                        return
-                await member.add_roles(role)
-                await interaction.response.send_message(f'{user_mention} you have been greeted by <@{sender.id}>')
+                self.greet(interaction, sender, member, user_mention)
+                
+
+    async def greet(self, interaction: discord.Interaction, sender, member, user_mention):
+        if member.status == discord.Status.offline or member.status == discord.Status.dnd:
+            await interaction.response.send_message(f'{member.display_name} is not available! Wait till they\'re free and online to greet them!', ephemeral=True)
+            return
+        if sender.status == discord.Status.offline or sender.status == discord.Status.dnd:
+            await interaction.response.send_message(f'You are appearing busy or offline! Go online for you to greet your friends!', ephemeral=True)
+            return 
+        if self.checkCooldown(str(sender.id), str(member.id))[0] == False:
+            countdown = self.checkCooldown(str(sender.id), str(member.id))[1]
+            await interaction.response.send_message(f'You have already greeted {member.display_name} today! Try again in {countdown[0]} hours {countdown[1]} mins {countdown[2]} secs', ephemeral=True)
+            return 
+        if int(user_mention[2:-1]) == self.bot.application_id:
+            await interaction.response.send_message(f'Thank you {sender.display_name} for your greeting! Selamat malam to you too!')
+            return
+        if discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}') == None:
+            role = await interaction.guild.create_role(name=f'rude to {sender.display_name}')
+        else:
+            role = discord.utils.get(interaction.guild.roles, name=f'rude to {sender.display_name}')
+        rudeRole = discord.utils.get(interaction.guild.roles, name=f'rude to {member.display_name}')
+        if rudeRole != None:
+            if sender.get_role(rudeRole.id) != None:
+                await sender.remove_roles(rudeRole)
+                await interaction.response.send_message(f'{user_mention} you have been greeted back by <@{sender.id}>')
+                return
+        await member.add_roles(role)
+        await interaction.response.send_message(f'{user_mention} you have been greeted by <@{sender.id}>')
 
     def checkTime(self):
         currDateTime = datetime.datetime.now() + datetime.timedelta(hours=8)
