@@ -39,6 +39,7 @@ class Misc(commands.Cog):
 
 
     @app_commands.command(name='popoff', description='For when a user is popping off')
+    # TODO: limit amount of times popoff is said per hour
     async def popoff(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mentioned properly!', ephemeral=True)
@@ -158,6 +159,7 @@ class Misc(commands.Cog):
         return 1
     
     # check misc/selamat/senderID.json 
+    # TODO: check if checks.cooldown can be used here instead
     def checkCooldown(self, senderID : str, receiverID : str):
         currDate = datetime.datetime.now() + datetime.timedelta(hours=8)
         entries = {}
