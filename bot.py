@@ -121,8 +121,8 @@ class Friday(commands.Bot):
             channel = get(self.currGuild.channels, name='voiceless-spam-lvl10', type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
 
-    async def on_message(self, message):
-        pass
+    # async def on_message(self, message):
+    #     pass
     
     def getGuild(self):
         return self.currGuild
