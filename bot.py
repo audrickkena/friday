@@ -21,6 +21,7 @@ GUILD = os.getenv('DISCORD_GUILD')
 APPID = os.getenv('DISCORD_APP_ID')
 
 ## FRIDAY CLASS DEFINITION
+# TODO: UPDATE HARDCODED VARIABLES TO BE FETCHED FROM SETUP.TXT INSTEAD
 class Friday(commands.Bot):
 
     def __init__(self):
@@ -88,6 +89,8 @@ class Friday(commands.Bot):
             roleDict = json.loads(roleFile.read())
             print(f'{member.name} has joined the server!')
             await member.add_roles(self.currGuild.get_role(roleDict['Lvl 0 Thief']))
+            # Role separator IDS below
+            # TODO: GET ROLE SEPARATOR IDS FROM EXTERNAL FILE INSTEAD
             await member.add_roles(self.currGuild.get_role(1059332235028856893))
             await member.add_roles(self.currGuild.get_role(1059324888906743878))
             await member.add_roles(self.currGuild.get_role(1059331288533843989))
@@ -109,14 +112,17 @@ class Friday(commands.Bot):
             if(after.channel.name == 'all hail the thocc'):
                 return
             msg = f'{member.display_name} just joined {after.channel}'
-            channel = get(self.currGuild.channels, name='voiceless-spam', type=discord.ChannelType.text)
+            channel = get(self.currGuild.channels, name='voiceless-spam-lvl10', type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
         if(after.channel == None):
             if(before.channel.name == 'all hail the thocc'):
                 return
             msg = f'{member.display_name} just left {before.channel}'
-            channel = get(self.currGuild.channels, name='voiceless-spam', type=discord.ChannelType.text)
+            channel = get(self.currGuild.channels, name='voiceless-spam-lvl10', type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
+
+    async def on_message(self, message):
+        pass
     
     def getGuild(self):
         return self.currGuild
