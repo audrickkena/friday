@@ -71,7 +71,9 @@ class Misc(commands.Cog):
         except FileNotFoundError:
             return False
         
-
+    @app_commands.command(name='banter', description='For reminding everyone that what you said was just a joke')
+    async def banter(self, interaction: discord.Interaction):
+        await interaction.response.send_message(f'{interaction.guild.get_member(interaction.user.id).display_name} was merely joking and is not liable for any hurt feelings that what they said may have caused. Thank you for your understanding', tts=True, delete_after=20)
 
     #######################################
     ########## SELAMAT FUNCTIONS ##########
@@ -183,8 +185,8 @@ class Misc(commands.Cog):
 
 
     
-    ########## SELAMAT FUNCTIONS ##########
-    #######################################
+    ########## END OF SELAMAT FUNCTIONS ##########
+    ##############################################
 
 
 
