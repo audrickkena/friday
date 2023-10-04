@@ -111,12 +111,12 @@ class Misc(commands.Cog):
         return app_commands.check(predicate)
     
     
-    async def selamatErrors(interaction: discord.Interaction, error):
-        if isinstance(error, app_commands.CheckFailure):
-            print(f'{interaction.command} has failed!')
-            print(str(error))
-        await interaction.response.send_message(f'{interaction.command} is broken! Please contact the admin about this issue!')
-    @selamatGrp.error(selamatErrors)
+    # async def selamatErrors(interaction: discord.Interaction, error):
+    #     if isinstance(error, app_commands.CheckFailure):
+    #         print(f'{interaction.command} has failed!')
+    #         print(str(error))
+    #     await interaction.response.send_message(f'{interaction.command} is broken! Please contact the admin about this issue!')
+    # @selamatGrp.error(selamatErrors)
     #####################################################################
     ###################### END OF DEFAULT CHECKS ########################
     #####################################################################
@@ -231,17 +231,27 @@ class Misc(commands.Cog):
 
 
 
-
-    ##################################
-    ########## Error Handling ########
-    ##################################
-    
-   
-
     ##############################################
     ########## END OF SELAMAT FUNCTIONS ##########
     ##############################################
 
+
+
+
+
+
+
+
+
+
+    ##################################
+    ########## Error Handling ########
+    ##################################
+    async def cog_app_command_error(interaction: discord.Interaction, error):
+        if isinstance(error, app_commands.CheckFailure):
+            print(f'{interaction.command} has failed!')
+            print(str(error))
+        await interaction.response.send_message(f'{interaction.command} is broken! Please contact the admin about this issue!')
 
 
 
