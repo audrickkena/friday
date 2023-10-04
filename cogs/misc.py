@@ -115,7 +115,7 @@ class Misc(commands.Cog):
     #####################################################################
 
     @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
-    @hasRoles(['lvl 100 Mafia Warlord'])
+    @hasRoles(['Lvl 100 Mafia Warlord'])
     async def pagi(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
@@ -131,7 +131,7 @@ class Misc(commands.Cog):
                 await self.greet(interaction, sender, member, user_mention, greeting)
 
     @selamatGrp.command(name='petang', description="For greeting a fellow member in the afternoon")
-    @hasRoles(['lvl 100 Mafia Warlord'])
+    @hasRoles(['Lvl 100 Mafia Warlord'])
     async def petang(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mentioned properly!', ephemeral=True)
@@ -147,7 +147,7 @@ class Misc(commands.Cog):
                 await self.greet(interaction, sender, member, user_mention, greeting)
 
     @selamatGrp.command(name='malam', description="For greeting a fellow member in the evening")
-    @hasRoles(['lvl 100 Mafia Warlord'])
+    @hasRoles(['Lvl 100 Mafia Warlord'])
     async def malam(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
@@ -226,12 +226,14 @@ class Misc(commands.Cog):
 
 
     ##################################
-    ########## OTHER CHECKS ##########
+    ########## Error Handling ########
     ##################################
-    
-
-
-
+    @selamatGrp.error
+    async def selamatErrors(interaction: discord.Interaction, error: app_commands.error):
+        if isinstance(error, app_commands.CheckFailure):
+            print(f'{interaction.command} has failed!')
+            print(str(error))
+        await interaction.response.send_message(f'{interaction.command} is broken! Please contact the admin about this issue!')
 
     ##############################################
     ########## END OF SELAMAT FUNCTIONS ##########
