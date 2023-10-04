@@ -105,7 +105,7 @@ class Misc(commands.Cog):
             print(roles)
             print(strList)
             for role in strList:
-                if role not in roles:
+                if discord.utils.get(roles, name=role) == None:
                     return False
             return True
         return app_commands.check(predicate)
