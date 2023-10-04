@@ -144,7 +144,7 @@ class Misc(commands.Cog):
                 await self.greet(interaction, sender, member, user_mention, greeting)
 
     @selamatGrp.command(name='malam', description="For greeting a fellow member in the evening")
-    @app_commands.checks.has_any_role('Lvl 10 Boss')
+    @app_commands.checks.has_any_role('Lvl 100 Mafia Warlord', 'Lvl 10 Boss')
     async def malam(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
@@ -246,7 +246,7 @@ class Misc(commands.Cog):
                 print(role)
                 if discord.utils.get(user.roles, name=role) == None:
                     missing.append(role)
-            await interaction.response.send_message(f'You do not have the necessary roles to use /{interaction.command.qualified_name}! Here is the list:\n{missing}')
+            await interaction.response.send_message(f'You do not have the necessary roles to use /{interaction.command.qualified_name}! Here is the list of required roles:\n{missing}')
         else:
             await interaction.response.send_message(f'/{interaction.command.qualified_name} is broken! Please contact the admin about this issue!', ephemeral=True)
 
