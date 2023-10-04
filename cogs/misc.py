@@ -99,14 +99,6 @@ class Misc(commands.Cog):
     #####################################################################
     ###################### DEFINING DEFAULT CHECKS ######################
     #####################################################################
-    def hasRoles(strList):
-        def predicate(interaction: discord.Interaction) -> bool:
-            roles = interaction.guild.get_member(interaction.user.id).roles
-            for role in strList:
-                if discord.utils.get(roles, name=role) == None:
-                    return False
-            return True
-        return app_commands.check(predicate)
     
     
     # async def selamatErrors(interaction: discord.Interaction, error):
@@ -120,7 +112,7 @@ class Misc(commands.Cog):
     #####################################################################
 
     @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
-    @hasRoles(['lvl 100 Mafia Warlord'])
+    @app_commands.checks.has_any_role(['Lvl 100 Mafia Warlord', 'Lvl 10 Boss'])
     async def pagi(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
@@ -136,7 +128,7 @@ class Misc(commands.Cog):
                 await self.greet(interaction, sender, member, user_mention, greeting)
 
     @selamatGrp.command(name='petang', description="For greeting a fellow member in the afternoon")
-    @hasRoles(['lvl 100 Mafia Warlord'])
+    @app_commands.checks.has_any_role(['Lvl 100 Mafia Warlord', 'Lvl 10 Boss'])
     async def petang(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mentioned properly!', ephemeral=True)
@@ -152,7 +144,7 @@ class Misc(commands.Cog):
                 await self.greet(interaction, sender, member, user_mention, greeting)
 
     @selamatGrp.command(name='malam', description="For greeting a fellow member in the evening")
-    @hasRoles(['lvl 100 Mafia Warlord'])
+    @app_commands.checks.has_any_role(['Lvl 100 Mafia Warlord', 'Lvl 10 Boss'])
     async def malam(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
@@ -246,8 +238,7 @@ class Misc(commands.Cog):
     ########## Error Handling ########
     ##################################
     async def cog_app_command_error(self, interaction: discord.Interaction, error):
-        if isinstance(error, app_commands.CheckFailure):
-            print(str(error))
+        print(str(error))
         await interaction.response.send_message(f'/{interaction.command.qualified_name} is broken! Please contact the admin about this issue!', ephemeral=True)
 
 
