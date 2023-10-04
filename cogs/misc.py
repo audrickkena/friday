@@ -75,12 +75,45 @@ class Misc(commands.Cog):
     async def banter(self, interaction: discord.Interaction):
         tts_channel = discord.utils.get(interaction.guild.text_channels, name='voiceless-spam-lvl10')
         await tts_channel.send(f'{interaction.guild.get_member(interaction.user.id).display_name} was merely joking and is not liable for any hurt feelings that what they said may have caused. Thank you for your understanding', tts=True, delete_after=20)
+        await interaction.response.send_message(f'Disclaimer sent to voiceless-spam-lvl10', ephemeral=True)
+
+
+
+
+
+
+
+
+
 
     #######################################
     ########## SELAMAT FUNCTIONS ##########
+    #######################################
+
+
+
+
+
     selamatGrp = app_commands.Group(name='selamat', description='For commands related to greeting others in the server')
 
+    #####################################################################
+    ###################### DEFINING DEFAULT CHECKS ######################
+    #####################################################################
+    def hasRoles(strList):
+        def predicate(interaction: discord.Interaction) -> bool:
+            roles = interaction.guild.get_member(interaction.user.id).roles
+            for role in strList:
+                if role not in roles:
+                    return False
+            return True
+        return app_commands.check(predicate)
+    
+    #####################################################################
+    ###################### END OF DEFAULT CHECKS ########################
+    #####################################################################
+
     @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
+    @hasRoles(['lvl 100 mafia warlord'])
     async def pagi(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
@@ -96,6 +129,7 @@ class Misc(commands.Cog):
                 await self.greet(interaction, sender, member, user_mention, greeting)
 
     @selamatGrp.command(name='petang', description="For greeting a fellow member in the afternoon")
+    @hasRoles(['lvl 100 mafia warlord'])
     async def petang(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mentioned properly!', ephemeral=True)
@@ -111,6 +145,7 @@ class Misc(commands.Cog):
                 await self.greet(interaction, sender, member, user_mention, greeting)
 
     @selamatGrp.command(name='malam', description="For greeting a fellow member in the evening")
+    @hasRoles(['lvl 100 mafia warlord'])
     async def malam(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
@@ -185,9 +220,27 @@ class Misc(commands.Cog):
         return [True, None]
 
 
+
+
+
+    ##################################
+    ########## OTHER CHECKS ##########
+    ##################################
     
+
+
+
+
+    ##############################################
     ########## END OF SELAMAT FUNCTIONS ##########
     ##############################################
+
+
+
+
+
+
+
 
 
 
