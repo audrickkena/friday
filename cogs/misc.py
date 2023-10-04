@@ -229,7 +229,7 @@ class Misc(commands.Cog):
     ########## Error Handling ########
     ##################################
     @selamatGrp.error
-    async def selamatErrors(interaction: discord.Interaction, error: app_commands.error):
+    async def selamatErrors(interaction: discord.Interaction, error: app_commands.AppCommandError):
         if isinstance(error, app_commands.CheckFailure):
             print(f'{interaction.command} has failed!')
             print(str(error))
