@@ -249,9 +249,9 @@ class Misc(commands.Cog):
     ##################################
     async def cog_app_command_error(self, interaction: discord.Interaction, error):
         if isinstance(error, app_commands.CheckFailure):
-            print(f'{interaction.command} has failed!')
+            print(f'{interaction.command.name} has failed!')
             print(str(error))
-        await interaction.response.send_message(f'{interaction.command} is broken! Please contact the admin about this issue!')
+        await interaction.response.send_message(f'/{interaction.command.qualified_name} is broken! Please contact the admin about this issue!')
 
 
 
