@@ -246,7 +246,9 @@ class Misc(commands.Cog):
                 print(role)
                 if discord.utils.get(user.roles, name=role) == None:
                     missing.append(role)
-        await interaction.response.send_message(f'/{interaction.command.qualified_name} is broken! Please contact the admin about this issue!', ephemeral=True)
+            await interaction.response.send_message(f'You do not have the necessary roles to use /{interaction.command.qualified_name}! Here is the list:\n{missing}')
+        else:
+            await interaction.response.send_message(f'/{interaction.command.qualified_name} is broken! Please contact the admin about this issue!', ephemeral=True)
 
 
 
