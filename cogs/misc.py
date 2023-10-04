@@ -115,7 +115,7 @@ class Misc(commands.Cog):
             print(f'{interaction.command} has failed!')
             print(str(error))
         await interaction.response.send_message(f'{interaction.command} is broken! Please contact the admin about this issue!')
-    @selamatGrp.error(selamatErrors())
+    @selamatGrp.error(selamatErrors)
     #####################################################################
     ###################### END OF DEFAULT CHECKS ########################
     #####################################################################
