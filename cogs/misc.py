@@ -102,6 +102,8 @@ class Misc(commands.Cog):
     def hasRoles(strList):
         def predicate(interaction: discord.Interaction) -> bool:
             roles = interaction.guild.get_member(interaction.user.id).roles
+            print(roles)
+            print(strList)
             for role in strList:
                 if role not in roles:
                     return False
