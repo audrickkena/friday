@@ -111,7 +111,7 @@ class Misc(commands.Cog):
         return app_commands.check(predicate)
     
     
-    async def selamatErrors(interaction: discord.Interaction, error: app_commands.AppCommandError):
+    async def selamatErrors(interaction: discord.Interaction, error):
         if isinstance(error, app_commands.CheckFailure):
             print(f'{interaction.command} has failed!')
             print(str(error))
