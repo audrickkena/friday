@@ -247,7 +247,7 @@ class Misc(commands.Cog):
     ##################################
     ########## Error Handling ########
     ##################################
-    async def cog_app_command_error(interaction: discord.Interaction, error):
+    async def cog_app_command_error(self, interaction: discord.Interaction, error):
         if isinstance(error, app_commands.CheckFailure):
             print(f'{interaction.command} has failed!')
             print(str(error))
