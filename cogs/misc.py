@@ -131,7 +131,7 @@ class Misc(commands.Cog):
                 await self.greet(interaction, sender, member, user_mention, greeting)
 
     @selamatGrp.command(name='petang', description="For greeting a fellow member in the afternoon")
-    @hasRoles(['Lvl 100 Mafia Warlord'])
+    @hasRoles(['lvl 100 Mafia Warlord'])
     async def petang(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mentioned properly!', ephemeral=True)
@@ -147,7 +147,7 @@ class Misc(commands.Cog):
                 await self.greet(interaction, sender, member, user_mention, greeting)
 
     @selamatGrp.command(name='malam', description="For greeting a fellow member in the evening")
-    @hasRoles(['Lvl 100 Mafia Warlord'])
+    @hasRoles(['lvl 100 Mafia Warlord'])
     async def malam(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
