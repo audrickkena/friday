@@ -280,7 +280,6 @@ class Misc(commands.Cog):
                 rand_index = str(random.randint(1, len(quote_data)))
 
             ## Retrieve random .json entry
-            print(quote_data[str(rand_index)])
             chosen_quote = quote_data[rand_index]["quote"]
             quoted_by = quote_data[rand_index]["addedBy"]
             quoted_on = quote_data[rand_index]["addedOn"]
