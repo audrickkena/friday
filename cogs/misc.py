@@ -3,10 +3,10 @@ import functools
 import random
 import datetime
 import json
-from discord.ext import commands, tasks
+from discord.ext import commands
 from discord import app_commands
-import asyncio
-import pytube
+# import asyncio
+# import pytube
 
 
 
@@ -14,8 +14,8 @@ import pytube
 class Misc(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.vc = None
-        self.stop_audio_task = None
+        # self.vc = None
+        # self.stop_audio_task = None
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -39,7 +39,7 @@ class Misc(commands.Cog):
         if(sides_num > 30):
             await interaction.response.send_message('Sorry max value for the number of dice is 30!')
             return
-        if(interaction.channel.name=="general"):
+        if(interaction.channel.name=="command-spam"):
             result = [str(random.choice(range(1, sides_num + 1))) for _ in range(dice_num)]
             msgDices = 'Individual dices: ' + ', '.join(result)
             msgTotal = 'Total roll value: ' + str(functools.reduce(lambda a, b: int(a) + int(b), result))
@@ -82,13 +82,13 @@ class Misc(commands.Cog):
         
     @app_commands.command(name='banter', description='For reminding everyone that what you said was just a joke')
     async def banter(self, interaction: discord.Interaction):
-        tts_channel = discord.utils.get(interaction.guild.text_channels, name='general')
+        tts_channel = discord.utils.get(interaction.guild.text_channels, name='voiceless-spam-lvl10')
         await tts_channel.send(f'{interaction.guild.get_member(interaction.user.id).display_name} was merely joking and is not liable for any hurt feelings that what they said may have caused. Thank you for your understanding', tts=True, delete_after=20)
         await interaction.response.send_message(f'Disclaimer sent to voiceless-spam-lvl10', ephemeral=True)
 
     @app_commands.command(name='notbanter', description='For reminding everyone that what you said was NOT a joke')
     async def notbanter(self, interaction: discord.Interaction, user_mention: str):
-        tts_channel = discord.utils.get(interaction.guild.text_channels, name='general')
+        tts_channel = discord.utils.get(interaction.guild.text_channels, name='voiceless-spam-lvl10')
         messages = [
         f'{interaction.guild.get_member(interaction.user.id).display_name} meant what they said to {user_mention} from the bottom of their heart',
         f'Did {interaction.guild.get_member(interaction.user.id).display_name} fucking stutter',
@@ -127,20 +127,9 @@ class Misc(commands.Cog):
 
    
 
-
-
-
-
-
-
-
     #######################################
     ########## SELAMAT FUNCTIONS ##########
     #######################################
-
-
-
-
 
     selamatGrp = app_commands.Group(name='selamat', description='For commands related to greeting others in the server')
 
@@ -160,7 +149,7 @@ class Misc(commands.Cog):
     #####################################################################
 
     @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
-    @app_commands.checks.has_any_role('everyone')
+    @app_commands.checks.has_any_role('Lvl 100 Mafia Warlord', 'Lvl 10 Boss')
     async def pagi(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
