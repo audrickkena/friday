@@ -3,16 +3,25 @@ import functools
 import random
 import datetime
 import json
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord import app_commands
+import asyncio
+import pytube
+
+
+
 
 class Misc(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.vc = None
+        self.stop_audio_task = None
 
     @commands.Cog.listener()
     async def on_ready(self):
         print('Miscellaneous cog loaded.')
+
+    
 
     @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
@@ -30,7 +39,7 @@ class Misc(commands.Cog):
         if(sides_num > 30):
             await interaction.response.send_message('Sorry max value for the number of dice is 30!')
             return
-        if(interaction.channel.name=="command-spam"):
+        if(interaction.channel.name=="general"):
             result = [str(random.choice(range(1, sides_num + 1))) for _ in range(dice_num)]
             msgDices = 'Individual dices: ' + ', '.join(result)
             msgTotal = 'Total roll value: ' + str(functools.reduce(lambda a, b: int(a) + int(b), result))
@@ -73,11 +82,50 @@ class Misc(commands.Cog):
         
     @app_commands.command(name='banter', description='For reminding everyone that what you said was just a joke')
     async def banter(self, interaction: discord.Interaction):
-        tts_channel = discord.utils.get(interaction.guild.text_channels, name='voiceless-spam-lvl10')
+        tts_channel = discord.utils.get(interaction.guild.text_channels, name='general')
         await tts_channel.send(f'{interaction.guild.get_member(interaction.user.id).display_name} was merely joking and is not liable for any hurt feelings that what they said may have caused. Thank you for your understanding', tts=True, delete_after=20)
         await interaction.response.send_message(f'Disclaimer sent to voiceless-spam-lvl10', ephemeral=True)
 
+    @app_commands.command(name='notbanter', description='For reminding everyone that what you said was NOT a joke')
+    async def notbanter(self, interaction: discord.Interaction, user_mention: str):
+        tts_channel = discord.utils.get(interaction.guild.text_channels, name='general')
+        messages = [
+        f'{interaction.guild.get_member(interaction.user.id).display_name} meant what they said to {user_mention} from the bottom of their heart',
+        f'Did {interaction.guild.get_member(interaction.user.id).display_name} fucking stutter',
+        ]
+        chosen_message = random.choice(messages)
+        await tts_channel.send(chosen_message, tts=True, delete_after=60)        
+        await interaction.response.send_message(f'Disclaimer sent to voiceless-spam-lvl10', ephemeral=True)
 
+
+    # @commands.Cog.listener()
+    # async def on_voice_state_update(self, member, before, after):
+    #     role_name = "This"  # Replace with the actual role name
+
+    #     # Check if the member has the specified role
+    #     role = discord.utils.get(member.roles, name=role_name)
+    #     if role and not before.channel and after.channel:
+    #         if member.id == self.bot.user.id:
+    #             return
+    #         # Connect to the user's voice channel
+    #         self.vc = await after.channel.connect()
+    #         specific_url = 'https://www.youtube.com/watch?v=2BCgSYNteVo&ab_channel=CHORUSLOOPS'
+    #         # Get the audio stream URL from the YouTube video (you'll need to define 'specific_url' here)
+    #         video = pytube.YouTube(specific_url)
+    #         audio_stream = video.streams.filter(only_audio=True).first()
+    #         url2 = audio_stream.url
+    #         # Play the audio stream
+    #         self.vc.play(discord.FFmpegPCMAudio(url2, executable='ffmpeg.exe'))
+    #         self.stop_audio_task = asyncio.create_task(self.stop_audio_after_duration(5))
+
+
+    # async def stop_audio_after_duration(self, duration):
+    #     await asyncio.sleep(duration)
+    #     if self.vc and self.vc.is_playing():
+    #         self.vc.stop()
+    #         await self.vc.disconnect()
+
+   
 
 
 
@@ -112,7 +160,7 @@ class Misc(commands.Cog):
     #####################################################################
 
     @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
-    @app_commands.checks.has_any_role('Lvl 100 Mafia Warlord', 'Lvl 10 Boss')
+    @app_commands.checks.has_any_role('everyone')
     async def pagi(self, interaction: discord.Interaction, user_mention: str):
         if user_mention[1] != '@' or user_mention[2] == '&':
             await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
@@ -259,4 +307,5 @@ class Misc(commands.Cog):
 
 
 async def setup(bot: commands.Bot):
+    
     await bot.add_cog(Misc(bot))
