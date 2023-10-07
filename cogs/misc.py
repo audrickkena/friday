@@ -232,7 +232,7 @@ class Misc(commands.Cog):
     quoteGrp = app_commands.Group(name='quote', description='For commands related to quoting in the server')
 
     @quoteGrp.command(name='get', description="For getting a random quote from the server's database")
-    @app_commands.checks.has_any_role('Lvl 100 Mafia Warlord', 'Lvl 10 Boss')
+    @app_commands.checks.has_any_role('Coders')
     async def quote(self, interaction:discord.Interaction):
         chosen_quote = "@@@@@"
         
@@ -256,7 +256,7 @@ class Misc(commands.Cog):
             return await interaction.response.send_message(":x: **No quotes exist yet!** :x:")
 
     @quoteGrp.command(name='make', description="For making a new quote for the server")
-    @app_commands.checks.has_any_role('Lvl 100 Mafia Warlord', 'Lvl 10 Boss')
+    @app_commands.checks.has_any_role('Coders')
     @app_commands.describe(added_quote = "What quote are you adding?")
     async def makequote(interaction:discord.Interaction, added_quote:str):
 
