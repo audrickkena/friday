@@ -299,7 +299,7 @@ class Misc(commands.Cog):
 
         try:
             added_by = interaction.user.name
-            added_on = "{:%B %d, %Y}".format(datetime.now())
+            added_on = "{:%B %d, %Y}".format(datetime.datetime.now())
 
             if os.path.exists("quote_file.json") and os.path.getsize("quote_file.json") > 0:
                 # Load existing quote from the JSON file
