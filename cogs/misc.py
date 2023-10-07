@@ -290,7 +290,7 @@ class Misc(commands.Cog):
             await interaction.response.send_message(f"### Your Quote: `{chosen_quote}`\n### - {quoted_by} {quoted_on}")
 
         else:
-            return await interaction.response.send_message(":x: **No quotes exist yet!** :x:")
+            return await interaction.response.send_message(":x: **No quotes exist yet!** :x:", ephemeral=True)
 
     @quoteGrp.command(name='make', description="For making a new quote for the server")
     @app_commands.checks.has_any_role('Coders')
@@ -307,7 +307,7 @@ class Misc(commands.Cog):
                     quote_data = json.load(file)
                 for quote in quote_data:
                     if quote_data[quote]["quote"].lower() ==  added_quote.lower():
-                        return await interaction.response.send_message(":x: **That quote already exists!** :x:")
+                        return await interaction.response.send_message(":x: **That quote already exists!** :x:", ephemeral=True)
             else:
                 quote_data = {}
             
