@@ -3,6 +3,7 @@ import functools
 import random
 import datetime
 import json
+import os
 from discord.ext import commands
 from discord import app_commands
 # import asyncio
@@ -262,6 +263,74 @@ class Misc(commands.Cog):
     ########## END OF SELAMAT FUNCTIONS ##########
     ##############################################
 
+    ########################################################################
+    ########## QUOTE COMMANDS ##############################################
+    ########################################################################
+    quoteGrp = app_commands.Group(name='quote', description='For commands related to quoting in the server')
+
+    @quoteGrp.command(name='get', description="For getting a random quote from the server's database")
+    @app_commands.checks.has_any_role('Coders')
+    async def quote(self, interaction:discord.Interaction):
+        chosen_quote = "@@@@@"
+        
+        if os.path.exists("quote_file.json") and os.path.getsize("quote_file.json") > 0:
+            ## Open .json file
+            with open("quote_file.json") as read_file:
+                quote_data = json.load(read_file)
+                rand_index = str(random.randint(1, len(quote_data)))
+
+            ## Retrieve random .json entry
+            print(quote_data[str(rand_index)])
+            chosen_quote = quote_data[rand_index]["quote"]
+            quoted_by = quote_data[rand_index]["addedBy"]
+            quoted_on = quote_data[rand_index]["addedOn"]
+
+
+            # ## Send random quote to user
+            await interaction.response.send_message(f"### Your Quote: `{chosen_quote}`\n### - {quoted_by} {quoted_on}")
+
+        else:
+            return await interaction.response.send_message(":x: **No quotes exist yet!** :x:")
+
+    @quoteGrp.command(name='make', description="For making a new quote for the server")
+    @app_commands.checks.has_any_role('Coders')
+    @app_commands.describe(added_quote = "What quote are you adding?")
+    async def makequote(interaction:discord.Interaction, added_quote:str):
+
+        try:
+            added_by = interaction.user.name
+            added_on = "{:%B %d, %Y}".format(datetime.now())
+
+            if os.path.exists("quote_file.json") and os.path.getsize("quote_file.json") > 0:
+                # Load existing quote from the JSON file
+                with open("quote_file.json", "r") as file:
+                    quote_data = json.load(file)
+                for quote in quote_data:
+                    if quote_data[quote]["quote"].lower() ==  added_quote.lower():
+                        return await interaction.response.send_message(":x: **That quote already exists!** :x:")
+            else:
+                quote_data = {}
+            
+            # Add new quote
+            new_quote = {
+                "addedBy": added_by,
+                "addedOn": added_on,
+                "quote" : added_quote
+            }
+
+            quote_data[len(quote_data)+1] = new_quote
+
+            with open("quote_file.json", "w") as file:
+                json.dump(quote_data, file)
+            
+            await interaction.response.send_message(f"You added: \"{added_quote}\"")
+
+        except json.JSONDecodeError as e:
+            print(f"Error loading JSON: {e}")
+
+    ########################################################################
+    ########## QUOTE END ###################################################
+    ########################################################################
 
 
 
