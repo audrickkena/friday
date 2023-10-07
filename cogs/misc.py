@@ -295,7 +295,7 @@ class Misc(commands.Cog):
     @quoteGrp.command(name='make', description="For making a new quote for the server")
     @app_commands.checks.has_any_role('Coders')
     @app_commands.describe(added_quote = "What quote are you adding?")
-    async def makequote(interaction:discord.Interaction, added_quote:str):
+    async def makequote(self, interaction:discord.Interaction, added_quote:str):
 
         try:
             added_by = interaction.user.name
