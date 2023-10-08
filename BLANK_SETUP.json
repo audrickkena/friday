@@ -3,8 +3,7 @@
     {
         "default_roles": 
         [
-            "---NONE---",
-            "Lvl 0 Thief"
+            "---NONE---"
         ],
         "separators": 
         [
@@ -14,7 +13,7 @@
         [
             "---NONE---"
         ],
-        "voice_state_channel": "voiceless-spam-lvl10"
+        "voice_state_channel": "---NONE---"
     },
     "admin":
     {
