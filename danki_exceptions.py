@@ -25,5 +25,5 @@ class DefaultValueNotRemoved(Exception):
         self.message = f'[ERROR]: {{{self.var_key}}} still contains the default value! Please remove this value before starting Danki!'
         super().__init__(self.message)
 
-    def getKey(self, var_key):
+    def getKey(self):
         return self.var_key
