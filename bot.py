@@ -2,7 +2,9 @@ import os
 import json
 import discord
 import random
+
 import danki_exceptions
+
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord.utils import get
@@ -162,7 +164,8 @@ class Friday(commands.Bot):
                 temp = [x for x in setup['bot'][err.getKey()] if x != '---NONE---']
                 setup['bot'][err.getKey()] = temp
                 f.write(json.dumps(setup, indent=4))
-                print(f'{{{err.getKey()}}} after: [{temp}]')
+                print(f'{{{err.getKey()}}} after: {temp}')
+                self.setupVariables = setup['bot']
 ## HELPER FUNCTIONS
 def updateRoles(self, guildRoles):
     roleDict = {}
