@@ -143,8 +143,11 @@ class Friday(commands.Bot):
                             raise danki_exceptions.MissingValueInSetup(e, f'{{{e}}} has not been initialised although it is required! Please initialise this value before starting Danki!')
                 self.setupVariables = bot_setup
         except danki_exceptions.MissingValueInSetup as err:
+            print()
+            print()
             print(err)
             print('Due to setup failure, Danki will be closing...')
+            print()
             await self.close()
     
 ## HELPER FUNCTIONS
