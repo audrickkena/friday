@@ -45,7 +45,7 @@ class Friday(commands.Bot):
         but before it has connected to the Websocket (quoted from d.py docs)
         """
         self.remove_command('help')
-        self.getSetup()
+        await self.getSetup()
         for ext in self.initial_extensions:
             await self.load_extension(ext)
     
