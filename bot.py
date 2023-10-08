@@ -2,6 +2,7 @@ import os
 import json
 import discord
 import random
+import danki_exceptions
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord.utils import get
@@ -36,7 +37,7 @@ class Friday(commands.Bot):
             "cogs.utility",
             'cogs.misc'
         ]
-        self.getSetup()
+        self.setupVariables = {}
     async def setup_hook(self):
         """!
         A coroutine to be called to setup the bot, by default this is blank.
@@ -132,9 +133,18 @@ class Friday(commands.Bot):
         return self.initial_extensions
     
     def getSetup(self):
-        with open('SETUP.json', 'r') as f:
-            bot_setup = json.loads(f.read())['bot']
-            print(bot_setup)
+        try:
+            with open('SETUP.json', 'r') as f:
+                bot_setup = json.loads(f.read())['bot']
+                for e in bot_setup.keys():
+                    if bot_setup[e] == '---NONE---':
+                        if e == 'default_roles' or e == 'voice_state_channel':
+                            raise danki_exceptions.MissingValueInSetup(e)
+                self.setupVariables = bot_setup
+        except danki_exceptions.MissingValueInSetup as err:
+            print(err)
+            print('Due to lack of setup, Danki will be closing...')
+            self.close()
     
 ## HELPER FUNCTIONS
 def updateRoles(self, guildRoles):
