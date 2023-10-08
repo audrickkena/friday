@@ -145,9 +145,9 @@ class Friday(commands.Bot):
                     if e == 'voice_state_channel':
                         continue
                     if '---NONE---' in bot_setup[e]:
-                        if e == 'default_roles' or e == 'voice_state_channel':
+                        if e == 'default_roles' and len(bot_setup[e]) == 1:
                             raise danki_exceptions.MissingValueInSetup(e)
-                        if len(bot_setup[e]) > 1:
+                        elif e == 'default_roles' and len(bot_setup[e]) > 1:
                             raise danki_exceptions.DefaultValueNotRemoved(e)
                 self.setupVariables = bot_setup
         except danki_exceptions.MissingValueInSetup as err:
