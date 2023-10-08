@@ -133,7 +133,7 @@ class Friday(commands.Bot):
     
     def getSetup(self):
         with open('SETUP.json', 'r') as f:
-            bot_setup = json.loads(f.read())[bot]
+            bot_setup = json.loads(f.read())['bot']
             print(bot_setup)
     
 ## HELPER FUNCTIONS
