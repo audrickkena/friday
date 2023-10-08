@@ -138,16 +138,31 @@ class Friday(commands.Bot):
             with open('SETUP.json', 'r') as f:
                 bot_setup = json.loads(f.read())['bot']
                 for e in bot_setup.keys():
-                    print(f'{e} = {bot_setup[e]}')
-                    if bot_setup[e] == '---NONE---':
+                    if e == 'voice_state_channel' and bot_setup[e] == '---NONE---':
+                        raise danki_exceptions.MissingValueInSetup(e)
+                    if e == 'voice_state_channel':
+                        continue
+                    if '---NONE---' in bot_setup[e]:
+                        if len(bot_setup[e]) > 1:
+                            raise danki_exceptions.DefaultValueNotRemoved(e)
                         if e == 'default_roles' or e == 'voice_state_channel':
-                            raise danki_exceptions.MissingValueInSetup(e, f'[ERROR]: {{{e}}} has not been initialised although it is required! Please initialise this value before starting Danki!')
+                            raise danki_exceptions.MissingValueInSetup(e)
                 self.setupVariables = bot_setup
         except danki_exceptions.MissingValueInSetup as err:
             print(f'\n{err}\n')
             print('Due to setup failure, Danki will be closing...\n')
             await self.close()
-    
+        except danki_exceptions.DefaultValueNotRemoved as err:
+            print(f'\n{err}\n')
+            print(f'The default value will now be removed from {{{err.getKey()}}}.\nIf this action is not working as intended, please contact the developer on github\n')
+            with open('SETUP.json', 'r+') as f:
+                setup = json.loads(f.read())
+                f.seek(0)
+                print(f'{{{err.getKey()}}} before: [{setup["bot"][err.getKey()]}]')
+                temp = [x for x in setup['bot'][err.getKey()] if x != '---NONE---']
+                setup['bot'] = temp
+                f.write(json.dumps(setup))
+                print(f'{{{err.getKey()}}} after: [{temp}]')
 ## HELPER FUNCTIONS
 def updateRoles(self, guildRoles):
     roleDict = {}
