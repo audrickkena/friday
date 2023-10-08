@@ -145,7 +145,7 @@ class Friday(commands.Bot):
                 self.setupVariables = bot_setup
         except danki_exceptions.MissingValueInSetup as err:
             print(err)
-            print('Due to lack of setup, Danki will be closing...')
+            print('Due to setup failure, Danki will be closing...')
             await self.close()
     
 ## HELPER FUNCTIONS
