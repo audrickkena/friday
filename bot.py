@@ -37,7 +37,7 @@ class Friday(commands.Bot):
             "cogs.utility",
             'cogs.misc'
         ]
-        self.setupVariables = self.getSetup()
+        self.setupVariables = None
     async def setup_hook(self):
         """!
         A coroutine to be called to setup the bot, by default this is blank.
@@ -45,6 +45,7 @@ class Friday(commands.Bot):
         but before it has connected to the Websocket (quoted from d.py docs)
         """
         self.remove_command('help')
+        self.getSetup()
         for ext in self.initial_extensions:
             await self.load_extension(ext)
     
@@ -141,7 +142,7 @@ class Friday(commands.Bot):
                         print(e)
                         if e == 'default_roles' or e == 'voice_state_channel':
                             raise danki_exceptions.MissingValueInSetup(e)
-                return bot_setup
+                self.setupVariables = bot_setup
         except danki_exceptions.MissingValueInSetup as err:
             print(err)
             print('Due to lack of setup, Danki will be closing...')
