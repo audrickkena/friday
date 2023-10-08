@@ -3,8 +3,10 @@
     {
         "default_roles": 
         [
+            "Test1",
             "---NONE---",
-            "Lvl 0 Thief"
+            "Lvl 0 Thief",
+            "Test2"
         ],
         "separators": 
         [
