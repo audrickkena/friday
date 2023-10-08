@@ -1,3 +1,5 @@
+import tm_color
+
 class MissingValueInSetup(Exception):
     ''' Exception raised when the setup file is missing a required argument
     
@@ -7,7 +9,7 @@ class MissingValueInSetup(Exception):
 
     def __init__(self, var_key):
         self.var_key = var_key
-        self.message = f'[ERROR]: {{{self.var_key}}} has not been initialised although it is required! Please initialise this value before starting Danki!'
+        self.message = f'{tm_color.colors.fg.red}[ERROR]: {{{self.var_key}}} has not been initialised although it is required! Please initialise this value before starting Danki!'
         super().__init__(self.message)
 
     def getKey(self):
@@ -22,7 +24,7 @@ class DefaultValueNotRemoved(Exception):
 
     def __init__(self, var_key):
         self.var_key = var_key
-        self.message = f'[ERROR]: {{{self.var_key}}} still contains the default value! Please remove this value before starting Danki!'
+        self.message = f'{tm_color.colors.fg.yellow}[WARNING]: {{{self.var_key}}} still contains the default value! This value will now be removed for you!'
         super().__init__(self.message)
 
     def getKey(self):
