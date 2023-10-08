@@ -132,7 +132,7 @@ class Friday(commands.Bot):
     def getCogs(self):
         return self.initial_extensions
     
-    def getSetup(self):
+    async def getSetup(self):
         try:
             with open('SETUP.json', 'r') as f:
                 bot_setup = json.loads(f.read())['bot']
@@ -145,7 +145,7 @@ class Friday(commands.Bot):
         except danki_exceptions.MissingValueInSetup as err:
             print(err)
             print('Due to lack of setup, Danki will be closing...')
-            self.close()
+            await self.close()
     
 ## HELPER FUNCTIONS
 def updateRoles(self, guildRoles):
