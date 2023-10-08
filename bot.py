@@ -36,6 +36,7 @@ class Friday(commands.Bot):
             "cogs.utility",
             'cogs.misc'
         ]
+        self.getSetup()
     async def setup_hook(self):
         """!
         A coroutine to be called to setup the bot, by default this is blank.
@@ -130,6 +131,11 @@ class Friday(commands.Bot):
     def getCogs(self):
         return self.initial_extensions
     
+    def getSetup(self):
+        with open('SETUP.json', 'r') as f:
+            bot_setup = json.loads(f.read())[bot]
+            print(bot_setup)
+    
 ## HELPER FUNCTIONS
 def updateRoles(self, guildRoles):
     roleDict = {}
@@ -138,6 +144,8 @@ def updateRoles(self, guildRoles):
         roleDict[guildRoles[i].name] = guildRoles[i].id
     roleFile.write(json.dumps(roleDict, indent=4))
     roleFile.close()
+
+
 
 bot = Friday()
 bot.run(TOKEN)
