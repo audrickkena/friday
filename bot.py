@@ -141,7 +141,7 @@ class Friday(commands.Bot):
                     if bot_setup[e] == '---NONE---':
                         print(e)
                         if e == 'default_roles' or e == 'voice_state_channel':
-                            raise danki_exceptions.MissingValueInSetup(e)
+                            raise danki_exceptions.MissingValueInSetup(e, f'{e} has not been initialised although it is required! Please initialise this value before starting Danki!')
                 self.setupVariables = bot_setup
         except danki_exceptions.MissingValueInSetup as err:
             print(err)
