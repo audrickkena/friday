@@ -138,9 +138,9 @@ class Friday(commands.Bot):
             with open('SETUP.json', 'r') as f:
                 bot_setup = json.loads(f.read())['bot']
                 for e in bot_setup.keys():
+                    print(f'{e} = {bot_setup[e]}')
                     if bot_setup[e] == '---NONE---':
                         if e == 'default_roles' or e == 'voice_state_channel':
-                            print(e)
                             raise danki_exceptions.MissingValueInSetup(e, f'[ERROR]: {{{e}}} has not been initialised although it is required! Please initialise this value before starting Danki!')
                 self.setupVariables = bot_setup
         except danki_exceptions.MissingValueInSetup as err:
