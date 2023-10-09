@@ -49,12 +49,27 @@ class Friday(commands.Bot):
         """
         try:
             await self.getSetup()
+            self.remove_command('help')
+            
+            for ext in self.initial_extensions:
+                await self.load_extension(ext)
+
+        except Exception as e:
+            raise e
+    
+    async def on_ready(self):
+        try:
+            for guild in self.guilds:
+                if guild.id == int(GUILD): 
+                    self.currGuild = guild
+                    break
             if danki_checks.checkServerHasRequiredRoles(self.currGuild) == True:
-                self.remove_command('help')
-                
-                for ext in self.initial_extensions:
-                    await self.load_extension(ext)
-        
+                print(discord.__version__)
+                print(
+                    f'{self.user} has connected to Discord!\n'
+                    f'{self.user} is connected to {self.currGuild.name}(id: {self.currGuild.id})\n\n'
+                )
+                updateRoles(self, self.currGuild.roles)
         except danki_exceptions.RoleDoesNotExist as err:
             print(f'\n{err}\n')
             print('Due to setup failure, Danki will be closing...\n')
@@ -62,18 +77,6 @@ class Friday(commands.Bot):
 
         except Exception as e:
             raise e
-    
-    async def on_ready(self):
-        for guild in self.guilds:
-            if guild.id == int(GUILD): 
-                self.currGuild = guild
-                break
-        print(discord.__version__)
-        print(
-            f'{self.user} has connected to Discord!\n'
-            f'{self.user} is connected to {self.currGuild.name}(id: {self.currGuild.id})\n\n'
-        )
-        updateRoles(self, self.currGuild.roles)
 
     async def on_guild_role_create(self, role):
         if(role.guild == self.currGuild):
