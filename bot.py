@@ -152,7 +152,7 @@ class Friday(commands.Bot):
     
     async def getSetup(self):
         try:
-            bot_setup = danki_checks.checkRequired('bot')
+            bot_setup = danki_checks.checkRequired()
             self.setupVariables = bot_setup
         except danki_exceptions.MissingValueInSetup as err:
             print(f'\n{err}\n')
