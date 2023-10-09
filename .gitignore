@@ -10,3 +10,6 @@ roles_test.json
 
 # ignore python cache
 cogs/__pycache__
+
+# ignore my setup file
+mysetup.json
