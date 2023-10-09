@@ -9,6 +9,7 @@ roles_test.json
 *.uxf
 
 # ignore python cache
+__pycache__
 cogs/__pycache__
 
 # ignore my setup file
