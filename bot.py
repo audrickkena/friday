@@ -5,6 +5,7 @@ import random
 
 import danki_checks
 import danki_exceptions
+import tm_color
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -69,6 +70,7 @@ class Friday(commands.Bot):
                     f'{self.user} has connected to Discord!\n'
                     f'{self.user} is connected to {self.currGuild.name}(id: {self.currGuild.id})\n\n'
                 )
+                await self.initialiseDirectories()
                 updateRoles(self, self.currGuild.roles)
         except danki_exceptions.RoleDoesNotExist as err:
             print(f'\n{err}\n')
@@ -77,6 +79,14 @@ class Friday(commands.Bot):
 
         except Exception as e:
             raise e
+        
+    async def initialiseDirectories(self):
+        paths = ['misc', 'misc/selamat', 'backups']
+        for path in paths:
+            if os.path.exists(path) == False:
+                print(f'{tm_color.colors.fg.yellow}[WARNING]: {{{path}}} directory is not initialised yet!{tm_color.colors.reset}\n{tm_color.colors.fg.green}Adding directory now...{tm_color.colors.reset}', end='')
+                os.mkdir(path)
+                print(f'{tm_color.colors.fg.blue}{{{path}}} directory initialised!{tm_color.colors.reset}\n\n')
 
     async def on_guild_role_create(self, role):
         if(role.guild == self.currGuild):
