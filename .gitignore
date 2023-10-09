@@ -13,4 +13,4 @@ __pycache__
 cogs/__pycache__
 
 # ignore my setup file
-mysetup.json
+SETUP.json
