@@ -3,6 +3,7 @@ import json
 import discord
 import random
 
+import danki_checks
 import danki_exceptions
 
 from dotenv import load_dotenv
@@ -46,10 +47,21 @@ class Friday(commands.Bot):
         This performs an asynchronous setup after the bot is logged in,
         but before it has connected to the Websocket (quoted from d.py docs)
         """
-        self.remove_command('help')
-        await self.getSetup()
-        for ext in self.initial_extensions:
-            await self.load_extension(ext)
+        try:
+            await self.getSetup()
+            if danki_checks.checkServerHasRequiredRoles(self.currGuild) == True:
+                self.remove_command('help')
+                
+                for ext in self.initial_extensions:
+                    await self.load_extension(ext)
+        
+        except danki_exceptions.RoleDoesNotExist as err:
+            print(f'\n{err}\n')
+            print('Due to setup failure, Danki will be closing...\n')
+            await self.close()
+
+        except Exception as e:
+            raise e
     
     async def on_ready(self):
         for guild in self.guilds:
@@ -79,29 +91,29 @@ class Friday(commands.Bot):
             print(f'Roles file has been updated! Updated role from {before.name}({before.id}) to {after.name}({after.id})')
     
     async def on_member_join(self, member):
-        namesFile = open('backups/memberNamesBackup.json', 'r')
-        namesDict = json.loads(namesFile.read())
-        if str(member.id) in namesDict.keys():
-            roleFile = open('backups/memberRolesBackup.json', 'r')
-            roleDict = json.loads(roleFile.read())
-            prevRoles = roleDict[str(member.id)].split(',')
-            for e in prevRoles:
-                await member.add_roles(self.currGuild.get_role(int(e)))
-            print(f'{member.name} has recovered their previous roles!')
-            roleFile.close()
-        elif(member.guild == self.currGuild):
-            roleFile = open('roles.json', 'r')
-            roleDict = json.loads(roleFile.read())
-            print(f'{member.name} has joined the server!')
-            await member.add_roles(self.currGuild.get_role(roleDict['Lvl 0 Thief']))
-            # Role separator IDS below
-            # TODO: GET ROLE SEPARATOR IDS FROM EXTERNAL FILE INSTEAD
-            await member.add_roles(self.currGuild.get_role(1059332235028856893))
-            await member.add_roles(self.currGuild.get_role(1059324888906743878))
-            await member.add_roles(self.currGuild.get_role(1059331288533843989))
-            print(f'{member.name} has been given role "Lvl 0 Thief"')
-            roleFile.close()
-        namesFile.close()
+        try:
+            namesFile = open('backups/memberNamesBackup.json', 'r')
+            namesDict = json.loads(namesFile.read())
+            if str(member.id) in namesDict.keys():
+                roleFile = open('backups/memberRolesBackup.json', 'r')
+                roleDict = json.loads(roleFile.read())
+                prevRoles = roleDict[str(member.id)].split(',')
+                for e in prevRoles:
+                    await member.add_roles(self.currGuild.get_role(int(e)))
+                print(f'{member.name} has recovered their previous roles!')
+                roleFile.close()
+            elif(member.guild == self.currGuild):
+                print(f'{member.name} has joined the server!')
+                for role in self.setupVariables['required']['default_roles']:
+                    await member.add_roles(discord.utils.get(self.currGuild.roles, name=role))
+                    print(f'{member.name} has been given role "{role}"')
+                # separators should store the id of the role, not the name as role separators have funky names
+                if len(self.setupVariables['optional']['separators']) >= 1 and '---NONE---' not in self.setupVariables['optional']['separators']:
+                    for role in self.setupVariables['optional']['separators']:
+                        await member.add_roles(discord.utils.get(self.currGuild.roles, id=int(role)))   
+            namesFile.close()
+        except Exception as e:
+            raise e
 
     
     async def on_member_remove(self, member):
@@ -114,16 +126,16 @@ class Friday(commands.Bot):
         if(member == self.user):
             return
         if(before.channel == None):
-            if(after.channel.name == 'all hail the thocc'):
+            if after.channel.name in self.setupVariables['optional']['silent_channels']:
                 return
             msg = f'{member.display_name} just joined {after.channel}'
-            channel = get(self.currGuild.channels, name='voiceless-spam-lvl10', type=discord.ChannelType.text)
+            channel = get(self.currGuild.channels, name=self.setupVariables['required']['voice_state_channel'], type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
         if(after.channel == None):
-            if(before.channel.name == 'all hail the thocc'):
+            if(before.channel.name in self.setupVariables['optional']['silent_channels']):
                 return
             msg = f'{member.display_name} just left {before.channel}'
-            channel = get(self.currGuild.channels, name='voiceless-spam-lvl10', type=discord.ChannelType.text)
+            channel = get(self.currGuild.channels, name=self.setupVariables['required']['voice_state_channel'], type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
 
     # async def on_message(self, message):
@@ -137,19 +149,8 @@ class Friday(commands.Bot):
     
     async def getSetup(self):
         try:
-            with open('SETUP.json', 'r') as f:
-                bot_setup = json.loads(f.read())['bot']
-                for e in bot_setup.keys():
-                    if e == 'voice_state_channel' and bot_setup[e] == '---NONE---':
-                        raise danki_exceptions.MissingValueInSetup(e)
-                    if e == 'voice_state_channel':
-                        continue
-                    if '---NONE---' in bot_setup[e]:
-                        if e == 'default_roles' and len(bot_setup[e]) == 1:
-                            raise danki_exceptions.MissingValueInSetup(e)
-                        elif e == 'default_roles' and len(bot_setup[e]) > 1:
-                            raise danki_exceptions.DefaultValueNotRemoved(e)
-                self.setupVariables = bot_setup
+            bot_setup = danki_checks.checkRequired('bot')
+            self.setupVariables = bot_setup
         except danki_exceptions.MissingValueInSetup as err:
             print(f'\n{err}\n')
             print('Due to setup failure, Danki will be closing...\n')
@@ -166,6 +167,12 @@ class Friday(commands.Bot):
                 f.write(json.dumps(setup, indent=4))
                 print(f'{{{err.getKey()}}} after: {temp}')
                 self.setupVariables = setup['bot']
+        except Exception as err:
+            print('I don\'t know how you got here but you did')
+            print(err)
+            print('Closing bot due to this unexpected error')
+            await self.close()
+
 ## HELPER FUNCTIONS
 def updateRoles(self, guildRoles):
     roleDict = {}
