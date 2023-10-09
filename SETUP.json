@@ -5,19 +5,21 @@
         {
             "default_roles": 
             [
-                "---NONE---"
+                "Lvl 0 Thief"
             ],
-            "voice_state_channel": "---NONE---"
+            "voice_state_channel": "voiceless-spam-lvl10"
         },
         "optional":
         {
             "separators": 
             [
-                "---NONE---"
+                "1059332235028856893",
+                "1059324888906743878",
+                "1059331288533843989"
             ],
             "silent_channels":
             [
-                "---NONE---"
+                "all hail the thocc"
             ]
         }    
     },
@@ -27,31 +29,31 @@
         {
             "reloadAll_required_roles":
             [
-                "---NONE---"
+                "Lvl 100 Mafia Warlord"
             ],
             "clear_required_roles":
             [
-                "---NONE---"
+                "Lvl 100 Mafia Warlord"
             ],
             "sync_required_roles":
             [
-                "---NONE---"
+                "Lvl 100 Mafia Warlord"
             ],
             "backupRoles_required_roles":
             [
-                "---NONE---"
+                "Lvl 100 Mafia Warlord"
             ],
             "backupNames_required_roles":
             [
-                "---NONE---"
+                "Lvl 100 Mafia Warlord"
             ],
             "removeBackup_required_roles":
             [
-                "---NONE---"
+                "Lvl 100 Mafia Warlord"
             ],
             "close_required_roles":
             [
-                "---NONE---"
+                "Lvl 100 Mafia Warlord"
             ]
         },
         "optional":
