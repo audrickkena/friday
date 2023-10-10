@@ -12,7 +12,7 @@ list are used to hold roles
 def check_has_role():
     pass
 
-def checkRequired():
+async def checkRequired():
     with open('SETUP.json', 'r') as f:
         setup = json.loads(f.read())
         for module in setup.keys():
@@ -29,17 +29,18 @@ def checkRequired():
                         raise danki_exceptions.DefaultValueNotRemoved(module, e)
         return setup
     
-def checkServerHasRequiredRoles(guild):
+async def checkServerHasRequiredRoles(guild):
     with open('SETUP.json', 'r') as f:
         setup = json.loads(f.read())
         for module in setup.keys():
-            req = setup[module]['required']
-            for option in req.keys():
-                if type(req[option]) == str:
-                    if discord.utils.get(guild.text_channels, name=req[option]) == None:
-                        raise danki_exceptions.RoleDoesNotExist(option, req[option])
-                elif type(req[option]) == list:
-                    for role in req[option]:
-                        if discord.utils.get(guild.roles, name=role) == None:
-                            raise danki_exceptions.RoleDoesNotExist(option, role)
+            if len(setup[module]['required']) > 0:
+                req = setup[module]['required']
+                for option in req.keys():
+                    if type(req[option]) == str:
+                        if discord.utils.get(guild.text_channels, name=req[option]) == None:
+                            raise danki_exceptions.RoleDoesNotExist(option, req[option])
+                    elif type(req[option]) == list:
+                        for role in req[option]:
+                            if discord.utils.get(guild.roles, name=role) == None:
+                                raise danki_exceptions.RoleDoesNotExist(option, role)
         return True    
