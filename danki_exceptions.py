@@ -34,6 +34,9 @@ class DefaultValueNotRemoved(Exception):
         self.message = f'{tm_color.colors.fg.yellow}[WARNING]: {{{self.var_key}}} from {{{self.module_key}}} still contains the default value! This value will now be removed for you!{tm_color.colors.reset}'
         super().__init__(self.message)
 
+    def getModule(self):
+        return self.module_key
+
     def getKey(self):
         return self.var_key
     
