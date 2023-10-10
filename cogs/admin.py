@@ -11,21 +11,16 @@ import danki_enums
 from discord.ext import commands
 from discord.ext import tasks
 from discord import app_commands
-from dotenv import load_dotenv
-
-load_dotenv(os.path.join(os.path.split(os.path.realpath(__file__))[0], '..', '.env'))
-GUILD = os.getenv('DISCORD_GUILD')
 
 class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.setup = self.bot.getAdminSetup()
-        self.serverRoles = None
+        self.serverRoles = self.bot.getGuildRoles()
 
     @commands.Cog.listener()
     async def on_ready(self):
         print(f'{danki_enums.Console.getPrefix()} Admin cog loaded.')
-        self.serverRoles = self.bot.getGuild().roles
     
     def is_guild_owner_intr():
         def predicate(interaction: discord.Interaction):
