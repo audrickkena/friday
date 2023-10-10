@@ -188,9 +188,8 @@ class Friday(commands.Bot):
             await self.getSetup()
         except Exception as err:
             print(f'\n{danki_enums.Console.getPrefix()} I don\'t know how you got here but you did')
-            print(f'{err}')
             print(f'{danki_enums.Console.getPrefix()} Closing bot due to this unexpected error')
-            await self.close()
+            raise err
     
     def getGuild(self):
         return self.currGuild
