@@ -1,6 +1,7 @@
 import os
 import json
 import discord
+import sys
 import random
 
 import danki_checks
@@ -41,7 +42,11 @@ class Friday(commands.Bot):
             "cogs.utility",
             'cogs.misc'
         ]
-        self.setupVariables = None
+        # Setup options initialised for bot and the cogs
+        self.botSetup = None
+        self.adminSetup = None
+        self.utilitySetup = None
+        self.miscSetup = None
     async def setup_hook(self):
         """!
         A coroutine to be called to setup the bot, by default this is blank.
@@ -64,8 +69,8 @@ class Friday(commands.Bot):
                 if guild.id == int(GUILD): 
                     self.currGuild = guild
                     break
-            if danki_checks.checkServerHasRequiredRoles(self.currGuild) == True:
-                print(discord.__version__)
+            if await danki_checks.checkServerHasRequiredRoles(self.currGuild) == True:
+                print(f'Discord version: {discord.__version__}\nPython version: {sys.version}\n\n')
                 print(
                     f'{self.user} has connected to Discord!\n'
                     f'{self.user} is connected to {self.currGuild.name}(id: {self.currGuild.id})\n\n'
@@ -117,12 +122,12 @@ class Friday(commands.Bot):
                 roleFile.close()
             elif(member.guild == self.currGuild):
                 print(f'{member.name} has joined the server!')
-                for role in self.setupVariables['required']['default_roles']:
+                for role in self.botSetup['required']['default_roles']:
                     await member.add_roles(discord.utils.get(self.currGuild.roles, name=role))
                     print(f'{member.name} has been given role "{role}"')
                 # separators should store the id of the role, not the name as role separators have funky names
-                if len(self.setupVariables['optional']['separators']) >= 1 and '---NONE---' not in self.setupVariables['optional']['separators']:
-                    for role in self.setupVariables['optional']['separators']:
+                if len(self.botSetup['optional']['separators']) >= 1 and '---NONE---' not in self.botSetup['optional']['separators']:
+                    for role in self.botSetup['optional']['separators']:
                         await member.add_roles(discord.utils.get(self.currGuild.roles, id=int(role)))   
             namesFile.close()
         except Exception as e:
@@ -139,16 +144,16 @@ class Friday(commands.Bot):
         if(member == self.user):
             return
         if(before.channel == None):
-            if after.channel.name in self.setupVariables['optional']['silent_channels']:
+            if after.channel.name in self.botSetup['optional']['silent_channels']:
                 return
             msg = f'{member.display_name} just joined {after.channel}'
-            channel = get(self.currGuild.channels, name=self.setupVariables['required']['voice_state_channel'], type=discord.ChannelType.text)
+            channel = get(self.currGuild.channels, name=self.botSetup['required']['voice_state_channel'], type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
         if(after.channel == None):
-            if(before.channel.name in self.setupVariables['optional']['silent_channels']):
+            if(before.channel.name in self.botSetup['optional']['silent_channels']):
                 return
             msg = f'{member.display_name} just left {before.channel}'
-            channel = get(self.currGuild.channels, name=self.setupVariables['required']['voice_state_channel'], type=discord.ChannelType.text)
+            channel = get(self.currGuild.channels, name=self.botSetup['required']['voice_state_channel'], type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
 
     # async def on_message(self, message):
@@ -162,8 +167,11 @@ class Friday(commands.Bot):
     
     async def getSetup(self):
         try:
-            bot_setup = danki_checks.checkRequired()
-            self.setupVariables = bot_setup
+            setup = await danki_checks.checkRequired()
+            self.botSetup = setup['bot']
+            self.adminSetup = setup['admin']
+            self.utilitySetup = setup['utility']
+            self.miscSetup = setup['misc']
         except danki_exceptions.MissingValueInSetup as err:
             print(f'\n{err}\n')
             print('Due to setup failure, Danki will be closing...\n')
@@ -172,17 +180,20 @@ class Friday(commands.Bot):
             print(f'\n{err}\n')
             print(f'The default value will now be removed from {{{err.getKey()}}}.\nIf this action is not working as intended, please contact the developer on github\n')
             with open('SETUP.json', 'r+') as f:
-                setup = json.loads(f.read())
                 f.seek(0)
-                print(f'{{{err.getKey()}}} before: {setup["bot"][err.getKey()]}')
-                temp = [x for x in setup['bot'][err.getKey()] if x != '---NONE---']
-                setup['bot'][err.getKey()] = temp
+                setup = json.loads(f.read())
+                print(f'{{{err.getKey()}}} before: {setup[err.getModule()]["required"][err.getKey()]}')
+                temp = [x for x in setup[err.getModule()]["required"][err.getKey()] if x != '---NONE---']
+                setup[err.getModule()]["required"][err.getKey()] = temp
+                f.seek(0)
                 f.write(json.dumps(setup, indent=4))
-                print(f'{{{err.getKey()}}} after: {temp}')
-                self.setupVariables = setup['bot']
+                # to remove lingering contents after f.write() truncate method used
+                f.truncate()
+                print(f'{{{err.getKey()}}} after: {setup[err.getModule()]["required"][err.getKey()]}\n\n')
+            await self.getSetup()
         except Exception as err:
-            print('I don\'t know how you got here but you did')
-            print(err)
+            print('\nI don\'t know how you got here but you did')
+            print(f'{tm_color.colors.fg.red}[ERROR]: {err}{tm_color.colors.reset}')
             print('Closing bot due to this unexpected error')
             await self.close()
 
