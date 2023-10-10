@@ -70,10 +70,10 @@ class Friday(commands.Bot):
                     self.currGuild = guild
                     break
             if await danki_checks.checkServerHasRequiredRoles(self.currGuild) == True:
-                print(f'Discord version: {discord.__version__}\nPython version: {sys.version}\n\n')
+                print(f'Discord version: {discord.__version__}\nPython version: {sys.version}\n')
                 print(
                     f'{self.user} has connected to Discord!\n'
-                    f'{self.user} is connected to {self.currGuild.name}(id: {self.currGuild.id})\n\n'
+                    f'{self.user} is connected to {self.currGuild.name}(id: {self.currGuild.id})\n'
                 )
                 await self.initialiseDirectories()
                 updateRoles(self, self.currGuild.roles)
@@ -91,7 +91,7 @@ class Friday(commands.Bot):
             if os.path.exists(path) == False:
                 print(f'{tm_color.colors.fg.yellow}[WARNING]: {{{path}}} directory is not initialised yet!{tm_color.colors.reset}\n{tm_color.colors.fg.green}Adding directory now...{tm_color.colors.reset}', end='')
                 os.mkdir(path)
-                print(f'{tm_color.colors.fg.blue}{{{path}}} directory initialised!{tm_color.colors.reset}\n\n')
+                print(f'{tm_color.colors.fg.blue}{{{path}}} directory initialised!{tm_color.colors.reset}\n')
 
     async def on_guild_role_create(self, role):
         if(role.guild == self.currGuild):
@@ -159,12 +159,6 @@ class Friday(commands.Bot):
     # async def on_message(self, message):
     #     pass
     
-    def getGuild(self):
-        return self.currGuild
-
-    def getCogs(self):
-        return self.initial_extensions
-    
     async def getSetup(self):
         try:
             setup = await danki_checks.checkRequired()
@@ -189,13 +183,28 @@ class Friday(commands.Bot):
                 f.write(json.dumps(setup, indent=4))
                 # to remove lingering contents after f.write() truncate method used
                 f.truncate()
-                print(f'{{{err.getKey()}}} after: {setup[err.getModule()]["required"][err.getKey()]}\n\n')
+                print(f'{{{err.getKey()}}} after: {setup[err.getModule()]["required"][err.getKey()]}\n')
             await self.getSetup()
         except Exception as err:
             print('\nI don\'t know how you got here but you did')
             print(f'{tm_color.colors.fg.red}[ERROR]: {err}{tm_color.colors.reset}')
             print('Closing bot due to this unexpected error')
             await self.close()
+    
+    def getGuild(self):
+        return self.currGuild
+
+    def getCogs(self):
+        return self.initial_extensions
+    
+    def getAdminSetup(self):
+        return self.adminSetup
+    
+    def getUtilitySetup(self):
+        return self.utilitySetup
+    
+    def getMiscSetup(self):
+        return self.miscSetup
 
 ## HELPER FUNCTIONS
 def updateRoles(self, guildRoles):
