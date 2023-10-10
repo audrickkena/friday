@@ -9,8 +9,9 @@ list are used to hold roles
 
 '''
 
-async def checkHasRoles(member: discord.Member, command: str, roleList: dict, serverRolesList: list):
+async def checkHasRoles(member: discord.Member, command: str, roleList: dict):
     memberRoles = member.roles
+    serverRolesList = member.guild.roles
     for role in roleList[command+'_required_roles']:
         role = discord.utils.get(serverRolesList, name=role)
         if role not in memberRoles:
@@ -87,3 +88,6 @@ async def checkServerHasOptionalRoles(guild):
 async def checkServerHasRoles(guild):
     if await checkServerHasRequiredRoles(guild) and await checkServerHasRequiredRoles(guild):
         return True
+    
+async def checkCommandNeedRoles():
+    pass

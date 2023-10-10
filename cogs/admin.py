@@ -16,11 +16,9 @@ class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.setup = self.bot.getAdminSetup()
-        self.serverRoles = None
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.serverRoles = self.bot.getGuildRoles()
         print(f'{danki_enums.Console.getPrefix()} Admin cog loaded.')
     
     def is_guild_owner_intr():
@@ -36,7 +34,7 @@ class Admin(commands.Cog):
     @commands.command(name="reloadAll", description="For reloading all cogs", usage="!reloadAll")
     async def reloadAll(self, ctx):
         try:
-            if await danki_checks.checkHasRoles(ctx.author, 'reloadAll', self.setup['required'], self.serverRoles) == True:
+            if await danki_checks.checkHasRoles(ctx.author, 'reloadAll', self.setup['required']) == True:
                 for ext in self.bot.getCogs():
                     await self.bot.reload_extension(ext)
                 await ctx.send("All cogs reloaded successfully", ephemeral=True)
@@ -46,11 +44,12 @@ class Admin(commands.Cog):
         except Exception as err:
             print(f'{err}')
             await ctx.send(f'Error was raised! Check console for details')
+            raise err
     
     @commands.command(name="clear", description="For clearing app commands", usage="!clear")
     async def clear(self, ctx):
         try:
-            if await danki_checks.checkHasRoles(ctx.author, 'clear', self.setup['required'], self.serverRoles) == True:
+            if await danki_checks.checkHasRoles(ctx.author, 'clear', self.setup['required']) == True:
                 self.bot.tree.clear_commands(guild=None)
                 await ctx.send("Commands cleared.", ephemeral=True)
         except danki_exceptions.MemberMissingRole as err:
@@ -59,12 +58,13 @@ class Admin(commands.Cog):
         except Exception as err:
             print(f'{err}')
             await ctx.send(f'Error was raised! Check console for details')
+            raise err
 
 
     @commands.command(name="sync", description="For syncing app commands", usage="!sync")
     async def sync(self, ctx):
         try:
-            if await danki_checks.checkHasRoles(ctx.author, 'sync', self.setup['required'], self.serverRoles) == True:
+            if await danki_checks.checkHasRoles(ctx.author, 'sync', self.setup['required']) == True:
                 fmt = await self.bot.tree.sync()
                 await ctx.send(f'Synced {len(fmt)} commands.', ephemeral=True)
         except danki_exceptions.MemberMissingRole as err:
@@ -73,11 +73,12 @@ class Admin(commands.Cog):
         except Exception as err:
             print(f'{err}')
             await ctx.send(f'Error was raised! Check console for details')
+            raise err
     
     @commands.command(name="backupRoles", description="For backing up roles of users in server", usage="!backupRoles")
     async def backupRoles(self, ctx):
         try:
-            if await danki_checks.checkHasRoles(ctx.author, 'backupRoles', self.setup['required'], self.serverRoles) == True:
+            if await danki_checks.checkHasRoles(ctx.author, 'backupRoles', self.setup['required']) == True:
                 members = ctx.guild.members
                 backup = {}
                 for i in range(len(members)):
@@ -99,11 +100,12 @@ class Admin(commands.Cog):
         except Exception as err:
             print(f'{err}')
             await ctx.send(f'Error was raised! Check console for details')
+            raise err
 
     @commands.command(name="backupNames", description="For backing up usernames of users in server", usage="!backupNames")
     async def backupNames(self, ctx):
         try:
-            if await danki_checks.checkHasRoles(ctx.author, 'backupNames', self.setup['required'], self.serverRoles) == True:    
+            if await danki_checks.checkHasRoles(ctx.author, 'backupNames', self.setup['required']) == True:    
                 members = ctx.guild.members
                 backup = {}
                 for i in range(len(members)):
@@ -118,11 +120,12 @@ class Admin(commands.Cog):
         except Exception as err:
             print(f'{err}')
             await ctx.send(f'Error was raised! Check console for details')
+            raise err
 
     @commands.command(name="removeBackup", description="For permanently removing backup of a user", usage="!removeBackup {username}")
     async def removeBackup(self, ctx, user:str):
         try:
-            if await danki_checks.checkHasRoles(ctx.author, 'removeBackup', self.setup['required'], self.serverRoles) == True:
+            if await danki_checks.checkHasRoles(ctx.author, 'removeBackup', self.setup['required']) == True:
                 namesFile = open('backups/memberNamesBackup.json', 'r+')
                 rolesFile = open('backups/memberRolesBackup.json', 'r+')
                 namesDict = json.loads(namesFile.read())
@@ -151,11 +154,12 @@ class Admin(commands.Cog):
         except Exception as err:
             print(f'{err}')
             await ctx.send(f'Error was raised! Check console for details')
+            raise err
 
     @commands.command(name='close', description='For closing the bot', usage = '!close')
     async def close(self, ctx):
         try:
-            if await danki_checks.checkHasRoles(ctx.author, 'close', self.setup['required'], self.serverRoles) == True:
+            if await danki_checks.checkHasRoles(ctx.author, 'close', self.setup['required']) == True:
                 await ctx.send('Shutting down bot')
                 await ctx.bot.close()
         except danki_exceptions.MemberMissingRole as err:
@@ -164,6 +168,7 @@ class Admin(commands.Cog):
         except Exception as err:
             print(f'{err}')
             await ctx.send(f'Error was raised! Check console for details')
+            raise err
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Admin(bot))
