@@ -15,3 +15,7 @@ cogs/__pycache__
 # ignore my setup file
 SETUP.json
 *_SETUP.json
+
+# ignore files used in program
+backups/
+misc/
