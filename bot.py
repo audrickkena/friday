@@ -162,7 +162,7 @@ class Friday(commands.Bot):
     
     async def getSetup(self):
         try:
-            setup = await danki_checks.checkRequired()
+            setup = await danki_checks.checkSetup()
             self.botSetup = setup['bot']
             self.adminSetup = setup['admin']
             self.utilitySetup = setup['utility']
@@ -177,14 +177,14 @@ class Friday(commands.Bot):
             with open('SETUP.json', 'r+') as f:
                 f.seek(0)
                 setup = json.loads(f.read())
-                print(f'{danki_enums.Console.getPrefix()} {{{err.getKey()}}} before: {setup[err.getModule()]["required"][err.getKey()]}')
-                temp = [x for x in setup[err.getModule()]["required"][err.getKey()] if x != '---NONE---']
-                setup[err.getModule()]["required"][err.getKey()] = temp
+                print(f'{danki_enums.Console.getPrefix()} {{{err.getKey()}}} before: {setup[err.getModule()][err.getSetting()][err.getKey()]}')
+                temp = [x for x in setup[err.getModule()][err.getSetting()][err.getKey()] if x != '---NONE---']
+                setup[err.getModule()][err.getSetting()][err.getKey()] = temp
                 f.seek(0)
                 f.write(json.dumps(setup, indent=4))
                 # to remove lingering contents after f.write() truncate method used
                 f.truncate()
-                print(f'{danki_enums.Console.getPrefix()} {{{err.getKey()}}} after: {setup[err.getModule()]["required"][err.getKey()]}\n')
+                print(f'{danki_enums.Console.getPrefix()} {{{err.getKey()}}} after: {setup[err.getModule()][err.getSetting()][err.getKey()]}\n')
             await self.getSetup()
         except Exception as err:
             print(f'\n{danki_enums.Console.getPrefix()} I don\'t know how you got here but you did')
@@ -194,6 +194,9 @@ class Friday(commands.Bot):
     
     def getGuild(self):
         return self.currGuild
+    
+    def getGuildRoles(self):
+        return self.currGuild.roles
 
     def getCogs(self):
         return self.initial_extensions
