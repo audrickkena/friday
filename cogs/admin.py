@@ -16,10 +16,11 @@ class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.setup = self.bot.getAdminSetup()
-        self.serverRoles = self.bot.getGuildRoles()
+        self.serverRoles = None
 
     @commands.Cog.listener()
     async def on_ready(self):
+        self.serverRoles = self.bot.getGuildRoles()
         print(f'{danki_enums.Console.getPrefix()} Admin cog loaded.')
     
     def is_guild_owner_intr():
