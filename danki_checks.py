@@ -20,14 +20,14 @@ def checkRequired():
             for e in moduleSetup['required'].keys():
                 if type(moduleSetup['required'][e]) == str:
                     if moduleSetup['required'][e] == '---NONE---':
-                        raise danki_exceptions.MissingValueInSetup(e)
+                        raise danki_exceptions.MissingValueInSetup(module, e)
                 elif type(moduleSetup['required'][e]) == list:
                     if len(moduleSetup['required'][e]) == 1:
                         if moduleSetup['required'][e][0] == '---NONE---':
-                            raise danki_exceptions.MissingValueInSetup(e)
+                            raise danki_exceptions.MissingValueInSetup(module, e)
                     if '---NONE---' in moduleSetup['required'][e]:
-                        raise danki_exceptions.DefaultValueNotRemoved(e)
-        return moduleSetup
+                        raise danki_exceptions.DefaultValueNotRemoved(module, e)
+        return setup
     
 def checkServerHasRequiredRoles(guild):
     with open('SETUP.json', 'r') as f:
