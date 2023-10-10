@@ -41,7 +41,7 @@ async def checkOptional():
             moduleSetup = setup[module]
             for e in moduleSetup['optional'].keys():
                 if type(moduleSetup['optional'][e]) == list and len(moduleSetup['optional'][e]) > 1:
-                    if '---NONE---' in moduleSetup['required'][e]:
+                    if '---NONE---' in moduleSetup['optional'][e]:
                         raise danki_exceptions.DefaultValueNotRemoved(module, 'optional', e)
     return True
 
