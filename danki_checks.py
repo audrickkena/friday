@@ -48,7 +48,7 @@ async def checkOptional():
 async def checkSetup():
     if await checkRequired() and await checkOptional():
         with open('SETUP.json', 'r') as f:
-            setup = json.load(f.read())
+            setup = json.loads(f.read())
             return setup
     
 async def checkServerHasRequiredRoles(guild):
@@ -85,5 +85,5 @@ async def checkServerHasOptionalRoles(guild):
     return True
 
 async def checkServerHasRoles(guild):
-    if await checkServerHasRequiredRoles() and await checkServerHasRequiredRoles():
+    if await checkServerHasRequiredRoles(guild) and await checkServerHasRequiredRoles(guild):
         return True
