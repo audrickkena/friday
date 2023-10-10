@@ -3,6 +3,11 @@ import random
 import functools
 import json
 import os
+
+import danki_checks
+import danki_exceptions
+import danki_enums
+
 from discord.ext import commands
 from discord.ext import tasks
 from discord import app_commands
@@ -14,10 +19,13 @@ GUILD = os.getenv('DISCORD_GUILD')
 class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.setup = self.bot.getAdminSetup()
+        self.serverRoles = None
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print('Admin cog loaded.')
+        print(f'{danki_enums.Console.getPrefix()} Admin cog loaded.')
+        self.serverRoles = self.bot.getGuild().roles
     
     def is_guild_owner_intr():
         def predicate(interaction: discord.Interaction):
@@ -30,113 +38,136 @@ class Admin(commands.Cog):
         return commands.check(predicate)
 
     @commands.command(name="reloadAll", description="For reloading all cogs", usage="!reloadAll")
-    @is_guild_owner_ctx()
     async def reloadAll(self, ctx):
         try:
-            for ext in self.bot.getCogs():
-                await self.bot.reload_extension(ext)
-            print("All cogs reloaded successfully")
-        except commands.ExtensionError as e:
-            print(e)
-    @reloadAll.error
-    async def reloadAll_error(self, ctx, error):
-        print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
+            if await danki_checks.checkHasRoles(ctx.author, 'reloadAll', self.setup['required'], self.serverRoles) == True:
+                for ext in self.bot.getCogs():
+                    await self.bot.reload_extension(ext)
+                await ctx.send("All cogs reloaded successfully", ephemeral=True)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
+        except Exception as err:
+            print(f'{err}')
+            await ctx.send(f'Error was raised! Check console for details')
     
     @commands.command(name="clear", description="For clearing app commands", usage="!clear")
-    @is_guild_owner_ctx()
     async def clear(self, ctx):
-        self.bot.tree.clear_commands(guild=None)
-        print("Commands cleared.")
-    @clear.error
-    async def clear_error(self, ctx, error):
-        print(error)
-        print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
+        try:
+            if await danki_checks.checkHasRoles(ctx.author, 'clear', self.setup['required'], self.serverRoles) == True:
+                self.bot.tree.clear_commands(guild=None)
+                await ctx.send("Commands cleared.", ephemeral=True)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
+        except Exception as err:
+            print(f'{err}')
+            await ctx.send(f'Error was raised! Check console for details')
+
 
     @commands.command(name="sync", description="For syncing app commands", usage="!sync")
-    @is_guild_owner_ctx()
     async def sync(self, ctx):
-        
-        fmt = await self.bot.tree.sync()
-        print(f'Synced {len(fmt)} commands.')
-    @sync.error
-    async def sync_error(self, ctx, error):
-        print(error)
-        print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
+        try:
+            if await danki_checks.checkHasRoles(ctx.author, 'sync', self.setup['required'], self.serverRoles) == True:
+                fmt = await self.bot.tree.sync()
+                await ctx.send(f'Synced {len(fmt)} commands.', ephemeral=True)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
+        except Exception as err:
+            print(f'{err}')
+            await ctx.send(f'Error was raised! Check console for details')
     
     @commands.command(name="backupRoles", description="For backing up roles of users in server", usage="!backupRoles")
-    @is_guild_owner_ctx()
     async def backupRoles(self, ctx):
-        members = ctx.guild.members
-        backup = {}
-        for i in range(len(members)):
-            roleList = []
-            currRoles = members[i].roles
-            for e in currRoles:
-                if e.id == 866927479419830282:
-                    continue
-                roleList.append(str(e.id))
-            roleList = ','.join(roleList)
-            backup[members[i].id] = roleList
-            print(f'Backed up {members[i].name}\'s roles sucessfully')
-        roleFile = open('backups/memberRolesBackup.json', 'w')
-        roleFile.write(json.dumps(backup, indent=4))
-        roleFile.close()
-    @backupRoles.error
-    async def backupRoles_error(self, ctx, error):
-        print(error)
-        print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
+        try:
+            if await danki_checks.checkHasRoles(ctx.author, 'backupRoles', self.setup['required'], self.serverRoles) == True:
+                members = ctx.guild.members
+                backup = {}
+                for i in range(len(members)):
+                    roleList = []
+                    currRoles = members[i].roles
+                    for e in currRoles:
+                        if e.id == 866927479419830282:
+                            continue
+                        roleList.append(str(e.id))
+                    roleList = ','.join(roleList)
+                    backup[members[i].id] = roleList
+                    print(f'Backed up {members[i].name}\'s roles sucessfully')
+                roleFile = open('backups/memberRolesBackup.json', 'w')
+                roleFile.write(json.dumps(backup, indent=4))
+                roleFile.close()
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
+        except Exception as err:
+            print(f'{err}')
+            await ctx.send(f'Error was raised! Check console for details')
 
     @commands.command(name="backupNames", description="For backing up usernames of users in server", usage="!backupNames")
-    @is_guild_owner_ctx()
     async def backupNames(self, ctx):
-        members = ctx.guild.members
-        backup = {}
-        for i in range(len(members)):
-            backup[members[i].id] = members[i].name
-            print(f'Backed up {members[i].name}\'s id sucessfully')
-        roleFile = open('backups/memberNamesBackup.json', 'w')
-        roleFile.write(json.dumps(backup, indent=4))
-        roleFile.close()
-    @backupNames.error
-    async def backupNames_error(self, ctx, error):
-        print(error)
-        print(f'{ctx.author.display_name} does not have the necessary permissions to access !{ctx.command.name}.')
+        try:
+            if await danki_checks.checkHasRoles(ctx.author, 'backupNames', self.setup['required'], self.serverRoles) == True:    
+                members = ctx.guild.members
+                backup = {}
+                for i in range(len(members)):
+                    backup[members[i].id] = members[i].name
+                    print(f'Backed up {members[i].name}\'s id sucessfully')
+                roleFile = open('backups/memberNamesBackup.json', 'w')
+                roleFile.write(json.dumps(backup, indent=4))
+                roleFile.close()
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
+        except Exception as err:
+            print(f'{err}')
+            await ctx.send(f'Error was raised! Check console for details')
 
     @commands.command(name="removeBackup", description="For permanently removing backup of a user", usage="!removeBackup {username}")
-    @is_guild_owner_ctx()
     async def removeBackup(self, ctx, user:str):
-        namesFile = open('backups/memberNamesBackup.json', 'r+')
-        rolesFile = open('backups/memberRolesBackup.json', 'r+')
-        namesDict = json.loads(namesFile.read())
-        rolesDict = json.loads(rolesFile.read())
-        delete = ''
-        if user in namesDict.values():
-            for uID in namesDict:
-                if namesDict[uID] == user:
-                    print(f'{namesDict[uID]} still backed up -> Deleting Backup')
-                    delete = uID
-                    break
-        if delete != '':
-            namesDict.pop(delete)
-            rolesDict.pop(delete)
-            namesFile.seek(0)
-            rolesFile.seek(0)
-            namesFile.write(json.dumps(namesDict, indent=4))
-            rolesFile.write(json.dumps(rolesDict, indent=4))
-        else:
-            print(f'{user} is already not backed up!')
-        namesFile.close()
-        rolesFile.close()
+        try:
+            if await danki_checks.checkHasRoles(ctx.author, 'removeBackup', self.setup['required'], self.serverRoles) == True:
+                namesFile = open('backups/memberNamesBackup.json', 'r+')
+                rolesFile = open('backups/memberRolesBackup.json', 'r+')
+                namesDict = json.loads(namesFile.read())
+                rolesDict = json.loads(rolesFile.read())
+                delete = ''
+                if user in namesDict.values():
+                    for uID in namesDict:
+                        if namesDict[uID] == user:
+                            print(f'{namesDict[uID]} still backed up -> Deleting Backup')
+                            delete = uID
+                            break
+                if delete != '':
+                    namesDict.pop(delete)
+                    rolesDict.pop(delete)
+                    namesFile.seek(0)
+                    rolesFile.seek(0)
+                    namesFile.write(json.dumps(namesDict, indent=4))
+                    rolesFile.write(json.dumps(rolesDict, indent=4))
+                else:
+                    print(f'{user} is already not backed up!')
+                namesFile.close()
+                rolesFile.close()
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
+        except Exception as err:
+            print(f'{err}')
+            await ctx.send(f'Error was raised! Check console for details')
 
     @commands.command(name='close', description='For closing the bot', usage = '!close')
-    @is_guild_owner_ctx()
     async def close(self, ctx):
-        await ctx.send('Shutting down bot')
-        await ctx.bot.close()
-
-    @removeBackup.error
-    async def removeBackup_error(self, ctx, error):
-        print(error)
+        try:
+            if await danki_checks.checkHasRoles(ctx.author, 'close', self.setup['required'], self.serverRoles) == True:
+                await ctx.send('Shutting down bot')
+                await ctx.bot.close()
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
+        except Exception as err:
+            print(f'{err}')
+            await ctx.send(f'Error was raised! Check console for details')
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Admin(bot))
