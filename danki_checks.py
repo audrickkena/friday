@@ -9,10 +9,16 @@ list are used to hold roles
 
 '''
 
-def check_has_role():
-    pass
+async def checkHasRoles(member: discord.Member, command: str, roleList: dict, serverRolesList: list):
+    memberRoles = member.roles
+    for role in roleList[command+'_required_roles']:
+        role = discord.utils.get(serverRolesList, name=role)
+        if role not in memberRoles:
+            raise danki_exceptions.MemberMissingRole(member, command, role)
+    return True
 
 async def checkRequired():
+    setup = None
     with open('SETUP.json', 'r') as f:
         setup = json.loads(f.read())
         for module in setup.keys():
@@ -27,7 +33,7 @@ async def checkRequired():
                             raise danki_exceptions.MissingValueInSetup(module, e)
                     if '---NONE---' in moduleSetup['required'][e]:
                         raise danki_exceptions.DefaultValueNotRemoved(module, e)
-        return setup
+    return setup
     
 async def checkServerHasRequiredRoles(guild):
     with open('SETUP.json', 'r') as f:
@@ -43,4 +49,4 @@ async def checkServerHasRequiredRoles(guild):
                         for role in req[option]:
                             if discord.utils.get(guild.roles, name=role) == None:
                                 raise danki_exceptions.RoleDoesNotExist(option, role)
-        return True    
+    return True    
