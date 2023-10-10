@@ -6,6 +6,7 @@ import random
 
 import danki_checks
 import danki_exceptions
+import danki_enums
 import tm_color
 
 from dotenv import load_dotenv
@@ -70,16 +71,16 @@ class Friday(commands.Bot):
                     self.currGuild = guild
                     break
             if await danki_checks.checkServerHasRequiredRoles(self.currGuild) == True:
-                print(f'Discord version: {discord.__version__}\nPython version: {sys.version}\n')
+                print(f'{danki_enums.Console.getPrefix()} Discord version: {discord.__version__}\n{danki_enums.Console.getPrefix()} Python version: {sys.version}\n')
                 print(
-                    f'{self.user} has connected to Discord!\n'
-                    f'{self.user} is connected to {self.currGuild.name}(id: {self.currGuild.id})\n'
+                    f'{danki_enums.Console.getPrefix()} {self.user} has connected to Discord!\n'
+                    f'{danki_enums.Console.getPrefix()} {self.user} is connected to {self.currGuild.name}(id: {self.currGuild.id})\n'
                 )
                 await self.initialiseDirectories()
                 updateRoles(self, self.currGuild.roles)
         except danki_exceptions.RoleDoesNotExist as err:
             print(f'\n{err}\n')
-            print('Due to setup failure, Danki will be closing...\n')
+            print(f'{danki_enums.Console.getPrefix()} Due to setup failure, Danki will be closing...\n')
             await self.close()
 
         except Exception as e:
@@ -89,24 +90,24 @@ class Friday(commands.Bot):
         paths = ['misc', 'misc/selamat', 'backups']
         for path in paths:
             if os.path.exists(path) == False:
-                print(f'{tm_color.colors.fg.yellow}[WARNING]: {{{path}}} directory is not initialised yet!{tm_color.colors.reset}\n{tm_color.colors.fg.green}Adding directory now...{tm_color.colors.reset}', end='')
+                print(f'{danki_enums.Console.getPrefix()} {danki_enums.Console.WARNING} {{{path}}} directory is not initialised yet!\n{danki_enums.Console.getPrefix()} {tm_color.colors.fg.green}Adding directory now...{tm_color.colors.reset}', end='')
                 os.mkdir(path)
                 print(f'{tm_color.colors.fg.blue}{{{path}}} directory initialised!{tm_color.colors.reset}\n')
 
     async def on_guild_role_create(self, role):
         if(role.guild == self.currGuild):
             updateRoles(self, self.currGuild.roles)
-            print(f'Roles file has been updated! Added role {role.name}({role.id})')
+            print(f'{danki_enums.Console.getPrefix()} Roles file has been updated! Added role {role.name}({role.id})')
 
     async def on_guild_role_delete(self, role):
         if(role.guild == self.currGuild):
             updateRoles(self, self.currGuild.roles)
-            print(f'Roles file has been updated! Removed role {role.name}({role.id})')
+            print(f'{danki_enums.Console.getPrefix()} Roles file has been updated! Removed role {role.name}({role.id})')
 
     async def on_guild_role_update(self, before, after):
         if(before.guild == self.currGuild):
             updateRoles(self, self.currGuild.roles)
-            print(f'Roles file has been updated! Updated role from {before.name}({before.id}) to {after.name}({after.id})')
+            print(f'{danki_enums.Console.getPrefix()} Roles file has been updated! Updated role from {before.name}({before.id}) to {after.name}({after.id})')
     
     async def on_member_join(self, member):
         try:
@@ -118,13 +119,13 @@ class Friday(commands.Bot):
                 prevRoles = roleDict[str(member.id)].split(',')
                 for e in prevRoles:
                     await member.add_roles(self.currGuild.get_role(int(e)))
-                print(f'{member.name} has recovered their previous roles!')
+                print(f'{danki_enums.Console.getPrefix()} {member.name} has recovered their previous roles!')
                 roleFile.close()
             elif(member.guild == self.currGuild):
-                print(f'{member.name} has joined the server!')
+                print(f'{danki_enums.Console.getPrefix()} {member.name} has joined the server!')
                 for role in self.botSetup['required']['default_roles']:
                     await member.add_roles(discord.utils.get(self.currGuild.roles, name=role))
-                    print(f'{member.name} has been given role "{role}"')
+                    print(f'{danki_enums.Console.getPrefix()} {member.name} has been given role "{role}"')
                 # separators should store the id of the role, not the name as role separators have funky names
                 if len(self.botSetup['optional']['separators']) >= 1 and '---NONE---' not in self.botSetup['optional']['separators']:
                     for role in self.botSetup['optional']['separators']:
@@ -135,7 +136,7 @@ class Friday(commands.Bot):
 
     
     async def on_member_remove(self, member):
-        print(f'{member.name} has left the server!')
+        print(f'{danki_enums.Console.getPrefix()} {member.name} has left the server!')
 
     
     async def on_voice_state_update(self, member, before, after):
@@ -168,27 +169,27 @@ class Friday(commands.Bot):
             self.miscSetup = setup['misc']
         except danki_exceptions.MissingValueInSetup as err:
             print(f'\n{err}\n')
-            print('Due to setup failure, Danki will be closing...\n')
+            print(f'{danki_enums.Console.getPrefix()} Due to setup failure, Danki will be closing...\n')
             await self.close()
         except danki_exceptions.DefaultValueNotRemoved as err:
             print(f'\n{err}\n')
-            print(f'The default value will now be removed from {{{err.getKey()}}}.\nIf this action is not working as intended, please contact the developer on github\n')
+            print(f'{danki_enums.Console.getPrefix()} The default value will now be removed from {{{err.getKey()}}}.\nIf this action is not working as intended, please contact the developer on github\n')
             with open('SETUP.json', 'r+') as f:
                 f.seek(0)
                 setup = json.loads(f.read())
-                print(f'{{{err.getKey()}}} before: {setup[err.getModule()]["required"][err.getKey()]}')
+                print(f'{danki_enums.Console.getPrefix()} {{{err.getKey()}}} before: {setup[err.getModule()]["required"][err.getKey()]}')
                 temp = [x for x in setup[err.getModule()]["required"][err.getKey()] if x != '---NONE---']
                 setup[err.getModule()]["required"][err.getKey()] = temp
                 f.seek(0)
                 f.write(json.dumps(setup, indent=4))
                 # to remove lingering contents after f.write() truncate method used
                 f.truncate()
-                print(f'{{{err.getKey()}}} after: {setup[err.getModule()]["required"][err.getKey()]}\n')
+                print(f'{danki_enums.Console.getPrefix()} {{{err.getKey()}}} after: {setup[err.getModule()]["required"][err.getKey()]}\n')
             await self.getSetup()
         except Exception as err:
-            print('\nI don\'t know how you got here but you did')
-            print(f'{tm_color.colors.fg.red}[ERROR]: {err}{tm_color.colors.reset}')
-            print('Closing bot due to this unexpected error')
+            print(f'\n{danki_enums.Console.getPrefix()} I don\'t know how you got here but you did')
+            print(f'{err}')
+            print(f'{danki_enums.Console.getPrefix()} Closing bot due to this unexpected error')
             await self.close()
     
     def getGuild(self):
