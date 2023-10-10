@@ -70,7 +70,7 @@ class Friday(commands.Bot):
                 if guild.id == int(GUILD): 
                     self.currGuild = guild
                     break
-            if await danki_checks.checkServerHasRequiredRoles(self.currGuild) == True:
+            if await danki_checks.checkServerHasRoles(self.currGuild) == True:
                 print(f'{danki_enums.Console.getPrefix()} Discord version: {discord.__version__}\n{danki_enums.Console.getPrefix()} Python version: {sys.version}\n')
                 print(
                     f'{danki_enums.Console.getPrefix()} {self.user} has connected to Discord!\n'
