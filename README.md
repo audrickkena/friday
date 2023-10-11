@@ -10,9 +10,16 @@ a means of practice in python and developing bots.
 * /teams command for splitting selected users into a specified number of teams
 * /dict command group for server specific slang
 * /popoff command for members in server who popoff
+* /banter command for giving a disclaimer that you are, in fact, joking
+* /notbanter command for giving a disclaimer that you are not joking
+* /selamat command for server greetings 
+* /quote command for server quotes
 
 ## Planned Features
 * votekick function (being debated)
 * music streaming
 * poll function
 * reminder function
+* danki bucks function
+* bet function (using danki bucks)
+* halloflame
