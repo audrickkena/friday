@@ -43,7 +43,7 @@ class Admin(commands.Cog):
             await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
         except Exception as err:
             print(f'{err}')
-            await ctx.send(f'Error was raised! Check console for details')
+            await ctx.send(f'{danki_enums.DiscordOut.ERROR}')
             raise err
     
     @commands.command(name="clear", description="For clearing app commands", usage="!clear")
@@ -57,7 +57,7 @@ class Admin(commands.Cog):
             await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
         except Exception as err:
             print(f'{err}')
-            await ctx.send(f'Error was raised! Check console for details')
+            await ctx.send(f'{danki_enums.DiscordOut.ERROR}')
             raise err
 
 
@@ -72,7 +72,7 @@ class Admin(commands.Cog):
             await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
         except Exception as err:
             print(f'{err}')
-            await ctx.send(f'Error was raised! Check console for details')
+            await ctx.send(f'{danki_enums.DiscordOut.ERROR}')
             raise err
     
     @commands.command(name="backupRoles", description="For backing up roles of users in server", usage="!backupRoles")
@@ -99,7 +99,7 @@ class Admin(commands.Cog):
             await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
         except Exception as err:
             print(f'{err}')
-            await ctx.send(f'Error was raised! Check console for details')
+            await ctx.send(f'{danki_enums.DiscordOut.ERROR}')
             raise err
 
     @commands.command(name="backupNames", description="For backing up usernames of users in server", usage="!backupNames")
@@ -119,7 +119,7 @@ class Admin(commands.Cog):
             await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
         except Exception as err:
             print(f'{err}')
-            await ctx.send(f'Error was raised! Check console for details')
+            await ctx.send(f'{danki_enums.DiscordOut.ERROR}')
             raise err
 
     @commands.command(name="removeBackup", description="For permanently removing backup of a user", usage="!removeBackup {username}")
@@ -153,7 +153,7 @@ class Admin(commands.Cog):
             await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
         except Exception as err:
             print(f'{err}')
-            await ctx.send(f'Error was raised! Check console for details')
+            await ctx.send(f'{danki_enums.DiscordOut.ERROR}')
             raise err
 
     @commands.command(name='close', description='For closing the bot', usage = '!close')
@@ -167,7 +167,7 @@ class Admin(commands.Cog):
             await ctx.send(f'You do not have the necessary roles required to use this command!\nIf this is a mistake, please contact the admin or raise an issue in github')
         except Exception as err:
             print(f'{err}')
-            await ctx.send(f'Error was raised! Check console for details')
+            await ctx.send(f'{danki_enums.DiscordOut.ERROR}')
             raise err
 
 async def setup(bot: commands.Bot):

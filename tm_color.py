@@ -1,6 +1,6 @@
 class colors:
  
- 
+     # TODO: ADD more options for colors and text styling
      '''Colors class:reset all colors with colors.reset; two
      sub classes fg for foreground
      and bg for background; use as colors.subclass.colorname.
