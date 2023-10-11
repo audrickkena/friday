@@ -10,12 +10,12 @@ class colors:
      
      - color code copied from: https://www.geeksforgeeks.org/print-colors-python-terminal/'''
      reset = '\033[0m'
-     bold = '\033[01m'
-     disable = '\033[02m'
-     underline = '\033[04m'
-     reverse = '\033[07m'
-     strikethrough = '\033[09m'
-     invisible = '\033[08m'
+     bold = '\033[1m'
+     disable = '\033[2m'
+     underline = '\033[4m'
+     reverse = '\033[7m'
+     strikethrough = '\033[9m'
+     invisible = '\033[8m'
  
      class fg:
           black = '\033[30m'
@@ -33,3 +33,13 @@ class colors:
           lightblue = '\033[94m'
           pink = '\033[95m'
           lightcyan = '\033[96m'
+     
+     class bg:
+        black = '\033[40m'
+        red = '\033[41m'
+        green = '\033[42m'
+        orange = '\033[43m'
+        blue = '\033[44m'
+        purple = '\033[45m'
+        cyan = '\033[46m'
+        lightgrey = '\033[47m'
