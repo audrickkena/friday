@@ -28,7 +28,8 @@ GUILD = os.getenv('DISCORD_GUILD')
 APPID = os.getenv('DISCORD_APP_ID')
 
 ## FRIDAY CLASS DEFINITION
-# TODO: UPDATE HARDCODED VARIABLES TO BE FETCHED FROM SETUP.TXT INSTEAD
+# TODO: Add logging of errors and warnings that happen in runtime
+# TODO: Consider logging of other things
 class Friday(commands.Bot):
 
     def __init__(self):
@@ -148,13 +149,13 @@ class Friday(commands.Bot):
             if after.channel.name in self.botSetup['optional']['silent_channels']:
                 return
             msg = f'{member.display_name} just joined {after.channel}'
-            channel = get(self.currGuild.channels, name=self.botSetup['required']['voice_state_channel'], type=discord.ChannelType.text)
+            channel = get(self.currGuild.channels, name=self.botSetup['required']['tts_channel'], type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
         if(after.channel == None):
             if(before.channel.name in self.botSetup['optional']['silent_channels']):
                 return
             msg = f'{member.display_name} just left {before.channel}'
-            channel = get(self.currGuild.channels, name=self.botSetup['required']['voice_state_channel'], type=discord.ChannelType.text)
+            channel = get(self.currGuild.channels, name=self.botSetup['required']['tts_channel'], type=discord.ChannelType.text)
             await channel.send(content=msg, tts=True, delete_after=10)
 
     # async def on_message(self, message):
@@ -199,6 +200,9 @@ class Friday(commands.Bot):
 
     def getCogs(self):
         return self.initial_extensions
+    
+    def getBotSetup(self):
+        return self.botSetup
     
     def getAdminSetup(self):
         return self.adminSetup

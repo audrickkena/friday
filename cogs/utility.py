@@ -4,14 +4,15 @@ import datetime
 import functools
 import json
 import os
+
+import danki_checks
+import danki_exceptions
+import danki_enums
+
 from discord.ext import commands
 from discord.ext import tasks
 from discord import app_commands
 from discord.ui import Select, UserSelect, View
-from dotenv import load_dotenv
-
-load_dotenv(os.path.join(os.path.split(os.path.realpath(__file__))[0], '..', '.env'))
-GUILD = os.getenv('DISCORD_GUILD')
 
 class SelectUsers(UserSelect):
     def __init__(self, ctx):
@@ -136,10 +137,11 @@ class editDictModal(discord.ui.Modal):
             f.write(json.dumps(newDict, indent=4))
             await interaction.response.send_message(f'{self.word.value} has been added succesfully!', ephemeral=True)
     
-
+# TODO: Implement new checks and exceptions for UTILITY
 class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.setup = self.bot.getUtilitySetup()
         # self.prevTrog = None
         # self.path = os.path.dirname(__file__) + '/../roles_test.json'
         # self.roleFile = open(self.path, 'r')
@@ -149,16 +151,25 @@ class Utility(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print('Utility cog loaded.')
+        print(f'{danki_enums.Console.getPrefix()} Utility cog loaded.')
     
     # TODO: /remindme command for reminding user of something
 
     @app_commands.command(name="teams", description='For making teams based on the selected users')
     async def teams(self, interaction: discord.Interaction):
-        selectUsers = SelectUsers(interaction.channel)
-        view = View()
-        view.add_item(selectUsers)
-        await interaction.response.send_message("Choose users:", view=view)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'teams', self.setup['optional']) == True:
+                selectUsers = SelectUsers(interaction.channel)
+                view = View()
+                view.add_item(selectUsers)
+                await interaction.response.send_message("Choose users:", view=view)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
+            
     
 
 
@@ -167,22 +178,30 @@ class Utility(commands.Cog):
 
     @app_commands.command(name='help', description='For getting information on usable commands')
     async def help(self, interaction: discord.Interaction):
-        cogs = self.bot.cogs
-        embedList = []
-        for cogName, cog in cogs.items():
-            if(cogName == 'Admin' and interaction.guild.owner_id != interaction.user.id):
-                continue
-            message = discord.Embed(
-                title=f'{cogName} commands:\n',
-                color=discord.Colour.blue()
-            )
-            if(len(cog.get_app_commands()) > 0):
-                self.getAppCommands(cog, message)
-            if(len(cog.get_commands()) > 0):
-                message.add_field(name='\n\u200b', value='\n', inline=False)
-                self.getCommands(cog, message)
-            embedList.append(message)
-        await interaction.response.send_message(embeds=embedList, ephemeral=True)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'help', self.setup['optional']) == True:
+                cogs = self.bot.cogs
+                embedList = []
+                for cogName, cog in cogs.items():
+                    if(cogName == 'Admin' and interaction.guild.owner_id != interaction.user.id):
+                        continue
+                    message = discord.Embed(
+                        title=f'{cogName} commands:\n',
+                        color=discord.Colour.blue()
+                    )
+                    if(len(cog.get_app_commands()) > 0):
+                        self.getAppCommands(cog, message)
+                    if(len(cog.get_commands()) > 0):
+                        message.add_field(name='\n\u200b', value='\n', inline=False)
+                        self.getCommands(cog, message)
+                    embedList.append(message)
+                await interaction.response.send_message(embeds=embedList, ephemeral=True)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
     
     def getAppCommands(self, cog, embed):
         commands = cog.get_app_commands()
@@ -222,53 +241,77 @@ class Utility(commands.Cog):
 
     @dictGrp.command(name='list', description='For listing contents of server dictionary')
     async def listDict(self, interaction: discord.Interaction):
-        if not self.dictFileExists():
-            await interaction.response.send_message('No entries in dictionary!', ephemeral=True)
-        else:
-            message = discord.Embed(
-                title='Dictionary of Server Slang',
-                description='Listing all words added to the server\'s dictionary',
-                color=discord.Colour.red()
-            )
-            with open('dict.json', 'r') as f:
-                entries = json.loads(f.read())
-                words = entries.keys()
-                for e in words:
-                    entryDate = entries[e].split(',,,')[-2]
-                    entryTime = entries[e].split(',,,')[-1]
-                    message.add_field(name=f'{e}', value=f'Created: {entryDate} {entryTime}', inline=False)
-            await interaction.response.send_message(embed=message, ephemeral=True)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'listDict', self.setup['optional']) == True:
+                if not self.dictFileExists():
+                    await interaction.response.send_message('No entries in dictionary!', ephemeral=True)
+                else:
+                    message = discord.Embed(
+                        title='Dictionary of Server Slang',
+                        description='Listing all words added to the server\'s dictionary',
+                        color=discord.Colour.red()
+                    )
+                    with open('dict.json', 'r') as f:
+                        entries = json.loads(f.read())
+                        words = entries.keys()
+                        for e in words:
+                            entryDate = entries[e].split(',,,')[-2]
+                            entryTime = entries[e].split(',,,')[-1]
+                            message.add_field(name=f'{e}', value=f'Created: {entryDate} {entryTime}', inline=False)
+                    await interaction.response.send_message(embed=message, ephemeral=True)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
 
     @dictGrp.command(name='add', description='For adding a word or phrase into the server dictionary')
     async def addDict(self, interaction: discord.Interaction):
-        if not self.dictFileExists():
-            f = open('dict.json', 'x')
-            f.close()
-        await interaction.response.send_modal(addDictModal())
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'addDict', self.setup['optional']) == True:
+                if not self.dictFileExists():
+                    f = open('dict.json', 'x')
+                    f.close()
+                await interaction.response.send_modal(addDictModal())
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
 
     @dictGrp.command(name='get', description='For getting the meaning and usage of a word or phrase in the server dictionary')
     async def getDict(self, interaction: discord.Interaction, entry: str):
-        if not self.dictFileExists():
-            await interaction.response.send_message('No entries in dictionary!', ephemeral=True)
-        else:
-            with open('dict.json', 'r') as f:
-                entries = json.loads(f.read())
-                words = entries.keys()
-                if entry.lower() in words:
-                    val = entries[entry]
-                    valList = val.split(',,,')
-                    meaning = valList[0]
-                    usage = valList[1]
-                    message = discord.Embed(
-                        title=f'{entry.lower()}',
-                        description=f'Here is the definition and usage of the entry {entry.lower()} entered on {valList[2]} at {valList[3]}',
-                        color=discord.Colour.red()
-                    )
-                    message.add_field(name='\n\u200b', value=f'Definition: {meaning}\nUsage: {usage}')
-                    await interaction.response.send_message(embed=message, ephemeral=True)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'getDict', self.setup['optional']) == True:
+                if not self.dictFileExists():
+                    await interaction.response.send_message('No entries in dictionary!', ephemeral=True)
                 else:
-                    await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
-
+                    with open('dict.json', 'r') as f:
+                        entries = json.loads(f.read())
+                        words = entries.keys()
+                        if entry.lower() in words:
+                            val = entries[entry]
+                            valList = val.split(',,,')
+                            meaning = valList[0]
+                            usage = valList[1]
+                            message = discord.Embed(
+                                title=f'{entry.lower()}',
+                                description=f'Here is the definition and usage of the entry {entry.lower()} entered on {valList[2]} at {valList[3]}',
+                                color=discord.Colour.red()
+                            )
+                            message.add_field(name='\n\u200b', value=f'Definition: {meaning}\nUsage: {usage}')
+                            await interaction.response.send_message(embed=message, ephemeral=True)
+                        else:
+                            await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
+        
     @getDict.autocomplete('entry')
     async def dictAuto(self, interaction: discord.Interaction, current: str):
         data = []
@@ -281,18 +324,26 @@ class Utility(commands.Cog):
 
     @dictGrp.command(name='edit', description='For editing an existing entry in the dictionary')
     async def editDict(self, interaction: discord.Interaction, entry: str):
-        if not self.dictFileExists():
-            await interaction.response.send_message('No entries in dictionary!', ephemeral=True)
-        else:
-            with open('dict.json', 'r') as f:
-                entries = json.loads(f.read())
-                words = entries.keys()
-                if entry.lower() in words:
-                    edit = editDictModal(entry.lower())
-                    await interaction.response.send_modal(edit)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'editDict', self.setup['optional']) == True:
+                if not self.dictFileExists():
+                    await interaction.response.send_message('No entries in dictionary!', ephemeral=True)
                 else:
-                    await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
-
+                    with open('dict.json', 'r') as f:
+                        entries = json.loads(f.read())
+                        words = entries.keys()
+                        if entry.lower() in words:
+                            edit = editDictModal(entry.lower())
+                            await interaction.response.send_modal(edit)
+                        else:
+                            await interaction.response.send_message(f'{entry} is not in the dictionary! Use /dict list to find out the words available', ephemeral=True)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
+    
     def dictFileExists(self):
         try:
             with open('dict.json', 'r') as f:

@@ -4,6 +4,11 @@ import random
 import datetime
 import json
 import os
+
+import danki_enums
+import danki_checks
+import danki_exceptions
+
 from discord.ext import commands
 from discord import app_commands
 # import asyncio
@@ -15,64 +20,99 @@ from discord import app_commands
 class Misc(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.setup = self.bot.getMiscSetup()
+        self.botSetup = self.bot.getBotSetup()
         # self.vc = None
         # self.stop_audio_task = None
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print('Miscellaneous cog loaded.')
-
-    
+        print(f'{danki_enums.Console.getPrefix()} Miscellaneous cog loaded.')
 
     @app_commands.command(name='hi', description="For lonely people")
     async def hi(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f'hello {interaction.user.display_name}', ephemeral=True)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'hi', self.setup['optional']) == True:
+                await interaction.response.send_message(f'hello {interaction.user.display_name}', ephemeral=True)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
+        
 
     @app_commands.command(name='ping', description="For really bored people")
     async def ping(self, interaction: discord.Interaction):
-        await interaction.response.send_message('Pong', ephemeral=True)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'ping', self.setup['optional']) == True:
+                await interaction.response.send_message('Pong', ephemeral=True)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
+        
 
     @app_commands.command(name="roll", description="For rolling a number of dices with a number of sides")
     async def rollDice(self, interaction: discord.Interaction, dice_num : int, sides_num : int):
-        if(dice_num > 30):
-            await interaction.response.send_message('Sorry, max value for the number of dice is 30!')
-            return
-        if(sides_num > 30):
-            await interaction.response.send_message('Sorry max value for the number of dice is 30!')
-            return
-        if(interaction.channel.name=="command-spam"):
-            result = [str(random.choice(range(1, sides_num + 1))) for _ in range(dice_num)]
-            msgDices = 'Individual dices: ' + ', '.join(result)
-            msgTotal = 'Total roll value: ' + str(functools.reduce(lambda a, b: int(a) + int(b), result))
-            msgMax = str(dice_num * sides_num)
-            await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
-
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'rollDice', self.setup['optional']) == True:
+                if(dice_num > 30):
+                    await interaction.response.send_message('Sorry, max value for the number of dice is 30!')
+                return
+            if(sides_num > 30):
+                await interaction.response.send_message('Sorry max value for the number of dice is 30!')
+                return
+            if(interaction.channel.name=="command-spam"):
+                result = [str(random.choice(range(1, sides_num + 1))) for _ in range(dice_num)]
+                msgDices = 'Individual dices: ' + ', '.join(result)
+                msgTotal = 'Total roll value: ' + str(functools.reduce(lambda a, b: int(a) + int(b), result))
+                msgMax = str(dice_num * sides_num)
+                await interaction.response.send_message(f'{msgDices}\n\n{msgTotal}\nMax roll: {msgMax}')
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
+        
 
     @app_commands.command(name='popoff', description='For when a user is popping off')
     # TODO: limit amount of times popoff is said per hour
     async def popoff(self, interaction: discord.Interaction, user_mention: str):
-        if user_mention[1] != '@' or user_mention[2] == '&':
-            await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mentioned properly!', ephemeral=True)
-        else:
-            id = user_mention[2:-1]
-            if not self.fileExists('misc/popoff.json'):
-                with open('misc/popoff.json', 'w') as f:
-                    f.write(json.dumps({id : '1'}, indent=4))
-                    await interaction.response.send_message(f'{user_mention} has popped off 1 times')
-            else:
-                with open('misc/popoff.json', 'r+') as f:
-                    old = json.loads(f.read())
-                    if id in old.keys():
-                        old[id] = str(int(old[id]) + 1)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'popoff', self.setup['optional']) == True:
+                if user_mention[1] != '@' or user_mention[2] == '&':
+                    await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mentioned properly!', ephemeral=True)
+                else:
+                    id = user_mention[2:-1]
+                    if not self.fileExists('misc/popoff.json'):
+                        with open('misc/popoff.json', 'w') as f:
+                            f.write(json.dumps({id : '1'}, indent=4))
+                            await interaction.response.send_message(f'{user_mention} has popped off 1 times')
                     else:
-                        old[id] = '1'
-                    f.seek(0)
-                    f.write(json.dumps(old, indent=4))
-                    await interaction.response.send_message(f'{user_mention} has popped off {old[id]} times')
-            if int(id) == self.bot.application_id:
-                sender = interaction.guild.get_member(interaction.user.id)
-                channel = self.bot.get_channel(interaction.channel_id)
-                await channel.send(f'Danki thanks {sender.display_name} for the popoff!')
+                        with open('misc/popoff.json', 'r+') as f:
+                            old = json.loads(f.read())
+                            if id in old.keys():
+                                old[id] = str(int(old[id]) + 1)
+                            else:
+                                old[id] = '1'
+                            f.seek(0)
+                            f.write(json.dumps(old, indent=4))
+                            await interaction.response.send_message(f'{user_mention} has popped off {old[id]} times')
+                    if int(id) == self.bot.application_id:
+                        sender = interaction.guild.get_member(interaction.user.id)
+                        channel = self.bot.get_channel(interaction.channel_id)
+                        await channel.send(f'Danki thanks {sender.display_name} for the popoff!')
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
+        
     
     def fileExists(self, filename):
         try:
@@ -83,20 +123,38 @@ class Misc(commands.Cog):
         
     @app_commands.command(name='banter', description='For reminding everyone that what you said was just a joke')
     async def banter(self, interaction: discord.Interaction):
-        tts_channel = discord.utils.get(interaction.guild.text_channels, name='voiceless-spam-lvl10')
-        await tts_channel.send(f'{interaction.guild.get_member(interaction.user.id).display_name} was merely joking and is not liable for any hurt feelings that what they said may have caused. Thank you for your understanding', tts=True, delete_after=20)
-        await interaction.response.send_message(f'Disclaimer sent to voiceless-spam-lvl10', ephemeral=True)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'banter', self.setup['optional']) == True:
+                tts_channel = discord.utils.get(interaction.guild.text_channels, name=f'{self.botSetup["required"]["tts_channel"]}')
+                await tts_channel.send(f'{interaction.guild.get_member(interaction.user.id).display_name} was merely joking and is not liable for any hurt feelings that what they said may have caused. Thank you for your understanding', tts=True, delete_after=20)
+                await interaction.response.send_message(f'Disclaimer sent to {self.botSetup["required"]["tts_channel"]}', ephemeral=True)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
+        
 
     @app_commands.command(name='notbanter', description='For reminding everyone that what you said was NOT a joke')
     async def notbanter(self, interaction: discord.Interaction, user_mention: str):
-        tts_channel = discord.utils.get(interaction.guild.text_channels, name='voiceless-spam-lvl10')
-        messages = [
-        f'{interaction.guild.get_member(interaction.user.id).display_name} meant what they said to {user_mention} from the bottom of their heart',
-        f'Did {interaction.guild.get_member(interaction.user.id).display_name} fucking stutter',
-        ]
-        chosen_message = random.choice(messages)
-        await tts_channel.send(chosen_message, tts=True, delete_after=60)        
-        await interaction.response.send_message(f'Disclaimer sent to voiceless-spam-lvl10', ephemeral=True)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'notbanter', self.setup['optional']) == True:
+                tts_channel = discord.utils.get(interaction.guild.text_channels, name=f'{self.botSetup["required"]["tts_channel"]}')
+                messages = [
+                f'{interaction.guild.get_member(interaction.user.id).display_name} meant what they said to {user_mention} from the bottom of their heart',
+                f'Did {interaction.guild.get_member(interaction.user.id).display_name} fucking stutter',
+                ]
+                chosen_message = random.choice(messages)
+                await tts_channel.send(chosen_message, tts=True, delete_after=60)        
+                await interaction.response.send_message(f'Disclaimer sent to {self.botSetup["required"]["tts_channel"]}', ephemeral=True)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
+        
 
 
     # @commands.Cog.listener()
@@ -134,68 +192,80 @@ class Misc(commands.Cog):
 
     selamatGrp = app_commands.Group(name='selamat', description='For commands related to greeting others in the server')
 
-    #####################################################################
-    ###################### DEFINING DEFAULT CHECKS ######################
-    #####################################################################
-    
-    
-    # async def selamatErrors(interaction: discord.Interaction, error):
-    #     if isinstance(error, app_commands.CheckFailure):
-    #         print(f'{interaction.command} has failed!')
-    #         print(str(error))
-    #     await interaction.response.send_message(f'{interaction.command} is broken! Please contact the admin about this issue!')
-    # @selamatGrp.error(selamatErrors)
-    #####################################################################
-    ###################### END OF DEFAULT CHECKS ########################
-    #####################################################################
-
     @selamatGrp.command(name='pagi', description="For greeting a fellow member in the morning")
     @app_commands.checks.has_any_role('Lvl 100 Mafia Warlord', 'Lvl 10 Boss')
     async def pagi(self, interaction: discord.Interaction, user_mention: str):
-        if user_mention[1] != '@' or user_mention[2] == '&':
-            await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
-        else:
-            if self.checkTime() == 1:
-                await interaction.response.send_message('It is currently afternoon! Try /selamat petang {username}!', ephemeral=True)
-            elif self.checkTime() == 2:
-                await interaction.response.send_message('It is currently evening! Try /selamat malam {username}!', ephemeral=True)
-            else:
-                member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
-                sender = interaction.guild.get_member(interaction.user.id)
-                greeting = 'Selamat pagi'
-                await self.greet(interaction, sender, member, user_mention, greeting)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'pagi', self.setup['optional']) == True:
+                if user_mention[1] != '@' or user_mention[2] == '&':
+                    await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
+                else:
+                    if self.checkTime() == 1:
+                        await interaction.response.send_message('It is currently afternoon! Try /selamat petang {username}!', ephemeral=True)
+                    elif self.checkTime() == 2:
+                        await interaction.response.send_message('It is currently evening! Try /selamat malam {username}!', ephemeral=True)
+                    else:
+                        member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
+                        sender = interaction.guild.get_member(interaction.user.id)
+                        greeting = 'Selamat pagi'
+                        await self.greet(interaction, sender, member, user_mention, greeting)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
+        
 
     @selamatGrp.command(name='petang', description="For greeting a fellow member in the afternoon")
     @app_commands.checks.has_any_role('Lvl 100 Mafia Warlord', 'Lvl 10 Boss')
     async def petang(self, interaction: discord.Interaction, user_mention: str):
-        if user_mention[1] != '@' or user_mention[2] == '&':
-            await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mentioned properly!', ephemeral=True)
-        else:
-            if self.checkTime() == 0:
-                await interaction.response.send_message('It is currently morning! Try /selamat pagi {username}!', ephemeral=True)
-            elif self.checkTime() == 2:
-                await interaction.response.send_message('It is currently evening! Try /selamat malam {username}!', ephemeral=True)
-            else:
-                member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
-                sender = interaction.guild.get_member(interaction.user.id)
-                greeting = 'Selamat petang'
-                await self.greet(interaction, sender, member, user_mention, greeting)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'petang', self.setup['optional']) == True:
+                if user_mention[1] != '@' or user_mention[2] == '&':
+                    await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mentioned properly!', ephemeral=True)
+                else:
+                    if self.checkTime() == 0:
+                        await interaction.response.send_message('It is currently morning! Try /selamat pagi {username}!', ephemeral=True)
+                    elif self.checkTime() == 2:
+                        await interaction.response.send_message('It is currently evening! Try /selamat malam {username}!', ephemeral=True)
+                    else:
+                        member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
+                        sender = interaction.guild.get_member(interaction.user.id)
+                        greeting = 'Selamat petang'
+                        await self.greet(interaction, sender, member, user_mention, greeting)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
+        
 
     @selamatGrp.command(name='malam', description="For greeting a fellow member in the evening")
     @app_commands.checks.has_any_role('Lvl 100 Mafia Warlord', 'Lvl 10 Boss')
     async def malam(self, interaction: discord.Interaction, user_mention: str):
-        if user_mention[1] != '@' or user_mention[2] == '&':
-            await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
-        else:
-            if self.checkTime() == 1:
-                await interaction.response.send_message('It is currently afternoon! Try /selamat petang {username}!', ephemeral=True)
-            elif self.checkTime() == 0:
-                await interaction.response.send_message('It is currently morning! Try /selamat pagi {username}!', ephemeral=True)
-            else:
-                member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
-                sender = interaction.guild.get_member(interaction.user.id)
-                greeting = 'Selamat malam'
-                await self.greet(interaction, sender, member, user_mention, greeting)
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'malam', self.setup['optional']) == True:
+                if user_mention[1] != '@' or user_mention[2] == '&':
+                    await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mention properly!', ephemeral=True)
+                else:
+                    if self.checkTime() == 1:
+                        await interaction.response.send_message('It is currently afternoon! Try /selamat petang {username}!', ephemeral=True)
+                    elif self.checkTime() == 0:
+                        await interaction.response.send_message('It is currently morning! Try /selamat pagi {username}!', ephemeral=True)
+                    else:
+                        member = discord.utils.get(interaction.client.get_all_members(), id=int(user_mention[2:-1]))
+                        sender = interaction.guild.get_member(interaction.user.id)
+                        greeting = 'Selamat malam'
+                        await self.greet(interaction, sender, member, user_mention, greeting)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
+        
                 
 
     async def greet(self, interaction: discord.Interaction, sender, member, user_mention, greeting):
@@ -271,25 +341,34 @@ class Misc(commands.Cog):
     @quoteGrp.command(name='get', description="For getting a random quote from the server's database")
     @app_commands.checks.has_any_role('Coders')
     async def quote(self, interaction:discord.Interaction):
-        chosen_quote = "@@@@@"
+        try:
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'quote', self.setup['optional']) == True:
+                chosen_quote = "@@@@@"
+                
+                if os.path.exists("quote_file.json") and os.path.getsize("quote_file.json") > 0:
+                    ## Open .json file
+                    with open("quote_file.json") as read_file:
+                        quote_data = json.load(read_file)
+                        rand_index = str(random.randint(1, len(quote_data)))
+
+                    ## Retrieve random .json entry
+                    chosen_quote = quote_data[rand_index]["quote"]
+                    quoted_by = quote_data[rand_index]["addedBy"]
+                    quoted_on = quote_data[rand_index]["addedOn"]
+
+
+                    # ## Send random quote to user
+                    await interaction.response.send_message(f"### Your Quote: `{chosen_quote}`\n### - {quoted_by} {quoted_on}")
+
+                else:
+                    return await interaction.response.send_message(":x: **No quotes exist yet!** :x:", ephemeral=True)
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
         
-        if os.path.exists("quote_file.json") and os.path.getsize("quote_file.json") > 0:
-            ## Open .json file
-            with open("quote_file.json") as read_file:
-                quote_data = json.load(read_file)
-                rand_index = str(random.randint(1, len(quote_data)))
-
-            ## Retrieve random .json entry
-            chosen_quote = quote_data[rand_index]["quote"]
-            quoted_by = quote_data[rand_index]["addedBy"]
-            quoted_on = quote_data[rand_index]["addedOn"]
-
-
-            # ## Send random quote to user
-            await interaction.response.send_message(f"### Your Quote: `{chosen_quote}`\n### - {quoted_by} {quoted_on}")
-
-        else:
-            return await interaction.response.send_message(":x: **No quotes exist yet!** :x:", ephemeral=True)
 
     @quoteGrp.command(name='make', description="For making a new quote for the server")
     @app_commands.checks.has_any_role('Coders')
@@ -297,35 +376,42 @@ class Misc(commands.Cog):
     async def makequote(self, interaction:discord.Interaction, added_quote:str):
 
         try:
-            added_by = interaction.user.name
-            added_on = "{:%B %d, %Y}".format(datetime.datetime.now())
+            if await danki_checks.checkCommandNeedRoles(interaction.user, 'makequote', self.setup['optional']) == True:
+                added_by = interaction.user.name
+                added_on = "{:%B %d, %Y}".format(datetime.datetime.now())
 
-            if os.path.exists("quote_file.json") and os.path.getsize("quote_file.json") > 0:
-                # Load existing quote from the JSON file
-                with open("quote_file.json", "r") as file:
-                    quote_data = json.load(file)
-                for quote in quote_data:
-                    if quote_data[quote]["quote"].lower() ==  added_quote.lower():
-                        return await interaction.response.send_message(":x: **That quote already exists!** :x:", ephemeral=True)
-            else:
-                quote_data = {}
-            
-            # Add new quote
-            new_quote = {
-                "addedBy": added_by,
-                "addedOn": added_on,
-                "quote" : added_quote
-            }
+                if os.path.exists("quote_file.json") and os.path.getsize("quote_file.json") > 0:
+                    # Load existing quote from the JSON file
+                    with open("quote_file.json", "r") as file:
+                        quote_data = json.load(file)
+                    for quote in quote_data:
+                        if quote_data[quote]["quote"].lower() ==  added_quote.lower():
+                            return await interaction.response.send_message(":x: **That quote already exists!** :x:", ephemeral=True)
+                else:
+                    quote_data = {}
+                
+                # Add new quote
+                new_quote = {
+                    "addedBy": added_by,
+                    "addedOn": added_on,
+                    "quote" : added_quote
+                }
 
-            quote_data[len(quote_data)+1] = new_quote
+                quote_data[len(quote_data)+1] = new_quote
 
-            with open("quote_file.json", "w") as file:
-                json.dump(quote_data, file)
-            
-            await interaction.response.send_message(f"You added: \"{added_quote}\"")
+                with open("quote_file.json", "w") as file:
+                    json.dump(quote_data, file)
+                
+                await interaction.response.send_message(f"You added: \"{added_quote}\"")
 
         except json.JSONDecodeError as e:
             print(f"Error loading JSON: {e}")
+        except danki_exceptions.MemberMissingRole as err:
+            print(f'\n{err}\n')
+            await interaction.response.send_message(f'You lack the necessary roles to use this command! {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
+        except Exception as err:
+            await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR}', ephemeral=True)
+            raise err
 
     ########################################################################
     ########## QUOTE END ###################################################
@@ -342,21 +428,22 @@ class Misc(commands.Cog):
     ##################################
     ########## Error Handling ########
     ##################################
-    async def cog_app_command_error(self, interaction: discord.Interaction, error):
-        print(str(error))
-        if isinstance(error, app_commands.MissingAnyRole):
-            missing = []
-            user = interaction.guild.get_member(interaction.user.id)
-            for role in error.missing_roles:
-                print(role)
-                if discord.utils.get(user.roles, name=role) == None:
-                    missing.append(role)
-            await interaction.response.send_message(f'You do not have the necessary roles to use /{interaction.command.qualified_name}! Here is the list of required roles:\n{missing}')
-        else:
-            await interaction.response.send_message(f'/{interaction.command.qualified_name} is broken! Please contact the admin about this issue!', ephemeral=True)
+    # async def cog_app_command_error(self, interaction: discord.Interaction, error):
+    #     print(str(error))
+    #     if isinstance(error, app_commands.MissingAnyRole):
+    #         missing = []
+    #         user = interaction.guild.get_member(interaction.user.id)
+    #         for role in error.missing_roles:
+    #             print(role)
+    #             if discord.utils.get(user.roles, name=role) == None:
+    #                 missing.append(role)
+    #         await interaction.response.send_message(f'You do not have the necessary roles to use /{interaction.command.qualified_name}! Here is the list of required roles:\n{missing}')
+    #     else:
+    #         await interaction.response.send_message(f'/{interaction.command.qualified_name} is broken! Please contact the admin about this issue!', ephemeral=True)
 
 
-
+    # TODO: /bet function for placing{all}, making{all}, removing{owner of bet/restricted}, unbetting{all} and changing bet{all} could be used in conjunction with poll commands; bets are monetised polls
+    # TODO: /dbucks function for getting amount{all} giving{restricted} and using{all} of dbucks
 
 
 
