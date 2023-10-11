@@ -7,7 +7,7 @@
             [
                 "---NONE---"
             ],
-            "voice_state_channel": "---NONE---"
+            "tts_channel": "---NONE---"
         },
         "optional":
         {
@@ -135,6 +135,14 @@
                 "---NONE---"
             ],
             "malam_required_roles":
+            [
+                "---NONE---"
+            ],
+            "quote_required_roles":
+            [
+                "---NONE---"
+            ],
+            "makequote_required_roles":
             [
                 "---NONE---"
             ]
