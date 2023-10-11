@@ -1,5 +1,6 @@
 import json
 import danki_exceptions
+import danki_enums
 import discord
 
 '''
@@ -9,10 +10,10 @@ list are used to hold roles
 
 '''
 
-async def checkHasRoles(member: discord.Member, command: str, roleList: dict):
+async def checkHasRoles(member: discord.Member, command: str, optionList: dict):
     memberRoles = member.roles
     serverRolesList = member.guild.roles
-    for role in roleList[command+'_required_roles']:
+    for role in optionList[command+'_required_roles']:
         role = discord.utils.get(serverRolesList, name=role)
         if role not in memberRoles:
             raise danki_exceptions.MemberMissingRole(member, command, role)
@@ -89,5 +90,8 @@ async def checkServerHasRoles(guild):
     if await checkServerHasRequiredRoles(guild) and await checkServerHasRequiredRoles(guild):
         return True
     
-async def checkCommandNeedRoles():
-    pass
+async def checkCommandNeedRoles(member: discord.Member, command: str, optionList: dict):
+    if len(optionList[command+danki_enums.Setup.ROLES_END]) == 1 and '---NONE---' in optionList[command+danki_enums.Setup.ROLES_END]:
+        return True
+    else:
+        await checkHasRoles(member, command, optionList)
