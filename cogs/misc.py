@@ -11,8 +11,8 @@ import danki_exceptions
 
 from discord.ext import commands
 from discord import app_commands
-# import asyncio
-# import pytube
+import asyncio
+import pytube
 
 
 
@@ -22,8 +22,8 @@ class Misc(commands.Cog):
         self.bot = bot
         self.setup = self.bot.getMiscSetup()
         self.botSetup = self.bot.getBotSetup()
-        # self.vc = None
-        # self.stop_audio_task = None
+        self.vc = None
+        self.stop_audio_task = None
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -157,34 +157,75 @@ class Misc(commands.Cog):
         
 
 
-    # @commands.Cog.listener()
-    # async def on_voice_state_update(self, member, before, after):
-    #     role_name = "This"  # Replace with the actual role name
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        role_name = "Horny"  # Replace with the actual role name
 
-    #     # Check if the member has the specified role
-    #     role = discord.utils.get(member.roles, name=role_name)
-    #     if role and not before.channel and after.channel:
-    #         if member.id == self.bot.user.id:
-    #             return
-    #         # Connect to the user's voice channel
-    #         self.vc = await after.channel.connect()
-    #         specific_url = 'https://www.youtube.com/watch?v=2BCgSYNteVo&ab_channel=CHORUSLOOPS'
-    #         # Get the audio stream URL from the YouTube video (you'll need to define 'specific_url' here)
-    #         video = pytube.YouTube(specific_url)
-    #         audio_stream = video.streams.filter(only_audio=True).first()
-    #         url2 = audio_stream.url
-    #         # Play the audio stream
-    #         self.vc.play(discord.FFmpegPCMAudio(url2, executable='ffmpeg.exe'))
-    #         self.stop_audio_task = asyncio.create_task(self.stop_audio_after_duration(5))
+        # Check if the member has the specified role
+        role = discord.utils.get(member.roles, name=role_name)
+        if role and not before.channel and after.channel:
+            if member.id == self.bot.user.id:
+                return
+            # Connect to the user's voice channel
+            self.vc = await after.channel.connect()
+            specific_url = 'https://www.youtube.com/watch?v=2BCgSYNteVo&ab_channel=CHORUSLOOPS'
+            # Get the audio stream URL from the YouTube video (you'll need to define 'specific_url' here)
+            video = pytube.YouTube(specific_url)
+            audio_stream = video.streams.filter(only_audio=True).first()
+            url2 = audio_stream.url
+            # Play the audio stream
+            self.vc.play(discord.FFmpegPCMAudio(url2, executable='ffmpeg.exe'))
+            self.stop_audio_task = asyncio.create_task(self.stop_audio_after_duration(5))
 
 
-    # async def stop_audio_after_duration(self, duration):
-    #     await asyncio.sleep(duration)
-    #     if self.vc and self.vc.is_playing():
-    #         self.vc.stop()
-    #         await self.vc.disconnect()
+    async def stop_audio_after_duration(self, duration):
+        await asyncio.sleep(duration)
+        if self.vc and self.vc.is_playing():
+            self.vc.stop()
+            await self.vc.disconnect()
 
-   
+    @commands.command(name="play", description="For playing music", usage="!play [Youtube URL]")
+    async def play(ctx, url):
+        # Check if the user is in a voice channel
+        if ctx.author.voice is None:
+            await ctx.send("You're not in a voice channel.")
+            return
+
+        # Check if the bot is already in a voice channel
+        if ctx.voice_client is not None:
+            await ctx.send("I'm already in a voice channel. Use !stop to stop the current audio.")
+            return
+
+        # Connect to the user's voice channel
+        voice_channel = ctx.author.voice.channel
+        vc = await voice_channel.connect()
+
+        # Get the audio stream URL from the YouTube video
+        video = pytube.YouTube(url)
+        audio_stream = video.streams.filter(only_audio=True).first()
+        audio_url = audio_stream.url
+
+        # Play the audio stream
+        vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg.exe'))
+
+        while vc.is_playing():
+            await asyncio.sleep(1)
+
+        await vc.disconnect()
+
+    @commands.command(name="stop", description="For playing music", usage="!stop")
+    async def stop(ctx):
+        # Check if the bot is in a voice channel and is currently playing audio
+        if ctx.voice_client is not None and ctx.voice_client.is_playing():
+            ctx.voice_client.stop()
+
+    @commands.command(name="disconnect", description="For playing music", usage="!disconnect")
+    async def disconnect(ctx):
+        # Check if the bot is in a voice channel
+        if ctx.voice_client is not None:
+            await ctx.voice_client.disconnect()
+        else:
+            await ctx.send("I'm not in a voice channel.")
 
     #######################################
     ########## SELAMAT FUNCTIONS ##########
