@@ -193,7 +193,7 @@ class Misc(commands.Cog):
 
         # Check if the bot is already in a voice channel
         if ctx.voice_client is not None:
-            await ctx.send("I'm already in a voice channel. Use !stop to stop the current audio.")
+            await ctx.send("I'm already in a voice channel. Use !disconnect or !stop to stop the current audio.")
             return
 
         # Connect to the user's voice channel
