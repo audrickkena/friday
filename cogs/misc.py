@@ -184,49 +184,48 @@ class Misc(commands.Cog):
             self.vc.stop()
             await self.vc.disconnect()
 
-    # @commands.command(name="play", description="For playing music", usage="!play [Youtube URL]")
-    # async def play(ctx, url):
-    #     # Check if the user is in a voice channel
-    #     if ctx.author.voice is None:
-    #         await ctx.send("You're not in a voice channel.")
-    #         return
+    @commands.command(name="play", description="For playing music", usage="!play [Youtube URL]")
+    async def play(self, ctx, url):
+        # Check if the user is in a voice channel
+        if ctx.author.voice is None:
+            await ctx.send("You're not in a voice channel.")
+            return
 
-    #     # Check if the bot is already in a voice channel
-    #     if ctx.voice_client is not None:
-    #         await ctx.send("I'm already in a voice channel. Use !stop to stop the current audio.")
-    #         return
+        # Check if the bot is already in a voice channel
+        if ctx.voice_client is not None:
+            await ctx.send("I'm already in a voice channel. Use !stop to stop the current audio.")
+            return
 
-    #     # Connect to the user's voice channel
-    #     voice_channel = ctx.author.voice.channel
-    #     vc = await voice_channel.connect()
+        # Connect to the user's voice channel
+        voice_channel = ctx.author.voice.channel
+        vc = await voice_channel.connect()
 
-    #     # Get the audio stream URL from the YouTube video
-    #     video = pytube.YouTube(url)
-    #     audio_stream = video.streams.filter(only_audio=True).first()
-    #     audio_url = audio_stream.url
+        # Get the audio stream URL from the YouTube video
+        video = pytube.YouTube(url)
+        audio_stream = video.streams.filter(only_audio=True).first()
+        audio_url = audio_stream.url
 
-    #     # Play the audio stream
-    #     vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg.exe'))
+        # Play the audio stream
+        vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg.exe'))
 
-    #     while vc.is_playing():
-    #         await asyncio.sleep(1)
+        while vc.is_playing():
+            await asyncio.sleep(1)
 
-    #     await vc.disconnect()
+        await vc.disconnect()
 
-    # @commands.command(name="stop", description="For playing music", usage="!stop")
-    # async def stop(ctx):
-    #     # Check if the bot is in a voice channel and is currently playing audio
-    #     if ctx.voice_client is not None and ctx.voice_client.is_playing():
-    #         ctx.voice_client.stop()
+    @commands.command(name="stop", description="For playing music", usage="!stop")
+    async def stop(self, ctx):
+        # Check if the bot is in a voice channel and is currently playing audio
+        if ctx.voice_client is not None and ctx.voice_client.is_playing():
+            ctx.voice_client.stop()
 
-    # @commands.command(name="disconnect", description="For playing music", usage="!disconnect")
-    # async def disconnect(ctx):
-    #     # Check if the bot is in a voice channel
-    #     if ctx.voice_client is not None:
-    #         await ctx.voice_client.disconnect()
-    #     else:
-    #         await ctx.send("I'm not in a voice channel.")
-
+    @commands.command(name="disconnect", description="For playing music", usage="!disconnect")
+    async def disconnect(self, ctx):
+        # Check if the bot is in a voice channel
+        if ctx.voice_client is not None:
+            await ctx.voice_client.disconnect()
+        else:
+            await ctx.send("I'm not in a voice channel.")
     #######################################
     ########## SELAMAT FUNCTIONS ##########
     #######################################
