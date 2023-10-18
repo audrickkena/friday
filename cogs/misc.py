@@ -174,7 +174,7 @@ class Misc(commands.Cog):
             audio_stream = video.streams.filter(only_audio=True).first()
             url2 = audio_stream.url
             # Play the audio stream
-            self.vc.play(discord.FFmpegPCMAudio(url2, executable='ffmpeg.exe'))
+            self.vc.play(discord.FFmpegPCMAudio(url2, executable='ffmpeg',before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",options="-vn"))
             self.stop_audio_task = asyncio.create_task(self.stop_audio_after_duration(5))
 
 
@@ -206,12 +206,20 @@ class Misc(commands.Cog):
         audio_url = audio_stream.url
 
         # Play the audio stream
-        vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg.exe'))
+        vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg',before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",options="-vn"))
 
+        # Wait for the audio to finish playing
         while vc.is_playing():
             await asyncio.sleep(1)
 
+        # Disconnect after the audio is finished
         await vc.disconnect()
+
+
+
+
+
+
 
     @commands.command(name="stop", description="For playing music", usage="!stop")
     async def stop(self, ctx):
