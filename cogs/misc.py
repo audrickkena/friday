@@ -185,7 +185,7 @@ class Misc(commands.Cog):
             await self.vc.disconnect()
 
     @commands.command(name="play", description="For playing music", usage="!play [Youtube URL]")
-    async def play(ctx, url):
+    async def play(self, ctx, url):
         # Check if the user is in a voice channel
         if ctx.author.voice is None:
             await ctx.send("You're not in a voice channel.")
@@ -193,7 +193,7 @@ class Misc(commands.Cog):
 
         # Check if the bot is already in a voice channel
         if ctx.voice_client is not None:
-            await ctx.send("I'm already in a voice channel. Use !stop to stop the current audio.")
+            await ctx.send("I'm already in a voice channel. Use !disconnect or !stop to stop the current audio.")
             return
 
         # Connect to the user's voice channel
@@ -214,19 +214,18 @@ class Misc(commands.Cog):
         await vc.disconnect()
 
     @commands.command(name="stop", description="For playing music", usage="!stop")
-    async def stop(ctx):
+    async def stop(self, ctx):
         # Check if the bot is in a voice channel and is currently playing audio
         if ctx.voice_client is not None and ctx.voice_client.is_playing():
             ctx.voice_client.stop()
 
     @commands.command(name="disconnect", description="For playing music", usage="!disconnect")
-    async def disconnect(ctx):
+    async def disconnect(self, ctx):
         # Check if the bot is in a voice channel
         if ctx.voice_client is not None:
             await ctx.voice_client.disconnect()
         else:
             await ctx.send("I'm not in a voice channel.")
-
     #######################################
     ########## SELAMAT FUNCTIONS ##########
     #######################################
