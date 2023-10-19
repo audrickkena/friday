@@ -273,7 +273,7 @@ class Misc(commands.Cog):
             raise err
     
     # Recursive function for going through queue
-    async def afterSong(self, error):
+    def afterSong(self, error):
         try:
             self.musicQueue.pop(0)
             if self.musicQueue > 0:
@@ -325,9 +325,9 @@ class Misc(commands.Cog):
             if len(self.musicQueue) == 0:
                 await interaction.response.send_message('Queue is empty!', ephemeral=True)
             else:
-                print('Current Queue\n')
+                queueMsg = 'Current Queue\n'
                 for i in range(len(self.musicQueue)):
-                    print(f'{i + 1}. {self.musicQueue[i]}')
+                    queueMsg += f'{i + 1}. {self.musicQueue[i]}\n'
         else:
             await interaction.response.send_message('I\'m not even there? What queue are you talking about?', ephemeral=True)
 
