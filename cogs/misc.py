@@ -254,18 +254,12 @@ class Misc(commands.Cog):
                     else:
                         await interaction.response.send_message('I\'m not even in vc though, what song do you want me to pause...?', ephemeral=True)
                 else:
-                    infoChannel = None
                     # Check if danki not in vc
                     if self.vc == None:
 
                         # Connecting Danki to user's voice channel
                         voice_channel = member.voice.channel
                         self.vc = await voice_channel.connect()
-
-                        # TODO: Check if music info channel exists in the server
-
-                        # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
-                        infoChannel = discord.utils.get(interaction.guild.text_channels, name=self.setup['required']['music_info_channel'])
                         
                     
                     else:
@@ -296,6 +290,10 @@ class Misc(commands.Cog):
 
                         # Output for playing song
                         await interaction.response.send_message('Music playing now, enjoy!', ephemeral=True)
+                        # TODO: Check if music info channel exists in the server
+
+                        # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
+                        infoChannel = discord.utils.get(interaction.guild.text_channels, name=self.setup['required']['music_info_channel'])
                         self.message_music_curr = await infoChannel.send(f'#Current Song: {url}')
                         self.message_music_queue = await infoChannel.send(f'Queue:')
 
