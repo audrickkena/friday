@@ -194,6 +194,9 @@ class Misc(commands.Cog):
             # Check if danki is alone in VC
             if len(after.channel.members) == 1:
                 self.vc.disconnect()
+                # Delete messages
+                self.message_music_curr.delete()
+                self.message_music_queue.delete()
                 # reset variables used for music to None since disconnected
                 self.vc = None
                 self.currSong = None
@@ -251,6 +254,7 @@ class Misc(commands.Cog):
                     else:
                         await interaction.response.send_message('I\'m not even in vc though, what song do you want me to pause...?', ephemeral=True)
                 else:
+                    infoChannel = None
                     # Check if danki not in vc
                     if self.vc == None:
 
@@ -262,13 +266,12 @@ class Misc(commands.Cog):
 
                         # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
                         infoChannel = discord.utils.get(interaction.guild.text_channels, name=self.setup['required']['music_info_channel'])
-                        self.message_music_curr = await infoChannel.send(f'#Current Song:')
-                        self.message_music_queue = await infoChannel.send(f'Queue:')
+                        
                     
                     else:
                         # Check if Danki not in the same vc as command user
                         if self.vc.channel.id != interaction.user.voice.channel.id:
-                            await interaction.response.send_message('Join the same voice channel as me first!')
+                            await interaction.response.send_message('Join the same voice channel as me first!', ephemeral=True)
                             return
 
                     # Check if a song is currently playing
@@ -293,6 +296,8 @@ class Misc(commands.Cog):
 
                         # Output for playing song
                         await interaction.response.send_message('Music playing now, enjoy!', ephemeral=True)
+                        self.message_music_curr = await infoChannel.send(f'#Current Song: {url}')
+                        self.message_music_queue = await infoChannel.send(f'Queue:')
 
                     # # if there is a queue
                     # else:
@@ -360,6 +365,9 @@ class Misc(commands.Cog):
             self.vc.stop()
             await self.vc.disconnect()
             await interaction.response.send_message('Thank you for listening!', ephemeral=True)
+            # Delete messages
+            self.message_music_curr.delete()
+            self.message_music_queue.delete()
             # Reset music variables as disconnected
             self.vc = None
             self.currSong = None
