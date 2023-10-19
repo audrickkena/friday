@@ -288,7 +288,7 @@ class Misc(commands.Cog):
                         self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
 
                         # Set curr song var
-                        self.message_music_curr = url
+                        self.currSong = url
 
                         # Output for playing song
                         await interaction.followup.send('Music playing now, enjoy!')
@@ -296,7 +296,7 @@ class Misc(commands.Cog):
 
                         # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
                         infoChannel = discord.utils.get(interaction.guild.text_channels, name=self.setup['required']['music_info_channel'])
-                        self.message_music_curr = await infoChannel.send(f'#Current Song: {url}')
+                        self.message_music_curr = await infoChannel.send(f'#Current Song: {self.currSong}')
                         self.message_music_queue = await infoChannel.send(f'Queue:')
 
                     # # if there is a queue
@@ -309,14 +309,16 @@ class Misc(commands.Cog):
     # function for updating current song message
     async def music_update_curr(self):
         msg = f'#Current Song: {self.currSong}'
-        self.message_music_curr.edit(msg)
+        origMsg = self.message_music_curr
+        origMsg.edit(msg)
 
     # function for updating queue message
     async def music_update_queue(self):
         msg = 'Queue:\n'
         for i in range(len(self.musicQueue)):
             msg += f'{i + 1}. {self.musicQueue}\n'
-        self.message_music_queue.edit(msg)
+        origMsg = self.message_music_queue
+        origMsg.edit(msg)
 
     # Recursive function for going through queue
     def afterSong(self, error):
