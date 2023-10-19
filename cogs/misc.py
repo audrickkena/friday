@@ -25,6 +25,9 @@ class Misc(commands.Cog):
         self.vc = None
         self.stop_audio_task = None
         self.musicQueue = []
+        self.currSong = None
+        self.message_music_curr = None
+        self.message_music_queue = None
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -191,8 +194,12 @@ class Misc(commands.Cog):
             # Check if danki is alone in VC
             if len(after.channel.members) == 1:
                 self.vc.disconnect()
-                # reset self.vc to None since disconnected
+                # reset variables used for music to None since disconnected
                 self.vc = None
+                self.currSong = None
+                self.musicQueue = None
+                self.message_music_curr = None
+                self.message_music_queue = None
         else:
             ### Horny Check
             role_name = "Horny"
@@ -246,14 +253,28 @@ class Misc(commands.Cog):
                 else:
                     # Check if danki not in vc
                     if self.vc == None:
+
                         # Connecting Danki to user's voice channel
                         voice_channel = member.voice.channel
                         self.vc = await voice_channel.connect()
+
+                        # TODO: Check if music info channel exists in the server
+
+                        # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
+                        self.message_music_curr = discord.utils.get(interaction.guild.text_channels, self.setup['required']['music_info_channel']).send(f'#Current Song:')
+                        self.message_music_queue = discord.utils.get(interaction.guild.text_channels, self.setup['required']['music_info_channel']).send(f'Queue:')
+                    
+                    else:
+                        # Check if Danki not in the same vc as command user
+                        if self.vc.channel.id != interaction.user.voice.channel.id:
+                            await interaction.response.send_message('Join the same voice channel as me first!')
+                            return
 
                     # Check if a song is currently playing
                     if self.vc.is_playing():
                         self.musicQueue.append(url)
                         await interaction.response.send_message('Music already playing! Adding your song to the queue', ephemeral=True)
+                        await self.music_update_queue()
                         return
 
                     # Check if no queue
@@ -266,6 +287,9 @@ class Misc(commands.Cog):
                         # Play audio stream
                         self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
 
+                        # Set curr song var
+                        self.message_music_curr = url
+
                         # Output for playing song
                         await interaction.response.send_message('Music playing now, enjoy!', ephemeral=True)
 
@@ -275,17 +299,38 @@ class Misc(commands.Cog):
                     #     self.musicQueue.append(url)
         except Exception as err:
             raise err
-    
+
+    # function for updating current song message
+    async def music_update_curr(self):
+        msg = f'#Current Song: {self.currSong}'
+        self.message_music_curr.edit(msg)
+
+    # function for updating queue message
+    async def music_update_queue(self):
+        msg = 'Queue:\n'
+        for i in range(len(self.musicQueue)):
+            msg += f'{i + 1}. {self.musicQueue}\n'
+        self.message_music_queue.edit(msg)
+
     # Recursive function for going through queue
     def afterSong(self, error):
         try:    
             if len(self.musicQueue) > 0:
                 url = self.musicQueue[0]
+
+                # update current music
+                self.message_music_curr = url
+                self.music_update_curr()
+
+                # play new song
                 video = pytube.YouTube(url)
                 audio_stream = video.streams.filter(only_audio=True).first()
                 audio_url = audio_stream.url
                 self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
+
+                # update queue
                 self.musicQueue.pop(0)
+                self.music_update_queue()
             else:
                 print('Queue Finished!')
             print(error)
@@ -314,9 +359,12 @@ class Misc(commands.Cog):
             self.vc.stop()
             await self.vc.disconnect()
             await interaction.response.send_message('Thank you for listening!', ephemeral=True)
-            # Reset Queue and vc as disconnected
-            self.musicQueue = []
+            # Reset music variables as disconnected
             self.vc = None
+            self.currSong = None
+            self.musicQueue = None
+            self.message_music_curr = None
+            self.message_music_queue = None
             return
         else:
             await interaction.response.send_message('I\'m not even there lmao bruh', ephemeral=True)
@@ -340,21 +388,23 @@ class Misc(commands.Cog):
     async def music_skip(self, interaction: discord.Interaction):
         # Check if Danki is connected to a vc
         if self.vc != None:
-            #Check if queue is empty
-            if len(self.musicQueue) == 0:
-                self.vc.stop()
-                await interaction.response.send_message('No more songs in queue! Stopping instead...', ephemeral=True)
-            else:
-                self.vc.stop()
-                url = self.musicQueue[0]
-                video = pytube.YouTube(url)
-                audio_stream = video.streams.filter(only_audio=True).first()
-                audio_url = audio_stream.url
-                self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
-                self.musicQueue.pop(0)
-                await interaction.response.send_message('Song skipped! Sorry whoever added it!')
+            # Check if music playing
+            if self.vc.is_playing():
+                # Check if queue is empty
+                if len(self.musicQueue) == 0:
+                    self.vc.stop()
+                    await interaction.response.send_message('No more songs in queue! Stopping instead...', ephemeral=True)
+                else:
+                    self.vc.stop()
+                    url = self.musicQueue[0]
+                    video = pytube.YouTube(url)
+                    audio_stream = video.streams.filter(only_audio=True).first()
+                    audio_url = audio_stream.url
+                    self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
+                    self.musicQueue.pop(0)
+                    await interaction.response.send_message('Song skipped! Sorry whoever added it!')
         else:
-            await interaction.response.send_message('bruh.')
+            await interaction.response.send_message('bruh.', ephemeral=True)
 
     
     # @commands.command(name="play", description="For playing music", usage="!play [Youtube URL]")
