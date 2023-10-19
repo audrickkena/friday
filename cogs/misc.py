@@ -236,13 +236,13 @@ class Misc(commands.Cog):
                         # Check if a song is paused
                         if self.vc.is_paused():
                             self.vc.resume()
-                            await interaction.response.send_message('Music resumed!')
+                            await interaction.response.send_message('Music resumed!', ephemeral=True)
                             return
                         else:
-                            await interaction.response.send_message('No music paused!')
+                            await interaction.response.send_message('No music paused!', ephemeral=True)
                             return
                     else:
-                        await interaction.response.send_message('I\'m not even in vc though, what song do you want me to pause...?')
+                        await interaction.response.send_message('I\'m not even in vc though, what song do you want me to pause...?', ephemeral=True)
                 else:
                     # Check if danki not in vc
                     if self.vc == None:
@@ -253,7 +253,7 @@ class Misc(commands.Cog):
                     # Check if a song is currently playing
                     if self.vc.is_playing():
                         self.musicQueue.append(url)
-                        await interaction.response.send_message('Music already playing! Adding your song to the queue')
+                        await interaction.response.send_message('Music already playing! Adding your song to the queue', ephemeral=True)
 
                     # Check if no queue
                     if len(self.musicQueue) == 0:
@@ -295,13 +295,13 @@ class Misc(commands.Cog):
             # Check if Danki is already playing a song
             if self.vc.is_playing():
                 self.vc.pause()
-                await interaction.response.send_message('Music has been paused!')
+                await interaction.response.send_message('Music has been paused!', ephemeral=True)
                 return
             # Check if there is already a paused song
             if self.vc.is_paused():
-                await interaction.response.send_message('Music already paused! Type /music play instead!')
+                await interaction.response.send_message('Music already paused! Type /music play instead!', ephemeral=True)
                 return
-        await interaction.response.send_message('There is no music playing!')
+        await interaction.response.send_message('There is no music playing!', ephemeral=True)
 
     @music.command(name='disconnect', description='For disconnecting Danki from the voice channel')
     async def music_disc(self, interaction: discord.Interaction):
@@ -309,13 +309,13 @@ class Misc(commands.Cog):
         if self.vc != None:
             self.vc.stop()
             await self.vc.disconnect()
-            await interaction.response.send_message('Thank you for listening!')
+            await interaction.response.send_message('Thank you for listening!', ephemeral=True)
             # Reset Queue and vc as disconnected
             self.musicQueue = []
             self.vc = None
             return
         else:
-            await interaction.response.send_message('I\'m not even there lmao bruh')
+            await interaction.response.send_message('I\'m not even there lmao bruh', ephemeral=True)
 
     @music.command(name='queue', description='For getting the current queue')
     async def music_queue(self, interaction: discord.Interaction):
@@ -323,13 +323,13 @@ class Misc(commands.Cog):
         if self.vc != None:
             # Check if queue is empty
             if len(self.musicQueue) == 0:
-                await interaction.response.send_message('Queue is empty!')
+                await interaction.response.send_message('Queue is empty!', ephemeral=True)
             else:
                 print('Current Queue\n')
                 for i in range(len(self.musicQueue)):
                     print(f'{i + 1}. {self.musicQueue[i]}')
         else:
-            await interaction.response.send_message('I\'m not even there? What queue are you talking about?')
+            await interaction.response.send_message('I\'m not even there? What queue are you talking about?', ephemeral=True)
 
     # @commands.command(name="play", description="For playing music", usage="!play [Youtube URL]")
     # async def play(self, ctx, url):
