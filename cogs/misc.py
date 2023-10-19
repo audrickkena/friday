@@ -224,7 +224,7 @@ class Misc(commands.Cog):
 
     music = app_commands.Group(name='music', description='for music related commands')
     @music.command(name='play', description='For playing music')
-    async def music_play(self, interaction: discord.Interaction, url=None):
+    async def music_play(self, interaction: discord.Interaction, url: str=None):
         try:
             member = discord.utils.get(interaction.guild.members, id=interaction.user.id)
             # Check if user is in a voice channel
