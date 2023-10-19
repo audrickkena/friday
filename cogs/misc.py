@@ -328,6 +328,8 @@ class Misc(commands.Cog):
                 print('Current Queue\n')
                 for i in range(len(self.musicQueue)):
                     print(f'{i + 1}. {self.musicQueue[i]}')
+        else:
+            interaction.response.send_message('I\'m not even there? What queue are you talking about?')
 
     # @commands.command(name="play", description="For playing music", usage="!play [Youtube URL]")
     # async def play(self, ctx, url):
