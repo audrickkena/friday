@@ -15,3 +15,5 @@ class Setup:
 class DiscordOut:
     ERROR = 'Error was raised! Check console for details'
     ISSUE_GITHUB = 'Please contact the admin or raise an issue in github if this is not working properly.'
+    CURR_SONG = '### CURRENT SONG:'
+    SONG_QUEUE = '### QUEUE:'
