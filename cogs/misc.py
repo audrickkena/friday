@@ -265,6 +265,9 @@ class Misc(commands.Cog):
                         # Play audio stream
                         self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
 
+                        # Output for playing song
+                        await interaction.respons.send_message('Music playing now, enjoy!')
+
                     # # if there is a queue
                     # else:
                     #     await interaction.response.send_message(f'There\'s currently [{len(self.musicQueue)}] songs in queue! Your song has been added to the queue!')
