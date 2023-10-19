@@ -1,7 +1,10 @@
 import json
+import os
+import discord
+
 import danki_exceptions
 import danki_enums
-import discord
+
 
 '''
 for SETUP.json,
@@ -95,3 +98,21 @@ async def checkCommandNeedRoles(member: discord.Member, command: str, optionList
         return True
     else:
         await checkHasRoles(member, command, optionList)
+
+async def checkDirectoriesExist(pathList: list[str]):
+    for path in pathList:
+        if os.path.exists(path) == False:
+            raise danki_exceptions.DirectoryMissing(path)
+    return True
+
+async def checkFileExists(filepath):
+    try:
+        with open(filepath, 'r') as f:
+            return True
+    except FileNotFoundError:
+        raise danki_exceptions.FileMissing(filepath)
+    
+async def checkUserInVoice(member: discord.Member, command: str):
+    if member.voice.channel != None:
+        raise danki_exceptions.UserNotInVoiceChannel(member, command)
+    return True

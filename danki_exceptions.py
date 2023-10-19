@@ -85,7 +85,7 @@ class ChannelDoesNotExist(Exception):
         return self.chan_missing
     
 class MemberMissingRole(Exception):
-    ''' Exception raised when a channel specified in the SETUP.json does not exist in the server the bot is in
+    ''' Exception raised when a role specified in the SETUP.json does not exist in the server the bot is in
     
     Attributes:
         user = discord.Member of the person who called the command with a missing role
@@ -108,4 +108,54 @@ class MemberMissingRole(Exception):
     
     def getRole(self):
         return self.role_missing
+
+class DirectoryMissing(Exception):
+    ''' Exception raised when directory does not exist
     
+    Attributes:
+        path = path to the missing directory
+    '''
+    
+    def __init__(self, path):
+        self.path = path
+        self.message = f'{danki_enums.Console.getPrefix()} {danki_enums.Console.WARNING} {{{self.path}}} is not present! Directory needs to be initialised!'
+        super().__init__(self.message)
+    
+    def getPath(self):
+        return self.path
+    
+class FileMissing(Exception):
+    ''' Exception raised when a file does not exist
+    
+    Attributes:
+        path = path to the missing file
+    
+    '''
+
+    def __init__(self, path):
+        self.path = path
+        self.message = f'{danki_enums.Console.getPrefix()} {danki_enums.Console.WARNING} {{{self.path}}} is not present! File needs to be initialised!'
+        super().__init__(self.message)
+    
+    def getPath(self):
+        return self.path
+    
+class UserNotInVoiceChannel(Exception):
+    ''' Exception raised when a user runs a command that needs them to be in a voice channel but they are not connected to any voice channel
+
+    Attributes:
+        author = [discord.Member] that ran the command
+        command = [string] name of the command
+    '''
+
+    def __init__(self, author, command):
+        self.author = author
+        self.command = command
+        self.message = f'{danki_enums.Console.getPrefix()} {danki_enums.Console.WARNING} {{{self.author.name}}} ran {{{self.command}}} without being in a voice channel!'
+        super().__init__(self.message)
+
+    def getAuthor(self):
+        return self.author
+    
+    def getCommand(self):
+        return self.command
