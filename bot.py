@@ -88,12 +88,19 @@ class Friday(commands.Bot):
             raise e
         
     async def initialiseDirectories(self):
-        paths = ['misc', 'misc/selamat', 'backups']
-        for path in paths:
-            if os.path.exists(path) == False:
-                print(f'{danki_enums.Console.getPrefix()} {danki_enums.Console.WARNING} {{{path}}} directory is not initialised yet!\n{danki_enums.Console.getPrefix()} {tm_color.colors.fg.green}Adding directory now...{tm_color.colors.reset}', end='')
-                os.mkdir(path)
-                print(f'{tm_color.colors.fg.blue}{{{path}}} directory initialised!{tm_color.colors.reset}\n')
+        try:
+            # TODO: consider moving paths to it's own json file
+            paths = ['misc', 'misc/selamat', 'backups', 'utility', 'utility/passports']
+            if await danki_checks.checkDirectoriesExist(paths) == True:
+                print(f'{danki_enums.Console.getPrefix()} All directories present')
+        except danki_exceptions.DirectoryMissing as err:
+            path = err.getPath()
+            print(f'{danki_enums.Console.getPrefix()} {danki_enums.Console.WARNING} {{{path}}} directory is not initialised yet!\n{danki_enums.Console.getPrefix()} {tm_color.colors.fg.green}Adding directory now...{tm_color.colors.reset}', end='')
+            os.mkdir(path)
+            print(f'{tm_color.colors.fg.blue}{{{path}}} directory initialised!{tm_color.colors.reset}\n')
+            await self.initialiseDirectories()
+        except Exception as err:
+            raise err
 
     async def on_guild_role_create(self, role):
         if(role.guild == self.currGuild):
@@ -150,13 +157,13 @@ class Friday(commands.Bot):
                 return
             msg = f'{member.display_name} just joined {after.channel}'
             channel = get(self.currGuild.channels, name=self.botSetup['required']['tts_channel'], type=discord.ChannelType.text)
-            await channel.send(content=msg, tts=True, delete_after=10)
+            await channel.send(content=msg, tts=False, delete_after=10)
         if(after.channel == None):
             if(before.channel.name in self.botSetup['optional']['silent_channels']):
                 return
             msg = f'{member.display_name} just left {before.channel}'
             channel = get(self.currGuild.channels, name=self.botSetup['required']['tts_channel'], type=discord.ChannelType.text)
-            await channel.send(content=msg, tts=True, delete_after=10)
+            await channel.send(content=msg, tts=False, delete_after=10)
 
     # async def on_message(self, message):
     #     pass
