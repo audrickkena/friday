@@ -236,13 +236,13 @@ class Misc(commands.Cog):
                         # Check if a song is paused
                         if self.vc.is_paused():
                             self.vc.resume()
-                            interaction.response.send_message('Music resumed!')
+                            await interaction.response.send_message('Music resumed!')
                             return
                         else:
-                            interaction.response.send_message('No music paused!')
+                            await interaction.response.send_message('No music paused!')
                             return
                     else:
-                        interaction.response.send_message('I\'m not even in vc though, what song do you want me to pause...?')
+                        await interaction.response.send_message('I\'m not even in vc though, what song do you want me to pause...?')
                 else:
                     # Check if danki not in vc
                     if self.vc == None:
@@ -253,7 +253,7 @@ class Misc(commands.Cog):
                     # Check if a song is currently playing
                     if self.vc.is_playing():
                         self.musicQueue.append(url)
-                        interaction.response.send_message('Music already playing! Adding your song to the queue')
+                        await interaction.response.send_message('Music already playing! Adding your song to the queue')
 
                     # Check if no queue
                     if len(self.musicQueue) == 0:
@@ -267,7 +267,7 @@ class Misc(commands.Cog):
 
                     # # if there is a queue
                     # else:
-                    #     interaction.response.send_message(f'There\'s currently [{len(self.musicQueue)}] songs in queue! Your song has been added to the queue!')
+                    #     await interaction.response.send_message(f'There\'s currently [{len(self.musicQueue)}] songs in queue! Your song has been added to the queue!')
                     #     self.musicQueue.append(url)
         except Exception as err:
             raise err
@@ -295,13 +295,13 @@ class Misc(commands.Cog):
             # Check if Danki is already playing a song
             if self.vc.is_playing():
                 self.vc.pause()
-                interaction.response.send_message('Music has been paused!')
+                await interaction.response.send_message('Music has been paused!')
                 return
             # Check if there is already a paused song
             if self.vc.is_paused():
-                interaction.response.send_message('Music already paused! Type /music play instead!')
+                await interaction.response.send_message('Music already paused! Type /music play instead!')
                 return
-        interaction.response.send_message('There is no music playing!')
+        await interaction.response.send_message('There is no music playing!')
 
     @music.command(name='disconnect', description='For disconnecting Danki from the voice channel')
     async def music_disc(self, interaction: discord.Interaction):
@@ -309,13 +309,13 @@ class Misc(commands.Cog):
         if self.vc != None:
             self.vc.stop()
             await self.vc.disconnect()
-            interaction.response.send_message('Thank you for listening!')
+            await interaction.response.send_message('Thank you for listening!')
             # Reset Queue and vc as disconnected
             self.musicQueue = []
             self.vc = None
             return
         else:
-            interaction.response.send_message('I\'m not even there lmao bruh')
+            await interaction.response.send_message('I\'m not even there lmao bruh')
 
     @music.command(name='queue', description='For getting the current queue')
     async def music_queue(self, interaction: discord.Interaction):
@@ -323,13 +323,13 @@ class Misc(commands.Cog):
         if self.vc != None:
             # Check if queue is empty
             if len(self.musicQueue) == 0:
-                interaction.response.send_message('Queue is empty!')
+                await interaction.response.send_message('Queue is empty!')
             else:
                 print('Current Queue\n')
                 for i in range(len(self.musicQueue)):
                     print(f'{i + 1}. {self.musicQueue[i]}')
         else:
-            interaction.response.send_message('I\'m not even there? What queue are you talking about?')
+            await interaction.response.send_message('I\'m not even there? What queue are you talking about?')
 
     # @commands.command(name="play", description="For playing music", usage="!play [Youtube URL]")
     # async def play(self, ctx, url):
