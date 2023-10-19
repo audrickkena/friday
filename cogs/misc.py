@@ -274,7 +274,7 @@ class Misc(commands.Cog):
                     if self.vc.is_playing():
                         self.musicQueue.append(url)
                         await interaction.followup.send('Music already playing! Adding your song to the queue')
-                        await self.music_update_queue()
+                        self.music_update_queue()
                         return
 
                     # Check if no queue
@@ -285,7 +285,7 @@ class Misc(commands.Cog):
                         audio_url = audio_stream.url
 
                         # Play audio stream
-                        self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=await self.afterSong)
+                        self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
 
                         # Set curr song var
                         self.currSong = url
@@ -307,13 +307,13 @@ class Misc(commands.Cog):
             raise err
 
     # function for updating current song message
-    async def music_update_curr(self):
+    def music_update_curr(self):
         msg = f'#Current Song: {self.currSong}'
         origMsg = self.message_music_curr
         origMsg.edit(msg)
 
     # function for updating queue message
-    async def music_update_queue(self):
+    def music_update_queue(self):
         msg = 'Queue:\n'
         for i in range(len(self.musicQueue)):
             msg += f'{i + 1}. {self.musicQueue}\n'
@@ -321,14 +321,14 @@ class Misc(commands.Cog):
         origMsg.edit(msg)
 
     # Recursive function for going through queue
-    async def afterSong(self, error):
+    def afterSong(self, error):
         try:    
             if len(self.musicQueue) > 0:
                 url = self.musicQueue[0]
 
                 # update current music
                 self.message_music_curr = url
-                await self.music_update_curr()
+                self.music_update_curr()
 
                 # play new song
                 video = pytube.YouTube(url)
@@ -338,7 +338,7 @@ class Misc(commands.Cog):
 
                 # update queue
                 self.musicQueue.pop(0)
-                await self.music_update_queue()
+                self.music_update_queue()
             else:
                 print('Queue Finished!')
             print(error)
