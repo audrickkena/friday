@@ -261,8 +261,9 @@ class Misc(commands.Cog):
                         # TODO: Check if music info channel exists in the server
 
                         # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
-                        self.message_music_curr = discord.utils.get(interaction.guild.text_channels, name=self.setup['required']['music_info_channel']).send(f'#Current Song:')
-                        self.message_music_queue = discord.utils.get(interaction.guild.text_channels, name=self.setup['required']['music_info_channel']).send(f'Queue:')
+                        infoChannel = discord.utils.get(interaction.guild.text_channels, name=self.setup['required']['music_info_channel'])
+                        self.message_music_curr = await infoChannel.send(f'#Current Song:')
+                        self.message_music_queue = await infoChannel.send(f'Queue:')
                     
                     else:
                         # Check if Danki not in the same vc as command user
