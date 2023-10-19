@@ -228,7 +228,7 @@ class Misc(commands.Cog):
         try:
             member = discord.utils.get(interaction.guild.members, id=interaction.user.id)
             # Check if user is in a voice channel
-            if danki_checks.checkUserInVoice(member, '/music play') == True:
+            if await danki_checks.checkUserInVoice(member, '/music play') == True:
                 # Check if user didn't specify a url
                 if url == None:
                     # Check if danki is in vc
