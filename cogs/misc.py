@@ -304,11 +304,12 @@ class Misc(commands.Cog):
                         infoChannel = discord.utils.get(interaction.guild.text_channels, name=self.setup['required']['music_info_channel'])
                         # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
                         if self.message_music_curr == None:
-                            self.message_music_curr = await infoChannel.send(f'{danki_enums.DiscordOut.CURR_SONG}\n{video.title}')
+                            embed = await self.createMusicEmbed(video.title, video.author, url, video.thumbnail_url)
+                            self.message_music_curr = await infoChannel.send(content=danki_enums.DiscordOut.CURR_SONG, embed=embed)
                         else:
                             await self.music_update_curr()
                         if self.message_music_queue == None:
-                            self.message_music_queue = await infoChannel.send(f'{danki_enums.DiscordOut.SONG_QUEUE}:')
+                            self.message_music_queue = await infoChannel.send(content=f'{danki_enums.DiscordOut.SONG_QUEUE_EMPTY}')
                         else:
                             await self.music_update_queue()
 
@@ -322,21 +323,34 @@ class Misc(commands.Cog):
         except Exception as err:
             await interaction.response.send_message(f'{danki_enums.DiscordOut.ERROR} {danki_enums.DiscordOut.ISSUE_GITHUB}', ephemeral=True)
             raise err
+        
+    async def createMusicEmbed(self, title, author, url, thumbnail):
+        embed = discord.Embed(
+            colour=discord.Colour.gold(),
+            title=title,
+            description=f'by {author}'
+        )
+        embed.set_image(url=thumbnail)
+        embed.add_field(name="link", value=url)
+        return embed
 
     # function for updating current song message
     async def music_update_curr(self):
         # create a temporary pytube object to get the title of the url
         temp = pytube.YouTube(self.currSong)
-        msg = f'{danki_enums.DiscordOut.CURR_SONG}\n{temp.title}'
-        await self.message_music_curr.edit(content=msg)
+        embed = await self.createMusicEmbed(temp.title, temp.author, self.currSong, temp.thumbnail_url)
+        await self.message_music_curr.edit(content=danki_enums.DiscordOut.CURR_SONG, embed=embed)
 
     # function for updating queue message
     async def music_update_queue(self):
-        msg = f'{danki_enums.DiscordOut.SONG_QUEUE}\n'
-        for i in range(len(self.musicQueue)):
-            # create a temporary pytube object to get the title of the url
-            temp = pytube.YouTube(self.musicQueue[i])
-            msg += f'{i + 1}. {temp.title}\n'
+        if len(self.musicQueue) == 0:
+            msg = danki_enums.DiscordOut.SONG_QUEUE_EMPTY
+        else:
+            msg = f'{danki_enums.DiscordOut.SONG_QUEUE}\n'
+            for i in range(len(self.musicQueue)):
+                # create a temporary pytube object to get the title of the url
+                temp = pytube.YouTube(self.musicQueue[i])
+                msg += f'> {i + 1}. **{temp.title}** - {temp.author}\n'
         await self.message_music_queue.edit(content=msg)
 
     # Recursive function for going through queue
@@ -368,10 +382,10 @@ class Misc(commands.Cog):
             else:
                 # When there is no more song to play but Danki is not disconnected yet, empty out the current song and queue messages
                 if self.message_music_curr != None:
-                    updateCurrMsg = asyncio.run_coroutine_threadsafe(self.message_music_curr.edit(content=f'{danki_enums.DiscordOut.CURR_SONG}'), self.bot.loop)
+                    updateCurrMsg = asyncio.run_coroutine_threadsafe(self.message_music_curr.edit(embed = None, content=f'No song playing! Type /music play {{url}} to play a song!'), self.bot.loop)
                     updateCurrMsg.result()
                 if self.message_music_queue != None:
-                    updateCurrMsg = asyncio.run_coroutine_threadsafe(self.message_music_queue.edit(content=f'{danki_enums.DiscordOut.SONG_QUEUE}'), self.bot.loop)
+                    updateCurrMsg = asyncio.run_coroutine_threadsafe(self.message_music_queue.edit(content=danki_enums.DiscordOut.SONG_QUEUE_EMPTY), self.bot.loop)
                     updateCurrMsg.result()
         except Exception as err:
             raise err
