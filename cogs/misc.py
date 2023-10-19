@@ -277,14 +277,14 @@ class Misc(commands.Cog):
     
     # Recursive function for going through queue
     def afterSong(self, error):
-        try:
-            self.musicQueue.pop(0)
+        try:    
             if self.musicQueue > 0:
                 url = self.musicQueue[0]
                 video = pytube.YouTube(url)
                 audio_stream = video.streams.filter(only_audio=True).first()
                 audio_url = audio_stream.url
                 self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
+                self.musicQueue.pop(0)
             else:
                 print('Queue Finished!')
             print(error)
