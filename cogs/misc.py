@@ -24,6 +24,7 @@ class Misc(commands.Cog):
         self.botSetup = self.bot.getBotSetup()
         self.vc = None
         self.stop_audio_task = None
+        self.musicQueue = []
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -157,25 +158,59 @@ class Misc(commands.Cog):
         
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #####################################    
+    ########## MUSIC FUNCTIONS ##########
+    #####################################
+
+
+
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        role_name = "Horny"  # Replace with the actual role name
-
-        # Check if the member has the specified role
-        role = discord.utils.get(member.roles, name=role_name)
-        if role and not before.channel and after.channel:
-            if member.id == self.bot.user.id:
-                return
-            # Connect to the user's voice channel
-            self.vc = await after.channel.connect()
-            specific_url = 'https://www.youtube.com/watch?v=2BCgSYNteVo&ab_channel=CHORUSLOOPS'
-            # Get the audio stream URL from the YouTube video (you'll need to define 'specific_url' here)
-            video = pytube.YouTube(specific_url)
-            audio_stream = video.streams.filter(only_audio=True).first()
-            url2 = audio_stream.url
-            # Play the audio stream
-            self.vc.play(discord.FFmpegPCMAudio(url2, executable='ffmpeg',before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",options="-vn"))
-            self.stop_audio_task = asyncio.create_task(self.stop_audio_after_duration(5))
+        
+        ### Continue Playing Check
+        # Check if danki in VC
+        if discord.utils.get(after.channel.members, name='Danki#2189') != None:
+            # Check if danki is alone in VC
+            if len(after.channel.members) == 1:
+                self.vc.disconnect()
+                # reset self.vc to None since disconnected
+                self.vc = None
+        else:
+            ### Horny Check
+            role_name = "Horny"
+            # Check if the member has the specified role
+            role = discord.utils.get(member.roles, name=role_name)
+            if role and not before.channel and after.channel:
+                if member.id == self.bot.user.id:
+                    return
+                # Connect to the user's voice channel
+                self.vc = await after.channel.connect()
+                specific_url = 'https://www.youtube.com/watch?v=2BCgSYNteVo&ab_channel=CHORUSLOOPS'
+                # Get the audio stream URL from the YouTube video (you'll need to define 'specific_url' here)
+                video = pytube.YouTube(specific_url)
+                audio_stream = video.streams.filter(only_audio=True).first()
+                url2 = audio_stream.url
+                # Play the audio stream
+                self.vc.play(discord.FFmpegPCMAudio(url2, executable='ffmpeg',before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",options="-vn"))
+                self.stop_audio_task = asyncio.create_task(self.stop_audio_after_duration(5))
 
 
     async def stop_audio_after_duration(self, duration):
@@ -184,56 +219,186 @@ class Misc(commands.Cog):
             self.vc.stop()
             await self.vc.disconnect()
 
-    @commands.command(name="play", description="For playing music", usage="!play [Youtube URL]")
-    async def play(self, ctx, url):
-        # Check if the user is in a voice channel
-        if ctx.author.voice is None:
-            await ctx.send("You're not in a voice channel.")
+            # reset self.vc to None since disconnected
+            self.vc = None
+
+    music = app_commands.Group(name='music', description='for music related commands')
+    @music.command(name='play', description='For playing music')
+    async def music_play(self, interaction: discord.Interaction, url=None):
+        try:
+            member = discord.utils.get(interaction.guild.members, id=interaction.user.id)
+            # Check if user is in a voice channel
+            if danki_checks.checkUserInVoice(member, '/music play') == True:
+                # Check if user didn't specify a url
+                if url == None:
+                    # Check if danki is in vc
+                    if self.vc != None:
+                        # Check if a song is paused
+                        if self.vc.is_paused():
+                            self.vc.resume()
+                            interaction.response.send_message('Music resumed!')
+                            return
+                        else:
+                            interaction.response.send_message('No music paused!')
+                            return
+                    else:
+                        interaction.response.send_message('I\'m not even in vc though, what song do you want me to pause...?')
+                else:
+                    # Check if danki not in vc
+                    if self.vc == None:
+                        # Connecting Danki to user's voice channel
+                        voice_channel = member.voice.channel
+                        self.vc = await voice_channel.connect()
+
+                    # Check if a song is currently playing
+                    if self.vc.is_playing():
+                        self.musicQueue.append(url)
+                        interaction.response.send_message('Music already playing! Adding your song to the queue')
+
+                    # Check if no queue
+                    if len(self.musicQueue) == 0:
+                        # Get audio stream URL from youtube vid
+                        video = pytube.YouTube(url)
+                        audio_stream = video.streams.filter(only_audio=True).first()
+                        audio_url = audio_stream.url
+
+                        # Play audio stream
+                        self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
+
+                    # # if there is a queue
+                    # else:
+                    #     interaction.response.send_message(f'There\'s currently [{len(self.musicQueue)}] songs in queue! Your song has been added to the queue!')
+                    #     self.musicQueue.append(url)
+        except Exception as err:
+            raise err
+    
+    # Recursive function for going through queue
+    async def afterSong(self, error):
+        try:
+            self.musicQueue.pop(0)
+            if self.musicQueue > 0:
+                url = self.musicQueue[0]
+                video = pytube.YouTube(url)
+                audio_stream = video.streams.filter(only_audio=True).first()
+                audio_url = audio_stream.url
+                self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
+            else:
+                print('Queue Finished!')
+            print(error)
+        except Exception as err:
+            raise err
+        
+    @music.command(name='pause', description='For pausing the currently playing song')
+    async def music_pause(self, interaction: discord.Interaction):
+        # Check if Danki is connected to a vc
+        if self.vc != None:
+            # Check if Danki is already playing a song
+            if self.vc.is_playing():
+                self.vc.pause()
+                interaction.response.send_message('Music has been paused!')
+                return
+            # Check if there is already a paused song
+            if self.vc.is_paused():
+                interaction.response.send_message('Music already paused! Type /music play instead!')
+                return
+        interaction.response.send_message('There is no music playing!')
+
+    @music.command(name='disconnect', description='For disconnecting Danki from the voice channel')
+    async def music_disc(self, interaction: discord.Interaction):
+        # Check if Danki is connected to a vc
+        if self.vc != None:
+            self.vc.stop()
+            await self.vc.disconnect()
+            interaction.response.send_message('Thank you for listening!')
+            # Reset Queue and vc as disconnected
+            self.musicQueue = []
+            self.vc = None
             return
-
-        # Check if the bot is already in a voice channel
-        if ctx.voice_client is not None:
-            await ctx.send("I'm already in a voice channel. Use !disconnect or !stop to stop the current audio.")
-            return
-
-        # Connect to the user's voice channel
-        voice_channel = ctx.author.voice.channel
-        vc = await voice_channel.connect()
-
-        # Get the audio stream URL from the YouTube video
-        video = pytube.YouTube(url)
-        audio_stream = video.streams.filter(only_audio=True).first()
-        audio_url = audio_stream.url
-
-        # Play the audio stream
-        vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg',before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",options="-vn"))
-
-        # Wait for the audio to finish playing
-        while vc.is_playing():
-            await asyncio.sleep(1)
-
-        # Disconnect after the audio is finished
-        await vc.disconnect()
-
-
-
-
-
-
-
-    @commands.command(name="stop", description="For playing music", usage="!stop")
-    async def stop(self, ctx):
-        # Check if the bot is in a voice channel and is currently playing audio
-        if ctx.voice_client is not None and ctx.voice_client.is_playing():
-            ctx.voice_client.stop()
-
-    @commands.command(name="disconnect", description="For playing music", usage="!disconnect")
-    async def disconnect(self, ctx):
-        # Check if the bot is in a voice channel
-        if ctx.voice_client is not None:
-            await ctx.voice_client.disconnect()
         else:
-            await ctx.send("I'm not in a voice channel.")
+            interaction.response.send_message('I\'m not even there lmao bruh')
+
+    @music.command(name='queue', description='For getting the current queue')
+    async def music_queue(self, interaction: discord.Interaction):
+        # Check if Danki is connected to a vc
+        if self.vc != None:
+            # Check if queue is empty
+            if len(self.musicQueue) == 0:
+                interaction.response.send_message('Queue is empty!')
+            else:
+                print('Current Queue\n')
+                for i in range(len(self.musicQueue)):
+                    print(f'{i + 1}. {self.musicQueue[i]}')
+
+    # @commands.command(name="play", description="For playing music", usage="!play [Youtube URL]")
+    # async def play(self, ctx, url):
+    #     # Check if the user is in a voice channel
+    #     if ctx.author.voice is None:
+    #         await ctx.send("You're not in a voice channel.")
+    #         return
+
+    #     # Check if the bot is already in a voice channel
+    #     if ctx.voice_client is not None:
+    #         await ctx.send("I'm already in a voice channel. Use !disconnect or !stop to stop the current audio.")
+    #         return
+
+        # # Connect to the user's voice channel
+        # voice_channel = ctx.author.voice.channel
+        # vc = await voice_channel.connect()
+
+        # # Get the audio stream URL from the YouTube video
+        # video = pytube.YouTube(url)
+        # audio_stream = video.streams.filter(only_audio=True).first()
+        # audio_url = audio_stream.url
+
+        # # Play the audio stream
+        # vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg',before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",options="-vn"))
+
+        # # Wait for the audio to finish playing
+        # while vc.is_playing():
+        #     await asyncio.sleep(1)
+
+        # # Disconnect after the audio is finished
+        # await vc.disconnect()
+
+    # @commands.command(name="stop", description="For playing music", usage="!stop")
+    # async def stop(self, ctx):
+    #     # Check if the bot is in a voice channel and is currently playing audio
+    #     if ctx.voice_client is not None and ctx.voice_client.is_playing():
+    #         ctx.voice_client.stop()
+
+    # @commands.command(name="disconnect", description="For playing music", usage="!disconnect")
+    # async def disconnect(self, ctx):
+    #     # Check if the bot is in a voice channel
+    #     if ctx.voice_client is not None:
+    #         await ctx.voice_client.disconnect()
+    #     else:
+    #         await ctx.send("I'm not in a voice channel.")
+
+    
+    
+    ############################################
+    ########## END OF MUSIC FUNCTIONS ##########
+    ############################################
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    
+    
     #######################################
     ########## SELAMAT FUNCTIONS ##########
     #######################################
@@ -381,6 +546,26 @@ class Misc(commands.Cog):
     ########## END OF SELAMAT FUNCTIONS ##########
     ##############################################
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     ########################################################################
     ########## QUOTE COMMANDS ##############################################
     ########################################################################
@@ -464,6 +649,16 @@ class Misc(commands.Cog):
     ########################################################################
     ########## QUOTE END ###################################################
     ########################################################################
+
+
+
+
+
+
+
+
+
+
 
 
 
