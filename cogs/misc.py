@@ -266,7 +266,7 @@ class Misc(commands.Cog):
                         self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
 
                         # Output for playing song
-                        await interaction.respons.send_message('Music playing now, enjoy!')
+                        await interaction.response.send_message('Music playing now, enjoy!')
 
                     # # if there is a queue
                     # else:
@@ -278,7 +278,7 @@ class Misc(commands.Cog):
     # Recursive function for going through queue
     def afterSong(self, error):
         try:    
-            if self.musicQueue > 0:
+            if len(self.musicQueue) > 0:
                 url = self.musicQueue[0]
                 video = pytube.YouTube(url)
                 audio_stream = video.streams.filter(only_audio=True).first()
