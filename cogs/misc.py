@@ -304,7 +304,7 @@ class Misc(commands.Cog):
                         infoChannel = discord.utils.get(interaction.guild.text_channels, name=self.setup['required']['music_info_channel'])
                         # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
                         if self.message_music_curr == None:
-                            self.message_music_curr = await infoChannel.send(f'{danki_enums.DiscordOut.CURR_SONG}\n{self.video.title}')
+                            self.message_music_curr = await infoChannel.send(f'{danki_enums.DiscordOut.CURR_SONG}\n{video.title}')
                         else:
                             await self.music_update_curr()
                         if self.message_music_queue == None:
