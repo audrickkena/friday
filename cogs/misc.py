@@ -310,7 +310,7 @@ class Misc(commands.Cog):
     def music_update_curr(self):
         msg = f'#Current Song: {self.currSong}'
         origMsg = self.message_music_curr
-        origMsg.edit(msg)
+        origMsg.edit(content=msg)
 
     # function for updating queue message
     def music_update_queue(self):
@@ -318,7 +318,7 @@ class Misc(commands.Cog):
         for i in range(len(self.musicQueue)):
             msg += f'{i + 1}. {self.musicQueue}\n'
         origMsg = self.message_music_queue
-        origMsg.edit(msg)
+        origMsg.edit(content=msg)
 
     # Recursive function for going through queue
     def afterSong(self, error):
