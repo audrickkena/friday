@@ -288,7 +288,6 @@ class Misc(commands.Cog):
                     if len(self.musicQueue) == 0:
                         # Get audio stream URL from youtube vid
                         video = pytube.YouTube(url)
-                        print(video.title)
                         audio_stream = video.streams.filter(only_audio=True).first()
                         audio_url = audio_stream.url
 
