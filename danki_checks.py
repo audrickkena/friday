@@ -113,6 +113,6 @@ async def checkFileExists(filepath):
         raise danki_exceptions.FileMissing(filepath)
     
 async def checkUserInVoice(member: discord.Member, command: str):
-    if member.voice.channel != None:
+    if member.voice.channel == None:
         raise danki_exceptions.UserNotInVoiceChannel(member, command)
     return True
