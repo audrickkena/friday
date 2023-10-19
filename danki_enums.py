@@ -17,3 +17,4 @@ class DiscordOut:
     ISSUE_GITHUB = 'Please contact the admin or raise an issue in github if this is not working properly.'
     CURR_SONG = '### CURRENT SONG:'
     SONG_QUEUE = '### QUEUE:'
+    SONG_QUEUE_EMPTY = SONG_QUEUE + '\n> None'
