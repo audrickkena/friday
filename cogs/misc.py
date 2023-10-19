@@ -285,7 +285,7 @@ class Misc(commands.Cog):
                         audio_url = audio_stream.url
 
                         # Play audio stream
-                        self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
+                        self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=await self.afterSong)
 
                         # Set curr song var
                         self.currSong = url
@@ -321,14 +321,14 @@ class Misc(commands.Cog):
         origMsg.edit(msg)
 
     # Recursive function for going through queue
-    def afterSong(self, error):
+    async def afterSong(self, error):
         try:    
             if len(self.musicQueue) > 0:
                 url = self.musicQueue[0]
 
                 # update current music
                 self.message_music_curr = url
-                self.music_update_curr()
+                await self.music_update_curr()
 
                 # play new song
                 video = pytube.YouTube(url)
@@ -338,7 +338,7 @@ class Misc(commands.Cog):
 
                 # update queue
                 self.musicQueue.pop(0)
-                self.music_update_queue()
+                await self.music_update_queue()
             else:
                 print('Queue Finished!')
             print(error)
