@@ -328,6 +328,7 @@ class Misc(commands.Cog):
                 queueMsg = 'Current Queue\n'
                 for i in range(len(self.musicQueue)):
                     queueMsg += f'{i + 1}. {self.musicQueue[i]}\n'
+                await interaction.response.send_message(queueMsg, ephemeral=True)
         else:
             await interaction.response.send_message('I\'m not even there? What queue are you talking about?', ephemeral=True)
 
