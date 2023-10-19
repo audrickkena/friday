@@ -239,6 +239,8 @@ class Misc(commands.Cog):
             member = discord.utils.get(interaction.guild.members, id=interaction.user.id)
             # Check if user is in a voice channel
             if await danki_checks.checkUserInVoice(member, '/music play') == True:
+                # Need to defer response as it is taking too long
+                await interaction.response.defer(ephemeral=True)
                 # Check if user didn't specify a url
                 if url == None:
                     # Check if danki is in vc
@@ -246,13 +248,13 @@ class Misc(commands.Cog):
                         # Check if a song is paused
                         if self.vc.is_paused():
                             self.vc.resume()
-                            await interaction.response.send_message('Music resumed!', ephemeral=True)
+                            await interaction.followup.send('Music resumed!')
                             return
                         else:
-                            await interaction.response.send_message('No music paused!', ephemeral=True)
+                            await interaction.followup.send('No music paused!')
                             return
                     else:
-                        await interaction.response.send_message('I\'m not even in vc though, what song do you want me to pause...?', ephemeral=True)
+                        await interaction.followup.send('I\'m not even in vc though, what song do you want me to pause...?')
                 else:
                     # Check if danki not in vc
                     if self.vc == None:
@@ -265,13 +267,13 @@ class Misc(commands.Cog):
                     else:
                         # Check if Danki not in the same vc as command user
                         if self.vc.channel.id != interaction.user.voice.channel.id:
-                            await interaction.response.send_message('Join the same voice channel as me first!', ephemeral=True)
+                            await interaction.followup.send('Join the same voice channel as me first!')
                             return
 
                     # Check if a song is currently playing
                     if self.vc.is_playing():
                         self.musicQueue.append(url)
-                        await interaction.response.send_message('Music already playing! Adding your song to the queue', ephemeral=True)
+                        await interaction.followup.send('Music already playing! Adding your song to the queue')
                         await self.music_update_queue()
                         return
 
@@ -289,7 +291,7 @@ class Misc(commands.Cog):
                         self.message_music_curr = url
 
                         # Output for playing song
-                        await interaction.response.send_message('Music playing now, enjoy!', ephemeral=True)
+                        await interaction.followup.send('Music playing now, enjoy!')
                         # TODO: Check if music info channel exists in the server
 
                         # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
@@ -299,7 +301,7 @@ class Misc(commands.Cog):
 
                     # # if there is a queue
                     # else:
-                    #     await interaction.response.send_message(f'There\'s currently [{len(self.musicQueue)}] songs in queue! Your song has been added to the queue!')
+                    #     await interaction.followup.send(f'There\'s currently [{len(self.musicQueue)}] songs in queue! Your song has been added to the queue!')
                     #     self.musicQueue.append(url)
         except Exception as err:
             raise err
