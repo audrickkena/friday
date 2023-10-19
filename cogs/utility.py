@@ -367,5 +367,90 @@ class Utility(commands.Cog):
 
 
 
+    ###################################
+    ########### DANKI BUCKS ###########
+    ###################################
+
+    # dbucks = app_commands.Group(name='dbucks', description='For commands related to the server\'s virtual currency')
+
+    # @dbucks.command(name='mybalance', description='for getting your balance amount')
+    # async def balance(self, interaction: discord.Interaction):
+    #     with open(f'utility/passport/{UID}')
+
+
+    ##########################################
+    ########### END OF DANKI BUCKS ###########
+    ##########################################
+
+
+    ################################
+    ########### PASSPORT ###########
+    ################################
+    '''
+    Passport current structure:
+    [VIEWABLE Information] - Everyone can view but no one can edit (including passport owner) except mods
+    Server Nickname:
+    Discord Username:
+    Birthday Month:
+    Server Join Date:
+    Biggest Loser Count:
+    DBUCKS Amount:
+
+    [EDITABLE information] -  Passport owner and mods can edit
+    STEAM FRIEND CODE:
+    EPIC FRIEND CODE:
+    (etc...)
+
+    directory path: utility/passports/{userid}.json
+
+    JSON SAMPLE:
+    {
+        "View": {
+            "Username": (username),
+            "Nickname": (displayname),
+            "Birthday Month": (month in numerical [1-12] i.e: 1 = Jan, 12 = Dec),
+            "Join Date": (YYYY-MM-DD),
+            "Biggest Loser Record":{
+                (YYYY-MM-DD)
+            },
+            "DBUCKS Amount: D$(dbux amt)
+        },
+        "Edit": {
+            "STEAMID": (id),
+            "EPICID": (id),
+            "ORIGINID": (id)
+        }
+    }
+    '''
+
+    # passport = app_commands.Group(name='passport', description='For commands related to your identity in the server')
+    # @passport.command(name='show', description='for showing the passport of a user (run without mentioning a user to show your own passport)')
+    # async def showPass(self, interaction: discord.Interaction, user_mention=None):
+    #     try:
+    #         member = None
+    #         memberID = None
+    #         if user_mention == None:
+    #             memberID = interaction.user.id
+    #         else:
+    #             if user_mention[1] != '@' or user_mention[2] == '&':
+    #                 await interaction.response.send_message(f'{user_mention} is not a mention of a user in the server! Type @{{username}} to ensure that user is mentioned properly!', ephemeral=True)
+    #             else:
+    #                 memberID = user_mention[2:-1]
+    #         member = discord.utils.get(interaction.guild.members, id=memberID)
+    #         if member == None:
+    #             # raise user not found err
+    #             print('User not foundddddd, oi make the error handler lah sheesh')
+    #             return
+    #         if danki_checks.checkDirectoriesExist(['utility/passports']) == True:
+    #             if danki_checks.checkFileExists(f'utility/passports/{memberID}.json') == True:
+
+    #     except:
+    #         pass
+
+    #######################################
+    ########### END OF PASSPORT ###########
+    #######################################
+
+
 async def setup(bot: commands.Bot):
     await bot.add_cog(Utility(bot))
