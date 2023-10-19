@@ -98,7 +98,7 @@
     {
         "required":
         {
-
+            "music_info_channel": "---NONE---"
         },
         "optional":
         {
