@@ -301,10 +301,16 @@ class Misc(commands.Cog):
                         await interaction.followup.send('Music playing now, enjoy!')
                         # TODO: Check if music info channel exists in the server
 
-                        # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
                         infoChannel = discord.utils.get(interaction.guild.text_channels, name=self.setup['required']['music_info_channel'])
-                        self.message_music_curr = await infoChannel.send(f'# Current Song:\n{self.currSong}')
-                        self.message_music_queue = await infoChannel.send(f'Queue:')
+                        # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
+                        if self.message_music_curr == None:
+                            self.message_music_curr = await infoChannel.send(f'{danki_enums.DiscordOut.CURR_SONG}\n{self.video.title}')
+                        else:
+                            await self.music_update_curr()
+                        if self.message_music_queue == None:
+                            self.message_music_queue = await infoChannel.send(f'{danki_enums.DiscordOut.SONG_QUEUE}:')
+                        else:
+                            await self.music_update_queue()
 
                     # # if there is a queue
                     # else:
@@ -319,17 +325,19 @@ class Misc(commands.Cog):
 
     # function for updating current song message
     async def music_update_curr(self):
-        msg = f'# Current Song:\n{self.currSong}'
-        origMsg = self.message_music_curr
-        await origMsg.edit(content=msg)
+        # create a temporary pytube object to get the title of the url
+        temp = pytube.YouTube(self.currSong)
+        msg = f'{danki_enums.DiscordOut.CURR_SONG}\n{temp.title}'
+        await self.message_music_curr.edit(content=msg)
 
     # function for updating queue message
     async def music_update_queue(self):
-        msg = 'Queue:\n'
+        msg = f'{danki_enums.DiscordOut.SONG_QUEUE}\n'
         for i in range(len(self.musicQueue)):
-            msg += f'{i + 1}. {self.musicQueue[i]}\n'
-        origMsg = self.message_music_queue
-        await origMsg.edit(content=msg)
+            # create a temporary pytube object to get the title of the url
+            temp = pytube.YouTube(self.musicQueue[i])
+            msg += f'{i + 1}. {temp.title}\n'
+        await self.message_music_queue.edit(content=msg)
 
     # Recursive function for going through queue
     def afterSong(self, error):
@@ -353,16 +361,17 @@ class Misc(commands.Cog):
                 # update queue
                 self.musicQueue.pop(0)
                 queueUpdate = asyncio.run_coroutine_threadsafe(self.music_update_queue(), self.bot.loop)
+
+                # get result of coroutines
                 currUpdate.result()
                 queueUpdate.result()
             else:
+                # When there is no more song to play but Danki is not disconnected yet, empty out the current song and queue messages
                 if self.message_music_curr != None:
-                    origMsg = self.message_music_curr
-                    updateCurrMsg = asyncio.run_coroutine_threadsafe(origMsg.edit(content='### Current Song:'), self.bot.loop)
+                    updateCurrMsg = asyncio.run_coroutine_threadsafe(self.message_music_curr.edit(content=f'{danki_enums.DiscordOut.CURR_SONG}'), self.bot.loop)
                     updateCurrMsg.result()
                 if self.message_music_queue != None:
-                    origMsg = self.message_music_queue
-                    updateCurrMsg = asyncio.run_coroutine_threadsafe(origMsg.edit(content='### Queue: '), self.bot.loop)
+                    updateCurrMsg = asyncio.run_coroutine_threadsafe(self.message_music_queue.edit(content=f'{danki_enums.DiscordOut.SONG_QUEUE}'), self.bot.loop)
                     updateCurrMsg.result()
         except Exception as err:
             raise err
@@ -431,19 +440,8 @@ class Misc(commands.Cog):
                     # Stop current song
                     self.vc.stop()
 
-                    # play next song
-                    # url = self.musicQueue[0]
-                    # video = pytube.YouTube(url)
-                    # audio_stream = video.streams.filter(only_audio=True).first()
-                    # audio_url = audio_stream.url
-                    # self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
-
-                    # remove next song from queue
-                    # self.musicQueue.pop(0)
-
-                    # update music info
-                    await self.music_update_curr()
-                    await self.music_update_queue()
+                    # When vc.stop() is ran, the after function runs resulting in the next song being
+                    # played without having to do it in this function manually
 
                     # output a message to the user
                     await interaction.response.send_message('Song skipped! Sorry whoever added it!')
