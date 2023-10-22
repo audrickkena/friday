@@ -8,6 +8,7 @@ import os
 import danki_enums
 import danki_checks
 import danki_exceptions
+import danki_html_processor
 
 from discord.ext import commands
 from discord import app_commands
@@ -304,7 +305,8 @@ class Misc(commands.Cog):
                         infoChannel = discord.utils.get(interaction.guild.text_channels, name=self.setup['required']['music_info_channel'])
                         # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
                         if self.message_music_curr == None:
-                            embed = await self.createMusicEmbed(video.title, video.author, url, video.thumbnail_url)
+                            vid_title = await danki_html_processor.getYoutubeTitle(url)
+                            embed = await self.createMusicEmbed(vid_title, video.author, url, video.thumbnail_url)
                             self.message_music_curr = await infoChannel.send(content=danki_enums.DiscordOut.CURR_SONG, embed=embed)
                         else:
                             await self.music_update_curr()
@@ -338,7 +340,8 @@ class Misc(commands.Cog):
     async def music_update_curr(self):
         # create a temporary pytube object to get the title of the url
         temp = pytube.YouTube(self.currSong)
-        embed = await self.createMusicEmbed(temp.title, temp.author, self.currSong, temp.thumbnail_url)
+        vid_title = await danki_html_processor.getYoutubeTitle(self.currSong)
+        embed = await self.createMusicEmbed(vid_title, temp.author, self.currSong, temp.thumbnail_url)
         await self.message_music_curr.edit(content=danki_enums.DiscordOut.CURR_SONG, embed=embed)
 
     # function for updating queue message
@@ -350,7 +353,8 @@ class Misc(commands.Cog):
             for i in range(len(self.musicQueue)):
                 # create a temporary pytube object to get the title of the url
                 temp = pytube.YouTube(self.musicQueue[i])
-                msg += f'> {i + 1}. **{temp.title}** - {temp.author}\n'
+                vid_title = await danki_html_processor.getYoutubeTitle(self.musicQueue[i])
+                msg += f'> {i + 1}. **{vid_title}** - {temp.author}\n'
         await self.message_music_queue.edit(content=msg)
 
     # Recursive function for going through queue
