@@ -14,6 +14,7 @@ from discord.ext import commands
 from discord import app_commands
 import asyncio
 import pytube
+import aiohttp
 
 
 
@@ -29,6 +30,7 @@ class Misc(commands.Cog):
         self.currSong = None
         self.message_music_curr = None
         self.message_music_queue = None
+        self.ytubeSession = None
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -202,6 +204,8 @@ class Misc(commands.Cog):
             if len(members) == 1:
                 self.vc.stop()
                 await self.vc.disconnect()
+                # Close client session
+                await self.ytubeSession.close()
                 # Delete messages
                 await self.message_music_curr.delete()
                 await self.message_music_queue.delete()
@@ -211,6 +215,7 @@ class Misc(commands.Cog):
                 self.musicQueue = []
                 self.message_music_curr = None
                 self.message_music_queue = None
+                self.ytubeSession = None
         else:
             ### Horny Check
             role_name = "Horny"
@@ -278,25 +283,43 @@ class Misc(commands.Cog):
                             await interaction.followup.send('Join the same voice channel as me first!')
                             return
 
+                    # Start a session if non exists
+                    if self.ytubeSession == None:
+                        self.ytubeSession = aiohttp.ClientSession()
+
+                    # Split url and save the list
+                    urlList = url.split()
+
                     # Check if a song is currently playing
                     if self.vc.is_playing():
-                        self.musicQueue.append(url)
-                        await interaction.followup.send('Music already playing! Adding your song to the queue')
+                        self.musicQueue.extend(urlList)
+                        if len(urlList) == 1:
+                            await interaction.followup.send('Music already playing! Adding your song to the queue')
+                        else:
+                            await interaction.followup.send('Music already playing! Adding your songs to the queue')
                         await self.music_update_queue()
                         return
 
                     # Check if no queue
                     if len(self.musicQueue) == 0:
                         # Get audio stream URL from youtube vid
-                        video = pytube.YouTube(url)
+                        video = pytube.YouTube(urlList[0])
+
+                        # Set curr song var
+                        self.currSong = urlList[0]
+
+                        # remove curr song from list
+                        urlList.pop(0)
+
                         audio_stream = video.streams.filter(only_audio=True).first()
                         audio_url = audio_stream.url
 
+                        # if there is more than one song url added by user
+                        if len(urlList) > 0:
+                            self.musicQueue.extend(urlList)
+
                         # Play audio stream
                         self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
-
-                        # Set curr song var
-                        self.currSong = url
 
                         # Output for playing song
                         await interaction.followup.send('Music playing now, enjoy!')
@@ -305,14 +328,15 @@ class Misc(commands.Cog):
                         infoChannel = discord.utils.get(interaction.guild.text_channels, name=self.setup['required']['music_info_channel'])
                         # Send an initial message to music info channel (specified in SETUP.json) regarding the current song playing and queue
                         if self.message_music_curr == None:
-                            vid_title = await danki_html_processor.getYoutubeTitle(url)
-                            embed = await self.createMusicEmbed(vid_title, video.author, url, video.thumbnail_url)
+                            vid_title = await danki_html_processor.getYoutubeTitle(self.ytubeSession, self.currSong)
+                            embed = await self.createMusicEmbed(vid_title, video.author, self.currSong, video.thumbnail_url)
                             self.message_music_curr = await infoChannel.send(content=danki_enums.DiscordOut.CURR_SONG, embed=embed)
                         else:
                             await self.music_update_curr()
-                        if self.message_music_queue == None:
+                        if self.musicQueue == None:
                             self.message_music_queue = await infoChannel.send(content=f'{danki_enums.DiscordOut.SONG_QUEUE_EMPTY}')
                         else:
+                            self.message_music_queue = await infoChannel.send(content=f'{danki_enums.DiscordOut.SONG_QUEUE}')
                             await self.music_update_queue()
 
                     # # if there is a queue
@@ -340,7 +364,7 @@ class Misc(commands.Cog):
     async def music_update_curr(self):
         # create a temporary pytube object to get the title of the url
         temp = pytube.YouTube(self.currSong)
-        vid_title = await danki_html_processor.getYoutubeTitle(self.currSong)
+        vid_title = await danki_html_processor.getYoutubeTitle(self.ytubeSession, self.currSong)
         embed = await self.createMusicEmbed(vid_title, temp.author, self.currSong, temp.thumbnail_url)
         await self.message_music_curr.edit(content=danki_enums.DiscordOut.CURR_SONG, embed=embed)
 
@@ -350,11 +374,14 @@ class Misc(commands.Cog):
             msg = danki_enums.DiscordOut.SONG_QUEUE_EMPTY
         else:
             msg = f'{danki_enums.DiscordOut.SONG_QUEUE}\n'
+            tasks = []
             for i in range(len(self.musicQueue)):
-                # create a temporary pytube object to get the title of the url
-                temp = pytube.YouTube(self.musicQueue[i])
-                vid_title = await danki_html_processor.getYoutubeTitle(self.musicQueue[i])
-                msg += f'> {i + 1}. **{vid_title}** - {temp.author}\n'
+               # add a task to tasks list of futures for a request which will be unpacked once gather is called, running them all together
+               tasks.append(asyncio.ensure_future(danki_html_processor.getYoutubeTitle(self.ytubeSession, self.musicQueue[i])))
+            # awaiting the gather will help get back an iterable for all the futures passed and maintaining the order
+            titles = await asyncio.gather(*tasks)
+            for i in range(len(titles)):
+                msg += f'> {i + 1}. **{titles[i]}**\n'
         await self.message_music_queue.edit(content=msg)
 
     # Recursive function for going through queue
@@ -416,6 +443,9 @@ class Misc(commands.Cog):
             self.vc.stop()
             await self.vc.disconnect()
             await interaction.response.send_message('Thank you for listening!', ephemeral=True)
+            
+            # Close client session
+            await self.ytubeSession.close()
             # Delete messages
             await self.message_music_curr.delete()
             await self.message_music_queue.delete()
@@ -425,6 +455,8 @@ class Misc(commands.Cog):
             self.musicQueue = []
             self.message_music_curr = None
             self.message_music_queue = None
+
+            self.ytubeSession = None
             return
         else:
             await interaction.response.send_message('I\'m not even there lmao bruh', ephemeral=True)
