@@ -233,6 +233,8 @@ class Misc(commands.Cog):
                 url2 = audio_stream.url
                 # Play the audio stream
                 self.vc.play(discord.FFmpegPCMAudio(url2, executable='ffmpeg',before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",options="-vn"))
+                # set volume of source to be 2.5% so that users don't go deaf
+                self.vc.source = discord.PCMVolumeTransformer(self.vc.source, volume=0.025)
                 self.stop_audio_task = asyncio.create_task(self.stop_audio_after_duration(5))
 
 
@@ -320,6 +322,8 @@ class Misc(commands.Cog):
 
                         # Play audio stream
                         self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
+                        # set volume of source to be 2.5% so that users don't go deaf
+                        self.vc.source = discord.PCMVolumeTransformer(self.vc.source, volume=0.025)
 
                         # Output for playing song
                         await interaction.followup.send('Music playing now, enjoy!')
@@ -402,6 +406,8 @@ class Misc(commands.Cog):
                 audio_stream = video.streams.filter(only_audio=True).first()
                 audio_url = audio_stream.url
                 self.vc.play(discord.FFmpegPCMAudio(audio_url, executable='ffmpeg', before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5", options="-vn"), after=self.afterSong)
+                # set volume of source to be 2.5% so that users don't go deaf
+                self.vc.source = discord.PCMVolumeTransformer(self.vc.source, volume=0.025)
 
                 # update queue
                 self.musicQueue.pop(0)
