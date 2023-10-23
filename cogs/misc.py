@@ -337,16 +337,14 @@ class Misc(commands.Cog):
                             self.message_music_curr = await infoChannel.send(content=danki_enums.DiscordOut.CURR_SONG, embed=embed)
                         else:
                             await self.music_update_curr()
-                        if self.musicQueue == None:
+                        # Send an initial message to music info channel regarding song queue. 
+                        # if the music queue message has not been initialised, send new message
+                        if self.message_music_queue == None:
                             self.message_music_queue = await infoChannel.send(content=f'{danki_enums.DiscordOut.SONG_QUEUE_EMPTY}')
+                            
+                        # just update the prev queue message
                         else:
-                            self.message_music_queue = await infoChannel.send(content=f'{danki_enums.DiscordOut.SONG_QUEUE}')
                             await self.music_update_queue()
-
-                    # # if there is a queue
-                    # else:
-                    #     await interaction.followup.send(f'There\'s currently [{len(self.musicQueue)}] songs in queue! Your song has been added to the queue!')
-                    #     self.musicQueue.append(url)
         except danki_exceptions.UserNotInVoiceChannel as err:
             print('user not in vc')
             await interaction.response.send_message(f'You need to be in a voice channel first!', ephemeral=True)
@@ -391,7 +389,8 @@ class Misc(commands.Cog):
     # Recursive function for going through queue
     def afterSong(self, error):
         try:
-            print(error)
+            if error != None:
+                print(error)
             
             if len(self.musicQueue) > 0:
                 url = self.musicQueue[0]
@@ -418,6 +417,7 @@ class Misc(commands.Cog):
                 queueUpdate.result()
             else:
                 # When there is no more song to play but Danki is not disconnected yet, empty out the current song and queue messages
+                self.currSong = None
                 if self.message_music_curr != None:
                     updateCurrMsg = asyncio.run_coroutine_threadsafe(self.message_music_curr.edit(embed = None, content=f'No song playing! Type /music play {{url}} to play a song!'), self.bot.loop)
                     updateCurrMsg.result()
@@ -442,7 +442,7 @@ class Misc(commands.Cog):
                 return
         await interaction.response.send_message('There is no music playing!', ephemeral=True)
 
-    @music.command(name='disconnect', description='For disconnecting Danki from the voice channel')
+    @music.command(name='disconnect', description='For stopping and disconnecting Danki from the voice channel')
     async def music_disc(self, interaction: discord.Interaction):
         # Check if Danki is connected to a vc
         if self.vc != None:
@@ -506,8 +506,6 @@ class Misc(commands.Cog):
                 await interaction.response.send_message('No music right now though???')
         else:
             await interaction.response.send_message('bruh.', ephemeral=True)
-
-    
     
     ############################################
     ########## END OF MUSIC FUNCTIONS ##########
